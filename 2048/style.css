@@ -1,0 +1,65 @@
+/* 2048 판과 숫자 타일 */
+:root {
+  --board: min(calc(100vw - 32px), calc(100vh - 290px), 440px);
+  --board-bg: #bbada0;
+  --empty: #d6cdc4;
+  --t2: #eee4da; --t4: #ede0c8; --t8: #f2b179; --t16: #f59563; --t32: #f67c5f; --t64: #f65e3b;
+  --t128: #edcf72; --t256: #edcc61; --t512: #edc850; --t1024: #edc53f; --t2048: #edc22e; --tbig: #3c3a32;
+  --tile-dark-text: #5b5148;
+}
+@supports (height: 100dvh) {
+  :root { --board: min(calc(100vw - 32px), calc(100dvh - 290px), 440px); }
+}
+:root[data-theme="dark"] {
+  --board-bg: #3a3631;
+  --empty: #4a453f;
+  --tile-dark-text: #3b332c;
+}
+
+.board {
+  width: var(--board);
+  height: var(--board);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: calc(var(--board) * 0.025);
+  padding: calc(var(--board) * 0.025);
+  background: var(--board-bg);
+  border-radius: 14px;
+}
+
+.tile {
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--empty);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  font-size: calc(var(--board) * 0.11);
+  color: var(--tile-dark-text);
+  line-height: 1;
+}
+.tile.d3 { font-size: calc(var(--board) * 0.09); }
+.tile.d4 { font-size: calc(var(--board) * 0.07); }
+.tile.d5 { font-size: calc(var(--board) * 0.055); }
+
+.tile.v2 { background: var(--t2); }
+.tile.v4 { background: var(--t4); }
+.tile.v8 { background: var(--t8); color: #fff; }
+.tile.v16 { background: var(--t16); color: #fff; }
+.tile.v32 { background: var(--t32); color: #fff; }
+.tile.v64 { background: var(--t64); color: #fff; }
+.tile.v128 { background: var(--t128); color: #fff; }
+.tile.v256 { background: var(--t256); color: #fff; }
+.tile.v512 { background: var(--t512); color: #fff; }
+.tile.v1024 { background: var(--t1024); color: #fff; }
+.tile.v2048 { background: var(--t2048); color: #fff; }
+.tile.vbig { background: var(--tbig); color: #fff; }
+
+.tile.new { animation: appear 160ms ease-out; }
+.tile.merged { animation: pop 160ms ease-out; }
+@keyframes appear { from { transform: scale(0.3); opacity: 0.3; } to { transform: scale(1); opacity: 1; } }
+@keyframes pop { 50% { transform: scale(1.14); } }
+@media (prefers-reduced-motion: reduce) {
+  .tile.new, .tile.merged { animation: none; }
+}

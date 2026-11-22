@@ -58,6 +58,22 @@ const MaeilGame = (() => {
     return createSeededRandom(`maeil-${gameId}:${dateKey}`);
   }
 
+  // 저장했다 이어서 쓸 수 있는 난수: 상태가 숫자 하나라 게임 저장에 그대로 넣을 수 있다.
+  // (2048·블록 쌓기처럼 판이 진행되며 계속 난수를 쓰는 게임용. 같은 글자·같은 조작이면 같은 결과)
+  function randomState(text) {
+    let seed = 2166136261;
+    for (let i = 0; i < text.length; i++) seed = Math.imul(seed ^ text.charCodeAt(i), 16777619);
+    return seed | 0;
+  }
+
+  // holder.rng(숫자)를 한 단계 진행하고 0 이상 1 미만의 수를 돌려준다.
+  function nextRandom(holder) {
+    holder.rng = (holder.rng + 0x6D2B79F5) | 0;
+    let t = Math.imul(holder.rng ^ (holder.rng >>> 15), 1 | holder.rng);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+
   function shuffle(items, random = Math.random) {
     for (let i = items.length - 1; i > 0; i--) {
       const j = Math.floor(random() * (i + 1));
@@ -328,7 +344,7 @@ const MaeilGame = (() => {
 
   return {
     SITE_URL, read, write,
-    createSeededRandom, dailyRandom, shuffle,
+    createSeededRandom, dailyRandom, randomState, nextRandom, shuffle,
     todayKey, daysBetween, dateLabel, formatTime, formatTimeKorean,
     loadSettings, saveSettings, isDark, applySettings, bindSettingButtons,
     loadDaily, recordDaily, currentStreak, dailyDone,

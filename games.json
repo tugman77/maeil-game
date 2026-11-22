@@ -1,7 +1,7 @@
 [
   { "id": "sudoku", "name": "스도쿠", "desc": "1~9 숫자를 겹치지 않게 채우기", "icon": "🔢", "path": "sudoku/", "status": "ready", "daily": true },
-  { "id": "2048", "name": "2048", "desc": "같은 숫자를 밀어 합치기", "icon": "🧮", "path": "2048/", "status": "soon", "daily": true },
-  { "id": "memory", "name": "카드 짝맞추기", "desc": "뒤집힌 카드를 기억해 짝 찾기", "icon": "🃏", "path": "memory/", "status": "soon", "daily": true },
+  { "id": "2048", "name": "2048", "desc": "같은 숫자를 밀어 합치기", "icon": "🧮", "path": "2048/", "status": "ready", "daily": true },
+  { "id": "memory", "name": "카드 짝맞추기", "desc": "뒤집힌 카드를 기억해 짝 찾기", "icon": "🃏", "path": "memory/", "status": "ready", "daily": true },
   { "id": "minesweeper", "name": "지뢰찾기", "desc": "숫자 힌트로 지뢰 피하기", "icon": "💣", "path": "minesweeper/", "status": "soon", "daily": true },
   { "id": "blocks", "name": "블록 쌓기", "desc": "떨어지는 블록으로 줄 없애기", "icon": "🧱", "path": "blocks/", "status": "soon", "daily": true }
 ]

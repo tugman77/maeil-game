@@ -1,0 +1,58 @@
+/* 카드 판: 열 수(--cols)와 줄 수(--rows)에 맞춰 화면 폭·높이 중 작은 쪽에 맞춘다. */
+:root {
+  --card-back: #1d4ed8;
+  --card-back-2: #3b6cf0;
+  --card-face: #ffffff;
+  --card-matched: #e5f5ea;
+}
+:root[data-theme="dark"] {
+  --card-back: #2c4fa8;
+  --card-back-2: #3a5fc0;
+  --card-face: #2a2e37;
+  --card-matched: #1f3a29;
+}
+
+.board {
+  --gap: 8px;
+  --avail-h: calc(100vh - 230px);
+  --card: min(
+    calc((min(100vw - 32px, 480px) - (var(--cols) - 1) * var(--gap)) / var(--cols)),
+    calc((var(--avail-h) - (var(--rows) - 1) * var(--gap)) / var(--rows) / 1.2)
+  );
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--card));
+  grid-auto-rows: calc(var(--card) * 1.2);
+  gap: var(--gap);
+  justify-content: center;
+}
+@supports (height: 100dvh) {
+  .board { --avail-h: calc(100dvh - 230px); }
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--card) * 0.52);
+  line-height: 1;
+  background: repeating-linear-gradient(45deg, var(--card-back), var(--card-back) 8px, var(--card-back-2) 8px, var(--card-back-2) 16px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 160ms ease;
+}
+.card .face { visibility: hidden; }
+.card.open, .card.matched {
+  background: var(--card-face);
+  border: 2px solid var(--button-border);
+  animation: flip 180ms ease-out;
+}
+.card.open .face, .card.matched .face { visibility: visible; }
+.card.matched { background: var(--card-matched); border-color: var(--done); cursor: default; }
+.card.miss { border-color: #d14343; }
+.card:active:not(.matched) { transform: scale(0.96); }
+
+@keyframes flip { from { transform: scaleX(0.2); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .card.open, .card.matched { animation: none; }
+}

@@ -107,7 +107,7 @@ console.log('[사이트 구성]');
   // 오프라인 보관 목록(sw.js)에 사이트 파일이 모두 들어 있는지
   const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
   const listed = new Set([...sw.matchAll(/'([^']+)'/g)].map((m) => m[1]));
-  const needed = ['index.html', 'hub.css', 'hub.js', 'games.json', 'common/base.css', 'common/core.js'];
+  const needed = ['index.html', 'hub.css', 'hub.js', 'games.json', 'common/base.css', 'common/core.js', 'common/game.css'];
   ready.forEach((g) => {
     const walk = (dir) => fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true }).forEach((entry) => {
       const rel = `${dir}${entry.name}`;
