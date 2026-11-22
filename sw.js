@@ -1,13 +1,15 @@
 // 오프라인 동작(사이트 전체 공용): 게임 파일을 기기에 보관해 두고, 인터넷이 끊기면 보관본으로 연다.
 // 인터넷이 될 때는 항상 서버의 최신 파일을 먼저 받아 오므로, 수정한 내용이 바로 반영된다.
 // ⚠️ 게임이나 파일을 추가하면 FILES 목록에도 넣는다(tests/common.test.js가 빠진 파일을 잡는다).
-const CACHE = 'maeil-game-v4';
+const CACHE = 'maeil-game-v6';
 const FILES = [
   './',
   'index.html',
   'hub.css',
   'hub.js',
   'games.json',
+  'about.html',
+  'privacy.html',
   'common/base.css',
   'common/core.js',
   'common/game.css',
@@ -34,6 +36,12 @@ const FILES = [
   'guide/2048.html',
   'guide/memory.html',
   'guide/minesweeper.html',
+  'guide/blocks.html',
+  'blocks/',
+  'blocks/index.html',
+  'blocks/style.css',
+  'blocks/js/logic.js',
+  'blocks/js/ui.js',
   'sudoku/',
   'sudoku/index.html',
   'sudoku/style.css',

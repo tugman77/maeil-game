@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="매일게임은 설치·회원가입 없이 브라우저에서 바로 하는 무료 게임 모음입니다. 만든 이유와 운영 원칙을 소개합니다.">
+  <meta name="theme-color" content="#f5f3ee">
+  <title>매일게임 소개</title>
+  <link rel="stylesheet" href="common/base.css">
+  <link rel="stylesheet" href="guide/guide.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <article class="article">
+    <p class="crumbs"><a href="./">매일게임</a> › 소개</p>
+
+    <h1>매일게임 소개</h1>
+    <p class="lead">출퇴근길, 점심시간, 잠깐 쉬는 틈에 머리를 식히는 5분. 매일게임은 그 짧은 시간을 위해 만든 무료 게임 모음입니다.</p>
+
+    <h2>무엇을 할 수 있나요</h2>
+    <ul>
+      <li><a href="sudoku/">스도쿠</a> — 1~9 숫자를 겹치지 않게 채우는 숫자 퍼즐</li>
+      <li><a href="2048/">2048</a> — 같은 숫자를 밀어 합치기</li>
+      <li><a href="memory/">카드 짝맞추기</a> — 뒤집힌 카드의 위치를 기억해 짝 찾기</li>
+      <li><a href="minesweeper/">지뢰찾기</a> — 숫자 힌트로 지뢰를 피해 모든 칸 열기</li>
+      <li><a href="blocks/">블록 쌓기</a> — 떨어지는 블록으로 가로줄을 채워 없애기</li>
+    </ul>
+    <p>게임마다 날마다 바뀌는 <strong>오늘의 도전</strong>이 있어, 같은 날에는 누구나 같은 판을 풉니다. 하루에 하나라도 끝내면 출석으로 쳐서 <strong>연속 출석</strong> 일수가 쌓입니다. 규칙과 요령은 <a href="guide/">게임 방법·요령</a>에 정리해 두었습니다.</p>
+
+    <h2>이렇게 만듭니다</h2>
+    <ul>
+      <li><strong>설치·회원가입 없이</strong> — 주소를 열면 바로 시작합니다.</li>
+      <li><strong>보기 편하게</strong> — 큰 글씨와 큰 버튼, 높은 색 대비를 기본으로 하고, 큰 글씨·어두운 화면을 켤 수 있습니다. 휴대폰을 세로로 들고 한 손으로 할 수 있게 만듭니다.</li>
+      <li><strong>짧게</strong> — 한 판은 대개 1~5분입니다. 중간에 나가도 이어서 할 수 있습니다.</li>
+      <li><strong>기록은 내 기기에만</strong> — 기록은 지금 쓰는 브라우저 안에만 저장하고, 서버로 보내지 않습니다. 자세한 내용은 <a href="privacy.html">개인정보처리방침</a>을 보세요.</li>
+      <li><strong>게임을 방해하지 않게</strong> — 앞으로 광고를 붙이더라도 게임 화면, 특히 조작 버튼 근처에는 두지 않습니다.</li>
+      <li><strong>우리만의 이름과 디자인</strong> — 널리 알려진 규칙의 게임이라도 다른 회사의 상표나 고유한 디자인은 쓰지 않습니다.</li>
+    </ul>
+
+    <h2>문의</h2>
+    <p>틀린 곳, 불편한 점, 바라는 게임이 있으면 <a href="https://github.com/tugman77/maeil-game/issues" rel="noopener">문의 게시판(GitHub)</a>에 남겨 주세요.</p>
+
+    <footer class="site-footer">
+      <p><a href="./">매일게임</a> · <a href="about.html">소개</a> · <a href="privacy.html">개인정보처리방침</a> · <a href="guide/">게임 방법·요령</a></p>
+    </footer>
+  </article>
+</body>
+</html>

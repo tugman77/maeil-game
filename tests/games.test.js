@@ -3,6 +3,7 @@ const M = require('../common/core.js');
 const G = require('../2048/js/logic.js');
 const Memory = require('../memory/js/logic.js');
 const Mine = require('../minesweeper/js/logic.js');
+const B = require('../blocks/js/logic.js');
 
 let failed = false;
 function check(name, ok) {
@@ -177,6 +178,66 @@ console.log('[지뢰찾기]');
     check('숫자만큼 깃발이 있으면 주변을 한 번에 엶', r !== 'boom' && sum(k.revealed) > before);
   }
   check('저장 형식 검사', Mine.isValid(JSON.parse(JSON.stringify(a))) && !Mine.isValid({ ...a, revealed: [] }));
+}
+
+console.log('[블록 쌓기]');
+{
+  const key = (cells) => cells.map(([x, y]) => `${x},${y}`).sort().join(' ');
+  check('모든 조각은 4칸, 네 번 돌리면 제자리', B.TYPES.every((t) => B.cellsOf(t, 0).length === 4 && key(B.cellsOf(t, 4)) === key(B.cellsOf(t, 0))));
+  check('정사각형 조각은 돌려도 같은 모양', key(B.cellsOf('O', 1)) === key(B.cellsOf('O', 0)));
+
+  const g = B.create('medium');
+  check('시작하면 조각과 다음 조각이 있음', g.piece && B.TYPES.includes(g.next) && !g.over);
+  // 7개 묶음: 처음 7개 조각은 7가지가 한 번씩
+  const h = B.create('easy', { seedText: 'bag-test' });
+  const seen = [h.piece.type];
+  for (let i = 0; i < 6; i++) { B.hardDrop(h); seen.push(h.piece.type); }
+  check('처음 7개 조각은 7가지가 한 번씩(7개 묶음)', new Set(seen).size === 7);
+
+  const day = (d) => B.create('medium', { daily: d, seedText: `maeil-blocks:${d}` });
+  const seq = (state, n) => { const out = []; for (let i = 0; i < n && !state.over; i++) { out.push(state.piece.type); B.hardDrop(state); } return out.join(''); };
+  check('매일 도전: 같은 날짜는 같은 조각 순서(20개)', seq(day('2026-11-22'), 20) === seq(day('2026-11-22'), 20));
+  check('매일 도전: 날짜가 다르면 다른 순서', seq(day('2026-11-22'), 20) !== seq(day('2026-11-23'), 20));
+  const e = day('2026-11-22');
+  const f = JSON.parse(JSON.stringify(e));
+  check('저장했다 이어 해도 같은 순서', seq(e, 15) === seq(f, 15));
+
+  // 벽: 왼쪽으로 끝까지 밀면 멈춤
+  const w = B.create('medium', { seedText: 'wall' });
+  let steps = 0;
+  while (B.move(w, -1)) steps++;
+  check('왼쪽 벽에서 멈춤', steps < 10 && !B.move(w, -1) && B.cellsOf(w.piece.type, w.piece.rot).some(([cx]) => w.piece.x + cx === 0));
+  check('벽 옆에서도 돌릴 수 있음(옆으로 비켜 돌기)', B.rotate(w) || w.piece.type === 'O');
+
+  // 한 줄 지우기: 맨 아래 줄을 한 칸만 빼고 채운 뒤 I 조각을 세워 넣는다
+  const c = B.create('medium', { seedText: 'clear' });
+  for (let x = 0; x < 9; x++) c.board[19 * 10 + x] = 2;
+  c.piece = { type: 'I', rot: 1, x: 7, y: 0 }; // 세로 I: 칸 x = 7 + 2 = 9
+  const before = c.score;
+  const r = B.hardDrop(c);
+  check('가로줄을 채우면 사라지고 100점(+떨어진 칸 점수)', r.cleared.length === 1 && c.lines === 1 && c.score - before >= 100);
+  check('지운 줄 위의 칸이 내려옴', c.board.slice(19 * 10, 200).filter(Boolean).length === 1 && c.board[19 * 10 + 9] !== 0);
+
+  // 네 줄 한 번에
+  const t = B.create('medium', { seedText: 'tetra' });
+  for (let row = 16; row < 20; row++) for (let x = 0; x < 9; x++) t.board[row * 10 + x] = 3;
+  t.piece = { type: 'I', rot: 1, x: 7, y: 0 };
+  const r4 = B.hardDrop(t);
+  check('네 줄 한 번에 800점', r4.cleared.length === 4 && r4.gained === 800 && t.board.every((v) => v === 0));
+
+  // 단계·속도
+  const s = B.create('hard', { seedText: 'speed' });
+  s.lines = 19; s.level = 2;
+  check('단계가 오르면 빨라짐', B.interval(s) < B.DIFFICULTIES.hard.speed);
+  s.level = 40;
+  check('아무리 빨라도 0.1초', B.interval(s) === 100);
+
+  // 끝: 판 위까지 쌓이면 게임 끝
+  const o = B.create('medium', { seedText: 'over' });
+  let guard = 0;
+  while (!o.over && guard++ < 200) B.hardDrop(o);
+  check('가운데로만 쌓으면 결국 끝남', o.over);
+  check('저장 형식 검사', B.isValid(f) && !B.isValid({ ...f, board: [] }));
 }
 
 if (failed) {

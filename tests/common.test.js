@@ -120,7 +120,7 @@ console.log('[사이트 구성]');
     walk(g.path);
   });
   ready.forEach((g) => needed.push(`guide/${g.id}.html`));
-  needed.push('guide/index.html', 'guide/guide.css');
+  needed.push('guide/index.html', 'guide/guide.css', 'about.html', 'privacy.html');
   check('공개 게임마다 설명 페이지가 있음', ready.every((g) => fs.existsSync(path.join(ROOT, 'guide', `${g.id}.html`))));
   const missing = needed.filter((file) => !listed.has(file));
   check('sw.js 보관 목록에 빠진 파일 없음', missing.length === 0);

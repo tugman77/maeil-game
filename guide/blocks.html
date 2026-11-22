@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="블록 쌓기 규칙과 점수 계산, 휴대폰 버튼·밀기 조작법, 구멍을 만들지 않고 여러 줄을 한 번에 없애는 요령을 정리했습니다.">
+  <meta name="theme-color" content="#f5f3ee">
+  <meta property="og:title" content="블록 쌓기 하는 법과 요령 — 매일게임">
+  <meta property="og:description" content="블록 쌓기 규칙과 점수 계산, 휴대폰 버튼·밀기 조작법, 구멍을 만들지 않고 여러 줄을 한 번에 없애는 요령을 정리했습니다.">
+  <meta property="og:type" content="article">
+  <title>블록 쌓기 하는 법과 요령 — 매일게임</title>
+  <link rel="stylesheet" href="../common/base.css">
+  <link rel="stylesheet" href="guide.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <article class="article">
+    <p class="crumbs"><a href="../">매일게임</a> › <a href="./">게임 방법·요령</a></p>
+
+    <h1>블록 쌓기 하는 법과 요령</h1>
+    <p class="lead">위에서 떨어지는 블록을 옮기고 돌려 가로줄을 빈틈없이 채우는 게임입니다. 채운 줄은 사라지고, 블록이 맨 위까지 쌓이면 끝납니다.</p>
+    <a class="play-cta" href="../blocks/">▶ 블록 쌓기 바로 하기</a>
+
+    <h2>규칙</h2>
+    <ul>
+      <li>판은 가로 10칸, 세로 20칸입니다. 네 칸짜리 블록 7가지가 하나씩 위에서 떨어집니다.</li>
+      <li>떨어지는 동안 왼쪽·오른쪽으로 옮기거나 돌릴 수 있습니다.</li>
+      <li>블록이 바닥이나 다른 블록에 닿으면 잠깐(약 0.5초) 뒤 그 자리에 고정됩니다. 그 사이에도 옆으로 밀거나 돌릴 수 있습니다.</li>
+      <li>가로줄 하나가 빈틈없이 차면 그 줄이 사라지고, 위의 블록이 한 칸씩 내려옵니다.</li>
+      <li>새 블록이 나올 자리가 막히거나 블록이 판 위로 넘치면 끝납니다.</li>
+    </ul>
+    <p>7가지 블록은 일곱 개씩 한 묶음으로 섞여 나옵니다. 그래서 같은 모양만 계속 나오거나, 필요한 모양이 아주 오래 안 나오는 일이 없습니다.</p>
+
+    <h2>점수</h2>
+    <table>
+      <tr><th>한 번에 없앤 줄</th><th>점수</th></tr>
+      <tr><td>1줄</td><td>100 × 단계</td></tr>
+      <tr><td>2줄</td><td>300 × 단계</td></tr>
+      <tr><td>3줄</td><td>500 × 단계</td></tr>
+      <tr><td>4줄</td><td>800 × 단계</td></tr>
+    </table>
+    <p>한 칸씩 내리면 칸마다 1점, 바로 떨어뜨리면 떨어진 칸마다 2점이 더해집니다. 10줄을 없앨 때마다 <strong>단계</strong>가 하나 오르고, 블록이 조금씩(15%) 빨리 떨어집니다. 같은 4줄이라도 단계가 높을 때 없애면 점수가 훨씬 큽니다.</p>
+
+    <h2>매일게임에서 하는 법</h2>
+    <table>
+      <tr><th>하고 싶은 것</th><th>휴대폰 버튼</th><th>판 위에서</th><th>PC 키보드</th></tr>
+      <tr><td>옮기기</td><td>◀ ▶ (누르고 있으면 계속)</td><td>좌우로 밀기</td><td>← →</td></tr>
+      <tr><td>돌리기</td><td>⟳</td><td>톡 누르기</td><td>↑ 또는 X (반대로 Z)</td></tr>
+      <tr><td>한 칸씩 내리기</td><td>▼ (누르고 있으면 계속)</td><td>천천히 아래로 끌기</td><td>↓</td></tr>
+      <tr><td>바로 떨어뜨리기</td><td>⤓ (초록 버튼)</td><td>아래로 휙 밀기</td><td>스페이스</td></tr>
+      <tr><td>일시정지</td><td colspan="2">⏸ 정지 (다른 앱으로 가면 저절로 멈춤)</td><td>Esc 또는 P</td></tr>
+    </table>
+    <p>판에 점선으로 보이는 <strong>그림자</strong>는 지금 블록이 떨어질 자리입니다. 오른쪽의 <strong>다음</strong> 칸에는 다음에 나올 블록이 보입니다.</p>
+    <table>
+      <tr><th>난이도</th><th>처음 떨어지는 빠르기</th></tr>
+      <tr><td>쉬움</td><td>1초에 한 칸</td></tr>
+      <tr><td>보통</td><td>0.75초에 한 칸</td></tr>
+      <tr><td>어려움</td><td>약 0.5초에 한 칸</td></tr>
+      <tr><td>📅 오늘의 도전</td><td>보통 빠르기. 같은 날에는 누구나 같은 순서로 블록이 나옵니다</td></tr>
+    </table>
+
+    <h2>요령 1 — 바닥을 평평하게</h2>
+    <p>쌓인 블록의 윗면이 울퉁불퉁하면 어떤 블록이 와도 들어갈 자리가 마땅치 않습니다. 높낮이 차이가 한두 칸 안쪽이 되도록 낮은 곳부터 채우세요.</p>
+
+    <h2>요령 2 — 구멍을 만들지 않기</h2>
+    <p>블록 아래에 빈칸이 갇히면, 그 위의 줄을 모두 없애기 전까지는 그 줄을 채울 수 없습니다. 놓기 전에 그림자를 보고 아래에 빈칸이 생기지 않는지 확인하세요. 조금 손해 보는 자리라도 구멍이 안 생기는 쪽이 낫습니다.</p>
+
+    <h2>요령 3 — 한쪽 끝 한 줄 비워 두기</h2>
+    <p>익숙해지면 맨 오른쪽(또는 왼쪽) 세로 한 줄을 비워 두고 나머지를 평평하게 쌓아 보세요. 긴 막대 블록이 나왔을 때 세워서 넣으면 여러 줄이 한 번에 사라집니다. 4줄을 한 번에 없애면 1줄씩 네 번 없앨 때(400점)보다 두 배인 800점입니다.</p>
+    <div class="tip">블록이 판의 절반 넘게 쌓였다면 욕심을 버리고 한두 줄씩이라도 빨리 없애세요. 끝나지 않는 것이 먼저입니다.</div>
+
+    <h2>요령 4 — 다음 블록 보고 미리 자리 정하기</h2>
+    <p>지금 블록을 놓을 때 다음 블록이 들어갈 자리까지 함께 생각하면 실수가 확 줄어듭니다. 처음에는 쉬움 난이도에서 천천히 연습해 보세요.</p>
+
+    <h2>자주 묻는 질문</h2>
+    <h3>중간에 나갔다가 이어서 할 수 있나요?</h3>
+    <p>네. 다른 앱으로 넘어가면 저절로 일시정지되고, 판이 저장되어 <strong>▶ 이어하기</strong>로 계속할 수 있습니다.</p>
+    <h3>오늘의 도전을 여러 번 해도 되나요?</h3>
+    <p>됩니다. 블록 순서는 같고, 그날 가장 높은 점수만 남습니다.</p>
+    <a class="play-cta" href="../blocks/">▶ 블록 쌓기 바로 하기</a>
+
+    <nav class="more-guides" aria-label="다른 게임 설명">
+      <h2>다른 게임 방법</h2>
+      <ul class="guide-list">
+        <li><a href="sudoku.html"><strong>스도쿠</strong><span>1~9 숫자를 겹치지 않게 채우는 숫자 퍼즐</span></a></li>
+        <li><a href="2048.html"><strong>2048</strong><span>같은 숫자를 밀어 합쳐 2048 만들기</span></a></li>
+        <li><a href="memory.html"><strong>카드 짝맞추기</strong><span>뒤집힌 카드의 위치를 기억해 짝 찾기</span></a></li>
+        <li><a href="minesweeper.html"><strong>지뢰찾기</strong><span>숫자 힌트로 지뢰를 피해 모든 칸 열기</span></a></li>
+      </ul>
+    </nav>
+    <footer class="site-footer">
+      <p><a href="../">매일게임</a> · <a href="../about.html">소개</a> · <a href="../privacy.html">개인정보처리방침</a> · 기록은 이 기기의 브라우저에만 저장돼요</p>
+    </footer>
+  </article>
+</body>
+</html>
