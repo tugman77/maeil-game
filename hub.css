@@ -1,0 +1,67 @@
+/* 게임 선택 화면 */
+.hub {
+  width: min(100%, 520px);
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hub-header { text-align: center; padding: 8px 0 4px; }
+.hub-title { font-size: 2.1em; margin: 0; letter-spacing: -1px; }
+.hub-tagline { margin: 0; color: var(--muted); }
+
+.today-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.today-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.today-date { margin: 0; font-weight: 700; font-size: 1.05em; }
+.streak { margin: 0; color: var(--gold); font-weight: 700; }
+.streak:empty { display: none; }
+.today-progress { margin: 6px 0 0; color: var(--muted); font-size: 0.95em; }
+
+.section-title { font-size: 1.05em; margin: 8px 0 0; color: var(--muted); font-weight: 600; }
+
+.game-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 76px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  color: var(--text);
+  text-decoration: none;
+}
+a.game-card:hover { border-color: var(--primary); }
+a.game-card:active { background: var(--active); }
+
+.game-icon {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  border-radius: 14px;
+  background: var(--active);
+}
+.game-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.game-name { font-size: 1.15em; }
+.game-desc { color: var(--muted); font-size: 0.92em; }
+.game-meta { color: var(--done); font-size: 0.9em; font-weight: 600; margin-top: 2px; }
+.game-arrow { font-size: 30px; color: var(--muted); line-height: 1; }
+
+.game-card.soon { opacity: 0.6; min-height: 64px; }
+.game-card.soon .game-icon { background: transparent; filter: grayscale(1); }
+
+.hub-options { margin-top: 8px; }
+.hub-footer { text-align: center; color: var(--muted); font-size: 0.85em; margin-top: 8px; }
+.hub-footer p { margin: 0; }

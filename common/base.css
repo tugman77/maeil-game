@@ -1,0 +1,83 @@
+/* 매일게임 공통 디자인: 색상 토큰(밝은·어두운 화면), 글자, 버튼, 안내 메시지.
+   색은 매일 스도쿠와 같은 값을 써서 게임을 오가도 같은 사이트로 느껴지게 한다. */
+:root {
+  --bg: #f4f1ea;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --muted: #555555;
+  --line: #d6d2c8;
+  --primary: #1d4ed8;
+  --primary-text: #ffffff;
+  --button: #ffffff;
+  --button-border: #c4cad3;
+  --active: #dbe7ff;
+  --gold: #a35a00;
+  --done: #1f7a3a;
+  --soon: #8a8f98;
+  --base-font: 17px;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #15171c;
+  --surface: #1f2229;
+  --text: #eceef2;
+  --muted: #a9b0bc;
+  --line: #343944;
+  --primary: #3a6ee0;
+  --primary-text: #ffffff;
+  --button: #262a33;
+  --button-border: #444b57;
+  --active: #2b3a5c;
+  --gold: #ffc061;
+  --done: #6fd38d;
+  --soon: #7d8491;
+  color-scheme: dark;
+}
+
+:root.large-text { --base-font: 20px; }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  font-size: var(--base-font);
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+.option-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.option-btn {
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--button-border);
+  border-radius: 10px;
+  background: var(--button);
+  font-size: 16px;
+}
+.option-btn[aria-pressed="true"] { background: var(--active); border-color: var(--primary); }
+
+.ad-slot:empty { display: none; }
+.ad-slot { margin-top: 12px; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: #222;
+  color: #fff;
+  font-size: 16px;
+  z-index: 50;
+}
+:root[data-theme="dark"] .toast { background: #eceef2; color: #15171c; }

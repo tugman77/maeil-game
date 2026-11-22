@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="설치 없이 바로 즐기는 무료 스도쿠. 매일 새로운 오늘의 문제, 큰 글씨, 쉬운 조작.">
+  <meta name="theme-color" content="#f4f1ea">
+  <meta property="og:title" content="매일 스도쿠">
+  <meta property="og:description" content="설치 없이 바로 즐기는 무료 스도쿠. 오늘의 문제에 도전해 보세요!">
+  <meta property="og:type" content="website">
+  <title>매일 스도쿠</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231d4ed8'/%3E%3Ctext x='50' y='72' font-size='62' font-family='sans-serif' font-weight='700' fill='white' text-anchor='middle'%3E9%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <!-- 화면이 그려지기 전에 어두운 화면·큰 글씨 설정을 먼저 적용해 깜빡임을 막는다 -->
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || localStorage.getItem('maeil-sudoku.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+  <!-- 애드센스 승인 후, 애드센스에서 받은 <script ...adsbygoogle.js...> 한 줄을 여기에 붙여넣으세요 -->
+</head>
+<body>
+  <!-- 시작 화면 -->
+  <main id="start-screen" class="screen start">
+    <a href="../" class="hub-link">← 매일게임 · 다른 게임</a>
+    <h1 class="title">매일 스도쿠</h1>
+
+    <button type="button" id="daily-btn" class="daily-btn">
+      <span class="daily-main">📅 오늘의 문제</span>
+      <small id="daily-info"></small>
+    </button>
+
+    <div id="continue-wrap" class="continue-wrap" hidden>
+      <button type="button" id="continue-btn" class="primary-btn continue-btn">
+        ▶ 이어하기<small id="continue-info"></small>
+      </button>
+      <p class="note-text">새 게임을 시작하면 하던 게임은 사라져요</p>
+    </div>
+
+    <p class="subtitle">새 게임 · 난이도를 고르세요</p>
+    <div class="difficulty-list">
+      <button type="button" class="difficulty-btn" data-difficulty="easy">
+        쉬움<small>빈칸 35개</small><small class="best"></small>
+      </button>
+      <button type="button" class="difficulty-btn" data-difficulty="medium">
+        보통<small>빈칸 45개</small><small class="best"></small>
+      </button>
+      <button type="button" class="difficulty-btn" data-difficulty="hard">
+        어려움<small>빈칸 52개</small><small class="best"></small>
+      </button>
+      <button type="button" class="difficulty-btn" data-difficulty="expert">
+        매우 어려움<small>빈칸 58개</small><small class="best"></small>
+      </button>
+    </div>
+
+    <div class="option-row">
+      <button type="button" id="stats-btn" class="option-btn">📊 기록</button>
+      <button type="button" class="option-btn large-text-toggle" aria-pressed="false">가 큰 글씨</button>
+      <button type="button" class="option-btn dark-toggle" aria-pressed="false">🌙 어두운 화면</button>
+    </div>
+
+    <!-- 광고 자리: 애드센스 광고 코드(<ins class="adsbygoogle" ...> 부분)를 이 안에 붙여넣으세요. 비어 있으면 화면에 보이지 않습니다. -->
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+
+  <!-- 게임 화면 -->
+  <main id="game-screen" class="screen game" hidden>
+    <header class="game-header">
+      <button type="button" id="home-btn" class="header-btn">← 처음</button>
+      <div class="status">
+        <span id="difficulty-label" class="difficulty-label"></span>
+        <span id="timer" class="timer" aria-label="걸린 시간">00:00</span>
+      </div>
+      <button type="button" id="pause-btn" class="header-btn">⏸ 정지</button>
+      <button type="button" id="error-toggle" class="header-btn" aria-pressed="true">오류표시 켬</button>
+    </header>
+
+    <div class="board-wrap">
+      <div id="board" class="board" role="grid" aria-label="스도쿠 판"></div>
+      <div id="pause-overlay" class="pause-overlay" hidden>
+        <p class="pause-title">일시정지</p>
+        <button type="button" id="resume-btn" class="primary-btn">▶ 계속하기</button>
+        <div class="option-row pause-options">
+          <button type="button" class="option-btn large-text-toggle" aria-pressed="false">가 큰 글씨</button>
+          <button type="button" class="option-btn dark-toggle" aria-pressed="false">🌙 어두운 화면</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tools">
+      <button type="button" id="undo-btn" class="tool-btn"><span aria-hidden="true">↶</span>되돌리기</button>
+      <button type="button" id="erase-btn" class="tool-btn"><span aria-hidden="true">⌫</span>지우기</button>
+      <button type="button" id="memo-btn" class="tool-btn" aria-pressed="false"><span aria-hidden="true">✎</span><b id="memo-label">메모 끔</b></button>
+      <button type="button" id="hint-btn" class="tool-btn"><span aria-hidden="true">💡</span><b id="hint-label">힌트 3</b></button>
+    </div>
+
+    <div id="numpad" class="numpad" aria-label="숫자 입력"></div>
+  </main>
+
+  <!-- 완료 화면 -->
+  <main id="complete-screen" class="screen complete-screen" hidden>
+    <p class="complete-emoji" aria-hidden="true">🎉</p>
+    <h2 class="complete-title">완성!</h2>
+    <p id="complete-difficulty" class="complete-difficulty"></p>
+    <div class="result-card">
+      <p class="result-label">걸린 시간</p>
+      <p id="complete-time" class="result-time"></p>
+      <p id="complete-best" class="result-best"></p>
+    </div>
+    <button type="button" id="share-btn" class="primary-btn">📤 결과 공유하기</button>
+    <div class="button-pair">
+      <button type="button" id="new-game-btn" class="secondary-btn">새 게임</button>
+      <button type="button" id="complete-home-btn" class="secondary-btn">처음으로</button>
+    </div>
+
+    <!-- 광고 자리: 애드센스 광고 코드를 이 안에 붙여넣으세요. 비어 있으면 화면에 보이지 않습니다. -->
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+
+  <!-- 기록 화면 -->
+  <main id="stats-screen" class="screen stats-screen" hidden>
+    <h2 class="stats-title">📊 나의 기록</h2>
+    <p id="stats-total" class="stats-total"></p>
+    <table class="stats-table">
+      <thead>
+        <tr><th scope="col">구분</th><th scope="col">푼 횟수</th><th scope="col">최고</th><th scope="col">평균</th></tr>
+      </thead>
+      <tbody id="stats-body"></tbody>
+    </table>
+    <p class="note-text">기록은 이 기기의 브라우저에만 저장돼요</p>
+    <button type="button" id="stats-home-btn" class="secondary-btn">처음으로</button>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="../common/core.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
