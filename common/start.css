@@ -146,3 +146,41 @@
 .st-tool[aria-pressed="true"] { background: var(--active); border-color: var(--primary); font-weight: 700; }
 
 .st button:focus-visible, .st a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+
+/* 효과음 묻기 (처음 한 번) */
+.st-ask {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 10px 8px 14px;
+  border-radius: 14px;
+  background: var(--active);
+  border: 1px solid var(--primary);
+}
+.st-ask span { flex: 1; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; min-width: 9em; }
+.st-ask svg { width: 1.2em; height: 1.2em; }
+.st-ask button { min-height: 44px; padding: 6px 14px; border-radius: 10px; font-weight: 700; font-size: 0.92em; }
+.st-ask-yes { background: var(--primary); color: var(--primary-text) !important; border: none; }
+.st-ask-no { background: var(--surface); border: 1px solid var(--button-border); }
+
+/* ---------- 공통 움직임 (휴대폰 '동작 줄이기'면 생략) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* 화면이 바뀔 때 부드럽게 나타나기 */
+  .st, .screen { animation: fx-screen-in 220ms ease-out; }
+  /* 버튼을 누르면 살짝 눌리는 느낌 */
+  .st-start, .st-continue, .st-daily, .st-choice, .st-tool, .st-ask button,
+  .primary-btn, .secondary-btn, .header-btn, .pad-btn, .mode-btn, .tool-btn, .num-btn {
+    transition: transform 90ms ease, background-color 120ms ease;
+  }
+  .st-start:active, .st-continue:active, .st-daily:active, .st-choice:active, .st-tool:active, .st-ask button:active,
+  .primary-btn:active, .secondary-btn:active, .header-btn:active, .pad-btn:active, .mode-btn:active, .tool-btn:active, .num-btn:active {
+    transform: scale(0.96);
+  }
+}
+@keyframes fx-screen-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* 결과 화면 숫자 강조 */
+@keyframes fx-pop { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+@keyframes fx-shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+@keyframes fx-float-up { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-26px); } }

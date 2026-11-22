@@ -126,7 +126,8 @@ const MaeilGame = (() => {
   }
 
   // ---------- 설정 ----------
-  // dark: true/false (정하지 않았으면 기기 설정을 따름), largeText, sound
+  // dark: true/false (정하지 않았으면 기기 설정을 따름), largeText,
+  // sound: 효과음·진동(처음엔 꺼짐), soundAsked: '효과음을 켤까요?'를 이미 물었는지
 
   function loadSettings() {
     let saved = read(KEYS.settings);
@@ -139,7 +140,7 @@ const MaeilGame = (() => {
         if (typeof old.largeText === 'boolean') saved.largeText = old.largeText;
       }
     }
-    return { largeText: false, sound: true, ...saved };
+    return { largeText: false, sound: false, soundAsked: false, ...saved };
   }
 
   function saveSettings(change) {
@@ -177,8 +178,8 @@ const MaeilGame = (() => {
     const toggles = {
       '.dark-toggle': () => ({ dark: !isDark() }),
       '.large-text-toggle': () => ({ largeText: !loadSettings().largeText }),
-      '.sound-toggle': () => ({ sound: !loadSettings().sound }),
     };
+    // 소리 버튼(.sound-toggle)은 common/start.js(게임)와 hub.js(목록)가 따로 처리한다(켤 때 확인음).
     Object.entries(toggles).forEach(([selector, change]) => {
       document.querySelectorAll(selector).forEach((button) => {
         button.addEventListener('click', () => {

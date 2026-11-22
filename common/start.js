@@ -65,6 +65,7 @@ const MaeilStart = (() => {
 
     $('start-btn').addEventListener('click', () => onStart(selected));
     $('daily-btn').addEventListener('click', onDaily);
+    setupSound();
     refresh();
 
     return {
@@ -79,6 +80,30 @@ const MaeilStart = (() => {
         $('daily-btn').classList.toggle('done', Boolean(done));
       },
     };
+  }
+
+  // 효과음: 처음 한 번 "효과음을 켤까요?"를 묻고(어느 게임에서든 한 번 답하면 끝), 소리 버튼으로 켜고 끈다.
+  function setupSound() {
+    const ask = $('sound-ask');
+    const syncButtons = () => {
+      const on = Boolean(MaeilGame.loadSettings().sound);
+      document.querySelectorAll('.sound-toggle').forEach((b) => b.setAttribute('aria-pressed', String(on)));
+    };
+    const answer = (on) => {
+      MaeilGame.saveSettings({ sound: on, soundAsked: true });
+      if (ask) ask.hidden = true;
+      syncButtons();
+      if (on && typeof MaeilFx !== 'undefined') MaeilFx.play('on');
+    };
+    if (ask) {
+      ask.hidden = Boolean(MaeilGame.loadSettings().soundAsked);
+      $('sound-yes').addEventListener('click', () => answer(true));
+      $('sound-no').addEventListener('click', () => answer(false));
+    }
+    document.querySelectorAll('.sound-toggle').forEach((button) => {
+      button.addEventListener('click', () => answer(!MaeilGame.loadSettings().sound));
+    });
+    syncButtons();
   }
 
   // 게임 목록의 도장으로 들어왔으면(#daily) 오늘의 도전을 바로 시작한다. 주소의 #daily는 지운다(새로고침 때 반복 안 되게).

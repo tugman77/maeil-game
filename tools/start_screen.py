@@ -5,6 +5,7 @@ ROOT = os.path.join(os.path.dirname(__file__), '..')
 
 ICON_TEXT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 5h1.6l5 13M6 13.5h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 18v-5.2M14 12.8h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
 ICON_MOON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'
+ICON_SOUND = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
 ICON_HELP = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.9" r="1.2" fill="currentColor"/></svg>'
 
 def block(gid, title, desc, stats=False):
@@ -17,6 +18,12 @@ def block(gid, title, desc, stats=False):
       <p class="st-desc">{desc}</p>
     </header>
     <div class="st-preview thumb-{gid}" id="preview" aria-hidden="true"></div>
+
+    <div class="st-ask" id="sound-ask" hidden>
+      <span>{ICON_SOUND}효과음을 켤까요?</span>
+      <button type="button" id="sound-yes" class="st-ask-yes">켜기</button>
+      <button type="button" id="sound-no" class="st-ask-no">괜찮아요</button>
+    </div>
 
     <div id="continue-wrap" hidden>
       <button type="button" id="continue-btn" class="st-continue">▶ 이어하기<small id="continue-info"></small></button>
@@ -39,6 +46,7 @@ def block(gid, title, desc, stats=False):
     <div class="st-tools">
       <button type="button" class="st-tool large-text-toggle" aria-pressed="false">{ICON_TEXT}큰 글씨</button>
       <button type="button" class="st-tool dark-toggle" aria-pressed="false">{ICON_MOON}어두운 화면</button>
+      <button type="button" class="st-tool sound-toggle" aria-pressed="false">{ICON_SOUND}소리</button>
       <a class="st-tool" href="../guide/{gid}.html">{ICON_HELP}도움말</a>
     </div>
 
@@ -65,5 +73,7 @@ for gid, title, desc, stats in GAMES:
         s = s.replace('<link rel="stylesheet" href="style.css">', '<link rel="stylesheet" href="../common/thumbs.css">\n  <link rel="stylesheet" href="../common/start.css">\n  <link rel="stylesheet" href="style.css">', 1)
     if 'src="../common/start.js"' not in s:
         s = s.replace('<script src="../common/core.js"></script>', '<script src="../common/core.js"></script>\n  <script src="../common/thumbs.js"></script>\n  <script src="../common/start.js"></script>', 1)
+    if 'src="../common/fx.js"' not in s:
+        s = s.replace('<script src="../common/start.js"></script>', '<script src="../common/start.js"></script>\n  <script src="../common/fx.js"></script>', 1)
     open(p, 'w', encoding='utf-8').write(s)
     print('ok', gid)
