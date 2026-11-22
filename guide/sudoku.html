@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="스도쿠 규칙을 처음부터 쉽게 설명하고, 빈칸을 채우는 기본 요령부터 막혔을 때 쓰는 중급 요령까지 정리했습니다.">
+  <meta name="theme-color" content="#f4f1ea">
+  <meta property="og:title" content="스도쿠 하는 법과 요령 — 매일게임">
+  <meta property="og:description" content="스도쿠 규칙을 처음부터 쉽게 설명하고, 빈칸을 채우는 기본 요령부터 막혔을 때 쓰는 중급 요령까지 정리했습니다.">
+  <meta property="og:type" content="article">
+  <title>스도쿠 하는 법과 요령 — 매일게임</title>
+  <link rel="stylesheet" href="../common/base.css">
+  <link rel="stylesheet" href="guide.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <article class="article">
+    <p class="crumbs"><a href="../">매일게임</a> › <a href="./">게임 방법·요령</a></p>
+
+    <h1>스도쿠 하는 법과 요령</h1>
+    <p class="lead">계산이 필요 없는 숫자 퍼즐입니다. 규칙은 단 하나, 같은 숫자가 겹치지 않게 채우는 것입니다.</p>
+    <a class="play-cta" href="../sudoku/">▶ 스도쿠 바로 하기</a>
+
+    <h2>규칙</h2>
+    <p>스도쿠 판은 가로 9칸, 세로 9칸으로 모두 81칸입니다. 굵은 선으로 나뉜 3×3 구역이 9개 있습니다.</p>
+    <ul>
+      <li>모든 <strong>가로줄</strong>에 1부터 9까지가 한 번씩 들어갑니다.</li>
+      <li>모든 <strong>세로줄</strong>에 1부터 9까지가 한 번씩 들어갑니다.</li>
+      <li>모든 <strong>3×3 구역</strong>에 1부터 9까지가 한 번씩 들어갑니다.</li>
+    </ul>
+    <p>숫자를 더하거나 곱할 일은 없습니다. 숫자는 그저 서로 다른 9가지 기호일 뿐이라, 산수 실력보다 차분하게 살펴보는 힘이 중요합니다.</p>
+    <div class="tip">매일게임의 스도쿠 문제는 모두 <strong>정답이 정확히 하나</strong>인지 확인한 뒤 냅니다. 찍지 않고 논리만으로 끝까지 풀 수 있습니다.</div>
+
+    <h2>매일게임에서 하는 법</h2>
+    <table>
+      <tr><th>버튼</th><th>하는 일</th></tr>
+      <tr><td>칸 누르기 → 숫자 버튼</td><td>그 칸에 숫자를 씁니다. PC는 숫자 키 1~9, 방향키로 칸 이동</td></tr>
+      <tr><td>✎ 메모</td><td>켜면 칸에 들어갈 수 있는 후보 숫자를 작게 여러 개 적을 수 있습니다</td></tr>
+      <tr><td>↶ 되돌리기 · ⌫ 지우기</td><td>방금 한 입력을 취소하거나 칸을 비웁니다</td></tr>
+      <tr><td>💡 힌트</td><td>선택한 칸의 정답을 보여 줍니다(한 판에 3번)</td></tr>
+      <tr><td>오류표시</td><td>같은 줄·구역에 같은 숫자가 있으면 빨간색으로 알려 줍니다</td></tr>
+    </table>
+    <p>난이도는 빈칸 수로 정해집니다. 쉬움 35칸, 보통 45칸, 어려움 52칸, 매우 어려움 58칸입니다. <strong>📅 오늘의 문제</strong>는 날마다 바뀌는 보통 난이도 문제로, 같은 날에는 누구나 같은 문제를 풉니다. 가족이나 친구와 걸린 시간을 비교해 보세요.</p>
+
+    <h2>기본 요령 1 — 많이 나온 숫자부터 훑기</h2>
+    <p>판에 이미 많이 적혀 있는 숫자를 하나 골라, 그 숫자가 아직 없는 구역을 찾습니다. 그 구역 안에서 같은 숫자가 있는 가로줄과 세로줄을 지워 나가면, 그 숫자가 들어갈 수 있는 칸이 하나만 남는 경우가 많습니다.</p>
+    <p>예를 들어 5가 이미 일곱 번 나왔다면, 5가 없는 구역 두 곳만 살피면 됩니다. 처음에는 1부터 9까지 차례로 이렇게 훑어보는 것만으로도 쉬움 문제는 대부분 풀립니다.</p>
+
+    <h2>기본 요령 2 — 후보가 하나뿐인 칸</h2>
+    <p>한 칸을 골라 그 칸의 가로줄·세로줄·구역에 이미 있는 숫자를 모두 빼 봅니다. 남는 숫자가 하나라면 그 칸의 답입니다. 빈칸이 적은 줄이나 구역에서 찾으면 빨리 보입니다.</p>
+
+    <h2>기본 요령 3 — 메모로 후보 적어 두기</h2>
+    <p>보통 난이도부터는 머릿속으로만 기억하기 어렵습니다. 메모를 켜고 칸마다 들어갈 수 있는 후보를 적어 두면, 숫자를 하나 확정할 때마다 같은 줄과 구역의 후보가 줄어들면서 다음 답이 드러납니다.</p>
+    <div class="tip">처음부터 모든 칸에 메모하기보다, 빈칸이 2~3개만 남은 줄과 구역부터 적는 편이 덜 지칩니다.</div>
+
+    <h2>막혔을 때 — 중급 요령</h2>
+    <h3>짝 후보 (두 칸에 같은 두 숫자)</h3>
+    <p>같은 줄에서 두 칸의 후보가 똑같이 "3, 7"뿐이라면, 3과 7은 그 두 칸이 나눠 가집니다. 따라서 그 줄의 다른 칸 후보에서 3과 7을 지울 수 있습니다.</p>
+    <h3>구역 안에서 한 줄로 몰린 후보</h3>
+    <p>어떤 구역에서 숫자 4가 들어갈 수 있는 칸이 모두 같은 가로줄에 있다면, 4는 결국 그 가로줄의 이 구역 쪽에 들어갑니다. 그러니 같은 가로줄의 다른 구역에서는 4를 후보에서 지울 수 있습니다.</p>
+    <h3>잠시 쉬었다 보기</h3>
+    <p>한참 막혀 있다면 일시정지를 누르고 잠깐 눈을 쉬어 보세요. 다시 보면 놓쳤던 칸이 보이는 경우가 많습니다. 일시정지 중에는 판이 가려지고 시간도 멈춥니다.</p>
+
+    <h2>자주 묻는 질문</h2>
+    <h3>기록은 어디에 저장되나요?</h3>
+    <p>지금 쓰는 휴대폰이나 PC의 브라우저 안에 저장됩니다. 회원가입이 없는 대신, 다른 기기와는 기록이 공유되지 않고 브라우저 기록을 지우면 함께 지워집니다.</p>
+    <h3>인터넷이 끊겨도 할 수 있나요?</h3>
+    <p>한 번 열어 둔 기기에서는 인터넷이 잠시 끊겨도 게임을 할 수 있습니다.</p>
+    <a class="play-cta" href="../sudoku/">▶ 스도쿠 바로 하기</a>
+
+    <nav class="more-guides" aria-label="다른 게임 설명">
+      <h2>다른 게임 방법</h2>
+      <ul class="guide-list">
+        <li><a href="2048.html"><strong>2048</strong><span>같은 숫자를 밀어 합쳐 2048 만들기</span></a></li>
+        <li><a href="memory.html"><strong>카드 짝맞추기</strong><span>뒤집힌 카드의 위치를 기억해 짝 찾기</span></a></li>
+        <li><a href="minesweeper.html"><strong>지뢰찾기</strong><span>숫자 힌트로 지뢰를 피해 모든 칸 열기</span></a></li>
+      </ul>
+    </nav>
+    <footer class="site-footer">
+      <p><a href="../">매일게임</a> · 설치·회원가입 없이 바로 하는 무료 게임 · 기록은 이 기기의 브라우저에만 저장돼요</p>
+    </footer>
+  </article>
+</body>
+</html>

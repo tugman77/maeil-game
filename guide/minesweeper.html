@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="지뢰찾기 숫자의 뜻과 휴대폰에서 깃발 꽂는 법, 1-2-1 같은 자주 나오는 무늬로 지뢰를 확실히 찾는 요령을 정리했습니다.">
+  <meta name="theme-color" content="#f4f1ea">
+  <meta property="og:title" content="지뢰찾기 하는 법과 요령 — 매일게임">
+  <meta property="og:description" content="지뢰찾기 숫자의 뜻과 휴대폰에서 깃발 꽂는 법, 1-2-1 같은 자주 나오는 무늬로 지뢰를 확실히 찾는 요령을 정리했습니다.">
+  <meta property="og:type" content="article">
+  <title>지뢰찾기 하는 법과 요령 — 매일게임</title>
+  <link rel="stylesheet" href="../common/base.css">
+  <link rel="stylesheet" href="guide.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <article class="article">
+    <p class="crumbs"><a href="../">매일게임</a> › <a href="./">게임 방법·요령</a></p>
+
+    <h1>지뢰찾기 하는 법과 요령</h1>
+    <p class="lead">숫자 힌트를 읽어 지뢰가 없는 칸을 모두 여는 논리 퍼즐입니다. 숫자의 뜻만 알면 대부분은 찍지 않고 풀 수 있습니다.</p>
+    <a class="play-cta" href="../minesweeper/">▶ 지뢰찾기 바로 하기</a>
+
+    <h2>규칙</h2>
+    <ul>
+      <li>판의 칸 몇 곳에 지뢰가 숨어 있습니다.</li>
+      <li>칸을 열었을 때 나오는 <strong>숫자</strong>는 그 칸을 둘러싼 8칸(위·아래·양옆·대각선)에 있는 지뢰의 수입니다.</li>
+      <li>숫자가 없는 빈칸은 주변에 지뢰가 없다는 뜻이라, 주변 칸이 저절로 함께 열립니다.</li>
+      <li>지뢰가 있다고 확신하는 칸에는 <strong>🚩 깃발</strong>을 꽂아 표시합니다. 깃발 꽂은 칸은 실수로 열리지 않습니다.</li>
+      <li>지뢰를 열면 실패, 지뢰가 아닌 칸을 모두 열면 성공입니다.</li>
+    </ul>
+
+    <h2>매일게임에서 하는 법</h2>
+    <p>휴대폰에서는 판 아래의 <strong>⛏ 열기 / 🚩 깃발</strong> 버튼으로 누를 때 할 일을 고릅니다. 깃발을 꽂을 때만 깃발 쪽으로 바꾸고, 다시 열기로 돌아오면 됩니다. PC에서는 왼쪽 클릭이 열기, 오른쪽 클릭이 깃발입니다.</p>
+    <table>
+      <tr><th>난이도</th><th>판 크기</th><th>지뢰</th></tr>
+      <tr><td>쉬움</td><td>9×9</td><td>10개</td></tr>
+      <tr><td>보통</td><td>9×12</td><td>20개</td></tr>
+      <tr><td>어려움</td><td>10×14</td><td>30개</td></tr>
+    </table>
+    <p>새 게임에서는 <strong>처음 누른 칸과 그 주변은 항상 안전</strong>합니다. <strong>📅 오늘의 도전</strong>은 누구나 같은 판을 풀 수 있도록 한 구역이 미리 열린 채 시작합니다.</p>
+    <div class="tip">이미 열린 숫자 칸을 누르면, 주변에 꽂은 깃발 수가 그 숫자와 같을 때 나머지 주변 칸을 한 번에 엽니다. 편리하지만 깃발을 잘못 꽂았다면 지뢰가 열리니 확실할 때만 쓰세요.</div>
+
+    <h2>요령 1 — 숫자와 닫힌 칸 수가 같으면 모두 지뢰</h2>
+    <p>숫자 3 주변에 아직 닫힌 칸이 딱 3개 남았다면, 그 3칸은 모두 지뢰입니다. 바로 깃발을 꽂으세요. 숫자 1 옆에 닫힌 칸이 하나뿐인 경우가 가장 흔하게 보입니다.</p>
+
+    <h2>요령 2 — 깃발 수가 숫자와 같으면 나머지는 안전</h2>
+    <p>숫자 2 주변에 이미 깃발이 2개 있다면, 그 주변의 나머지 닫힌 칸에는 지뢰가 없습니다. 마음 놓고 여세요. 요령 1과 2를 번갈아 쓰는 것만으로 쉬움 판은 대부분 끝까지 풀립니다.</p>
+
+    <h2>요령 3 — 자주 나오는 무늬</h2>
+    <h3>1-2-1</h3>
+    <p>열린 숫자가 가로로 1·2·1 차례로 놓여 있고, 그 위쪽 줄이 닫혀 있다고 해 봅시다(아래쪽은 이미 열려 있음). 이때 <strong>양쪽 1의 위 칸이 지뢰</strong>이고, <strong>가운데 2의 위 칸은 안전</strong>합니다.</p>
+    <h3>1-2-2-1</h3>
+    <p>같은 모양으로 1·2·2·1이 놓여 있다면, <strong>가운데 두 2의 위 칸이 지뢰</strong>이고 양쪽 1의 위 칸은 안전합니다.</p>
+    <h3>벽에 붙은 1-1</h3>
+    <p>판의 가장자리에서 시작해 1·1이 나란히 있으면, 첫 번째 1이 가리키는 지뢰는 두 1이 함께 닿는 두 칸 중 하나입니다. 그래서 두 번째 1만 닿는 세 번째 칸은 안전합니다.</p>
+
+    <h2>요령 4 — 막히면 다른 쪽부터</h2>
+    <p>한 곳에서 더 알아낼 것이 없으면 판의 다른 가장자리를 살펴보세요. 다른 쪽에서 지뢰를 확정하면 남은 지뢰 수(위의 🚩 숫자)가 줄어, 막혔던 곳이 풀리기도 합니다. 정말 드물게 운에 맡겨야 하는 경우도 있는데, 그때는 너무 아쉬워하지 말고 다시 도전해 보세요.</p>
+
+    <h2>자주 묻는 질문</h2>
+    <h3>오늘의 도전에서 실패하면 기록이 안 남나요?</h3>
+    <p>도전만 해도 그날 출석으로 칩니다. 다시 도전해 성공하면 성공 기록으로 바뀝니다.</p>
+    <h3>끝난 판을 다시 볼 수 있나요?</h3>
+    <p>결과 화면의 <strong>🔍 판 다시 보기</strong>를 누르면 지뢰 위치와 잘못 꽂은 깃발을 확인할 수 있습니다.</p>
+    <a class="play-cta" href="../minesweeper/">▶ 지뢰찾기 바로 하기</a>
+
+    <nav class="more-guides" aria-label="다른 게임 설명">
+      <h2>다른 게임 방법</h2>
+      <ul class="guide-list">
+        <li><a href="sudoku.html"><strong>스도쿠</strong><span>1~9 숫자를 겹치지 않게 채우는 숫자 퍼즐</span></a></li>
+        <li><a href="2048.html"><strong>2048</strong><span>같은 숫자를 밀어 합쳐 2048 만들기</span></a></li>
+        <li><a href="memory.html"><strong>카드 짝맞추기</strong><span>뒤집힌 카드의 위치를 기억해 짝 찾기</span></a></li>
+      </ul>
+    </nav>
+    <footer class="site-footer">
+      <p><a href="../">매일게임</a> · 설치·회원가입 없이 바로 하는 무료 게임 · 기록은 이 기기의 브라우저에만 저장돼요</p>
+    </footer>
+  </article>
+</body>
+</html>

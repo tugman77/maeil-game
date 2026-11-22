@@ -26,7 +26,8 @@ tests/                          node tests/common.test.js · node tests/games.te
    화면 틀은 `../common/game.css`(시작·게임·결과 화면, `.header-btn.armed` 두 번 눌러 실행). 2048·memory가 본보기.
 3. 매일 도전을 끝내면 `MaeilGame.recordDaily('게임id')`, 기록이 바뀌면 `MaeilGame.setSummary('게임id', '최고 1,024점')`, 시작하면 `markPlayed('게임id')`.
 4. 저장 키는 `maeil-game.게임id.*` 형식.
-5. `games.json`의 status를 `ready`로, `sw.js` FILES에 파일 추가 → `node tests/common.test.js` 통과 확인.
+5. `guide/게임id.html` 설명·요령 글을 쓴다(광고 승인용, 건강 효과 같은 확인 안 되는 주장 금지). 글 틀은 `guide/*.html` 복사.
+6. `games.json`의 status를 `ready`로, `sw.js` FILES에 파일 추가 → `node tests/common.test.js` 통과 확인(설명 페이지·sw 누락도 잡음).
 
 ## 지켜야 할 것
 - **스도쿠 오늘의 문제 보존**: `sudoku/js/generator.js`와 `common/core.js`의 `createSeededRandom`을 바꾸지 않는다. `tests/fixtures/sudoku-daily.json`(옮기기 전 60일치)과 비교 검사가 있다.
@@ -41,5 +42,5 @@ tests/                          node tests/common.test.js · node tests/games.te
 ## 진행
 - [x] 1주차: 공통 모듈·허브·스도쿠 옮기기 (2026-11-22)
 - [x] 2주차: 2048, 카드 짝맞추기 (2026-11-22)
-- [ ] 3주차: 지뢰찾기([열기/깃발] 전환 버튼, 매일 도전은 한 구역 열고 시작), 게임 설명 페이지
+- [x] 3주차: 지뢰찾기([열기/깃발] 전환 버튼, 매일 도전은 한 구역 열고 시작), 게임 설명 페이지 `guide/` (2026-11-22)
 - [ ] 4주차: 블록 쌓기(늦으면 2차), 개인정보처리방침·소개, 옛 주소 넘김

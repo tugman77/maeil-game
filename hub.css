@@ -65,3 +65,4 @@ a.game-card:active { background: var(--active); }
 .hub-options { margin-top: 8px; }
 .hub-footer { text-align: center; color: var(--muted); font-size: 0.85em; margin-top: 8px; }
 .hub-footer p { margin: 0; }
+.footer-link { display: inline-block; padding: 10px; color: var(--primary); font-size: 1.1em; font-weight: 600; text-decoration: none; }

@@ -2,6 +2,7 @@
 const M = require('../common/core.js');
 const G = require('../2048/js/logic.js');
 const Memory = require('../memory/js/logic.js');
+const Mine = require('../minesweeper/js/logic.js');
 
 let failed = false;
 function check(name, ok) {
@@ -119,6 +120,63 @@ console.log('[카드 짝맞추기]');
   });
   check('모두 맞히면 끝(done), 시도 6번', last === 'done' && Memory.isDone(h) && h.attempts === 6);
   check('저장 형식 검사', Memory.isValid(JSON.parse(JSON.stringify(g))) && !Memory.isValid({ ...g, cards: [] }));
+}
+
+console.log('[지뢰찾기]');
+{
+  const sum = (arr) => arr.reduce((a, b) => a + b, 0);
+  Object.entries(Mine.DIFFICULTIES).forEach(([key, config]) => {
+    const g = Mine.create(key);
+    check(`${config.label}: 첫 칸 누르기 전엔 지뢰 없음`, g.mines === null);
+    const center = Math.floor(config.rows / 2) * config.cols + Math.floor(config.cols / 2);
+    const r = Mine.reveal(g, center);
+    const safe = [center, ...Mine.neighbors(g, center)];
+    check(`${config.label}: 지뢰 ${config.mines}개, 첫 칸과 주변 8칸은 안전`,
+      sum(g.mines) === config.mines && safe.every((i) => !g.mines[i]) && r !== 'boom');
+    check(`${config.label}: 첫 칸 주변이 0이라 여러 칸이 열림`, sum(g.revealed) > 1);
+  });
+
+  const day = (d) => Mine.create('medium', { daily: d, random: M.dailyRandom('minesweeper', d) });
+  const a = day('2026-11-22');
+  const b = day('2026-11-22');
+  check('매일 도전: 같은 날짜는 같은 지뢰·같은 시작 구역', same(a.mines, b.mines) && same(a.revealed, b.revealed));
+  check('매일 도전: 날짜가 다르면 다른 판', !same(a.mines, day('2026-11-23').mines));
+  check('매일 도전: 한 구역이 열린 채 시작, 열린 칸에 지뢰 없음',
+    sum(a.revealed) > 1 && a.revealed.every((open, i) => !open || !a.mines[i]));
+  // 60일치 모두 시작 구역이 있는지
+  let okDays = 0;
+  for (let i = 0; i < 60; i++) {
+    const d = new Date(Date.UTC(2026, 10, 22) + i * 86400000).toISOString().slice(0, 10);
+    const g = day(d);
+    if (sum(g.revealed) > 1 && sum(g.mines) === 20) okDays++;
+  }
+  check('매일 도전 60일치 모두 정상 생성', okDays === 60);
+
+  const g = day('2026-11-22');
+  const mine = g.mines.indexOf(1);
+  check('깃발 꽂기/빼기, 남은 깃발 수', Mine.toggleFlag(g, mine) && Mine.flagsLeft(g) === 19 && Mine.toggleFlag(g, mine) && Mine.flagsLeft(g) === 20);
+  Mine.toggleFlag(g, mine);
+  check('깃발 꽂은 칸은 열리지 않음', Mine.reveal(g, mine) === 'ignored');
+  // 모든 안전한 칸을 열면 성공
+  let last = '';
+  g.mines.forEach((m, i) => { if (!m && !g.revealed[i]) { const r = Mine.reveal(g, i); if (r !== 'ignored') last = r; } });
+  check('안전한 칸을 모두 열면 성공', last === 'win' && g.won && g.over);
+
+  const h = day('2026-11-22');
+  const boom = h.mines.findIndex((m, i) => m && !h.flagged[i]);
+  check('지뢰를 열면 실패', Mine.reveal(h, boom) === 'boom' && h.over && !h.won && h.exploded === boom);
+
+  // 숫자 칸 한 번에 열기(chord)
+  const k = day('2026-11-24');
+  const target = k.revealed.findIndex((open, i) => open && Mine.count(k, i) > 0
+    && Mine.neighbors(k, i).some((n) => !k.revealed[n] && !k.mines[n]));
+  if (target >= 0) {
+    Mine.neighbors(k, target).forEach((n) => { if (k.mines[n]) k.flagged[n] = 1; });
+    const before = sum(k.revealed);
+    const r = Mine.chord(k, target);
+    check('숫자만큼 깃발이 있으면 주변을 한 번에 엶', r !== 'boom' && sum(k.revealed) > before);
+  }
+  check('저장 형식 검사', Mine.isValid(JSON.parse(JSON.stringify(a))) && !Mine.isValid({ ...a, revealed: [] }));
 }
 
 if (failed) {
