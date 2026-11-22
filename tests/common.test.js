@@ -80,7 +80,7 @@ console.log('[매일 스도쿠 기록 이어받기]');
   data.set('maeil-sudoku.settings.v1', JSON.stringify({ showErrors: false, dark: true, largeText: true }));
   data.set('maeil-sudoku.daily.v1', JSON.stringify({ date: '2026-11-21', seconds: 300 }));
   const settings = M.loadSettings();
-  check('어두운 화면·큰 글씨 설정 이어받음', settings.dark === true && settings.largeText === true && settings.sound === true);
+  check('어두운 화면·큰 글씨 설정 이어받음', settings.dark === true && settings.largeText === true && settings.sound === false && settings.soundAsked === false);
   check('어제 푼 오늘의 문제 → 연속 1일 유지', M.currentStreak('2026-11-22') === 1);
   M.recordDaily('sudoku', '2026-11-22');
   check('오늘 이어서 하면 2일', M.currentStreak('2026-11-22') === 2);
