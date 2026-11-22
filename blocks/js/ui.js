@@ -15,6 +15,7 @@
   const fmt = (n) => n.toLocaleString('ko-KR');
 
   let game = null;
+  let picker = null; // 시작 화면(난이도 선택·오늘의 도전) — common/start.js
   let cells = [];
   let nextCells = [];
   let running = false;
@@ -57,28 +58,15 @@
     stopLoop();
     const today = M.todayKey();
     const daily = loadDailyResult(today);
-    const info = $('daily-info');
-    info.classList.toggle('done', Boolean(daily));
-    info.textContent = daily
-      ? `${M.dateLabel(today)} · 완료 ✓ ${fmt(daily.score)}점 (다시 하면 더 높은 점수만 남아요)`
-      : `${M.dateLabel(today)} · 모두 같은 블록 순서 (보통)`;
+    picker.setDaily(daily
+      ? `${M.dateLabel(today)} · 완료 ✓ ${fmt(daily.score)}점`
+      : `${M.dateLabel(today)} · 모두 같은 블록 순서`, Boolean(daily));
 
     const saved = loadGame();
     $('continue-wrap').hidden = !saved;
+    $('start-screen').classList.toggle('has-continue', Boolean(saved));
     if (saved) $('continue-info').textContent = `${label(saved)} · ${fmt(saved.score)}점 · ${saved.lines}줄`;
-
-    const stats = loadStats();
-    $('difficulty-list').replaceChildren(...Object.entries(G.DIFFICULTIES).map(([key, config]) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'difficulty-btn';
-      button.innerHTML = '<span></span><small></small><small class="best"></small>';
-      button.children[0].textContent = config.label;
-      button.children[1].textContent = config.note;
-      button.children[2].textContent = stats[key]?.best ? `최고 ${fmt(stats[key].best)}` : '';
-      button.addEventListener('click', () => start(G.create(key)));
-      return button;
-    }));
+    picker.refresh();
     showScreen('start-screen');
   }
 
@@ -377,7 +365,13 @@
     M.bindSettingButtons();
     bindPad();
     bindGestures();
-    $('daily-btn').addEventListener('click', startDaily);
+    picker = MaeilStart.setup({
+      id: ID,
+      difficulties: Object.entries(G.DIFFICULTIES).map(([key, c]) => ({ key, label: c.label, detail: c.note })),
+      bestText: (key) => { const best = loadStats()[key]?.best; return best ? `내 최고 ${fmt(best)}점` : ''; },
+      onStart: (key) => start(G.create(key)),
+      onDaily: startDaily,
+    });
     $('continue-btn').addEventListener('click', () => { const saved = loadGame(); if (saved) start(saved); else renderStart(); });
     $('home-btn').addEventListener('click', () => { stopLoop(); saveGame(); renderStart(); });
     $('pause-btn').addEventListener('click', () => (paused ? resume() : pause()));
@@ -391,6 +385,7 @@
     window.addEventListener('pageshow', (event) => { if (event.persisted && game && !game.over && !$('game-screen').hidden) { paused = false; pause(); } });
     renderStart();
     updateSummary();
+    MaeilStart.handleDailyLink(startDaily);
     M.registerOffline('../');
   }
 

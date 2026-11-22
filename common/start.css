@@ -1,0 +1,148 @@
+/* 게임별 시작 화면 공통 틀 (st-*). 스도쿠·2048·카드·지뢰·블록이 모두 쓴다.
+   색은 각 페이지의 토큰(--primary 등)을 쓰고, 글자 크기는 .st 기준 em이라 큰 글씨 모드에서 함께 커진다. */
+.st[hidden] { display: none !important; }
+.st {
+  box-sizing: border-box;
+  width: min(100%, 480px);
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: calc(6px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 17px;
+  line-height: 1.45;
+}
+:root.large-text .st { font-size: 20px; }
+@media (max-width: 380px) { .st { padding-left: 16px; padding-right: 16px; } }
+:where(.st) * { box-sizing: border-box; }
+:where(.st) button { font: inherit; color: inherit; cursor: pointer; }
+
+.st-back {
+  align-self: flex-start;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+}
+.st-back:hover { text-decoration: underline; }
+
+.st-title { font-size: 1.75em; line-height: 1.2; margin: 0; letter-spacing: -0.5px; }
+.st-desc { margin: 4px 0 0; color: var(--muted); font-size: 0.95em; }
+
+/* 미리보기: 휴대폰 112px(이어하기가 있으면 84px), 넓은 화면 150px */
+.st-preview { height: 112px; border-radius: 16px; display: flex; justify-content: center; overflow: hidden; background: var(--tint, var(--active)); }
+.st-preview svg { height: 100%; width: auto; }
+.st.has-continue .st-preview { height: 84px; }
+@media (min-width: 600px) and (min-height: 760px) { .st-preview { height: 150px; } }
+
+.st-continue {
+  width: 100%;
+  min-height: 56px;
+  border: none;
+  border-radius: 14px;
+  background: var(--primary);
+  color: var(--primary-text) !important;
+  font-weight: 800;
+  font-size: 1.05em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+}
+.st-continue small { font-weight: 500; font-size: 0.8em; opacity: 0.92; }
+.st-note { margin: 4px 0 0; color: var(--muted); font-size: 0.8em; text-align: center; }
+
+/* 오늘의 도전 카드 */
+.st-daily {
+  width: 100%;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  padding: 10px 14px;
+  border: 2px solid var(--primary);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.st-daily-text { display: flex; flex-direction: column; min-width: 0; }
+.st-daily-text b { font-size: 1.05em; }
+.st-daily-text small { color: var(--muted); font-size: 0.82em; }
+.st-daily-text small.done { color: var(--done); font-weight: 700; }
+.st-daily-go { flex: none; color: var(--primary); font-weight: 800; }
+.st-daily.done { border-color: var(--button-border); }
+.st-daily:hover { background: var(--active); }
+
+/* 난이도 선택 */
+.st-pick { display: flex; flex-direction: column; gap: 8px; }
+.st-label { margin: 4px 0 0; font-size: 0.9em; color: var(--muted); font-weight: 700; }
+.st-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.st-choices.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.st-choice {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1.5px solid var(--button-border);
+  border-radius: 12px;
+  background: var(--button);
+  font-weight: 700;
+  word-break: keep-all;
+}
+.st-check {
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 50%;
+  border: 2px solid var(--button-border);
+  display: grid;
+  place-items: center;
+  font-size: 0.85em;
+  line-height: 1;
+}
+.st-choice[aria-checked="true"] { background: var(--active); border: 2px solid var(--primary); }
+.st-choice[aria-checked="true"] .st-check { background: var(--primary); border-color: var(--primary); color: var(--primary-text); }
+.st-choice[aria-checked="true"] .st-check::after { content: '✓'; font-weight: 800; }
+.st-detail { margin: 0; text-align: center; color: var(--muted); font-size: 0.92em; }
+
+.st-start {
+  width: 100%;
+  min-height: 58px;
+  border: none;
+  border-radius: 14px;
+  background: var(--primary);
+  color: var(--primary-text) !important;
+  font-size: 1.1em;
+  font-weight: 800;
+}
+.st-start:active, .st-continue:active { filter: brightness(0.92); }
+.st-best { margin: 0; text-align: center; color: var(--muted); font-size: 0.9em; min-height: 1.3em; }
+.st-link { border: none; background: none; padding: 8px 4px; color: var(--primary) !important; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+/* 아래 도구: 큰 글씨 · 어두운 화면 · 도움말 (모든 게임 같은 순서) */
+.st-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 4px; }
+.st-tool {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--button-border);
+  border-radius: 999px;
+  background: var(--button);
+  color: var(--text) !important;
+  font-size: 0.88em;
+  text-decoration: none;
+}
+.st-tool svg { width: 1.1em; height: 1.1em; flex: none; }
+.st-tool[aria-pressed="true"] { background: var(--active); border-color: var(--primary); font-weight: 700; }
+
+.st button:focus-visible, .st a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }

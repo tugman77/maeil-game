@@ -1,0 +1,55 @@
+/* 게임 썸네일 색 (common/thumbs.js가 그리는 SVG). 게임 목록과 각 게임 시작 화면 미리보기가 함께 쓴다.
+   게임마다 개성: 스도쿠 세이지 그린 · 2048 살구 · 카드 라벤더 · 지뢰 하늘 · 블록 산호 */
+.thumb-sudoku { --tint: #dcebe2; }
+.thumb-2048 { --tint: #f6e7cf; }
+.thumb-memory { --tint: #e7e0f3; }
+.thumb-minesweeper { --tint: #d9eaf7; }
+.thumb-blocks { --tint: #f7ddd6; }
+:root[data-theme="dark"] .thumb-sudoku { --tint: #1f3328; }
+:root[data-theme="dark"] .thumb-2048 { --tint: #3a3022; }
+:root[data-theme="dark"] .thumb-memory { --tint: #2c2540; }
+:root[data-theme="dark"] .thumb-minesweeper { --tint: #1c2d3d; }
+:root[data-theme="dark"] .thumb-blocks { --tint: #3b2622; }
+
+.thumb text, .st-preview text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; text-anchor: middle; font-weight: 800; }
+.th-paper { fill: #ffffff; }
+.th-frame { fill: none; stroke: #1d2420; stroke-width: 3; }
+.th-line { stroke: #9aa39d; stroke-width: 1.2; }
+.th-hl { fill: #c4e0cf; }
+.th-digit { font-size: 19px; fill: #1d2420; }
+.th-digit.th-user { fill: #1d4ed8; }
+.th-2048-board { fill: #bbada0; }
+.th-num { text-anchor: middle; }
+.th-card-back { fill: #6d4bb5; }
+.th-card-inner { fill: none; stroke: #b9a6e6; stroke-width: 2; stroke-dasharray: 4 3; }
+.th-card-face { fill: #ffffff; stroke: #6d4bb5; stroke-width: 2.5; }
+.th-star { fill: #f2b01e; }
+.th-ms-frame { fill: #7f9bb8; }
+.th-ms-closed { fill: #aec6de; stroke: #7f9bb8; stroke-width: 1; }
+.th-ms-open { fill: #f7f5f0; stroke: #c9cfd8; stroke-width: 1; }
+.th-ms-num { font-size: 17px; }
+.th-n1 { fill: #1d4ed8; }
+.th-n2 { fill: #15803d; }
+.th-pole { stroke: #1d2420; stroke-width: 2; }
+.th-flag { fill: #d63b2f; }
+.th-well { fill: #ffffff; stroke: #d9b8ae; stroke-width: 2; }
+.th-b1 { fill: #e0674f; }
+.th-b2 { fill: #2f8f6b; }
+.th-b3 { fill: #f2b01e; }
+.th-fallback { font-size: 54px; fill: var(--primary); }
+
+:root[data-theme="dark"] .th-paper { fill: #2a302c; }
+:root[data-theme="dark"] .th-frame { stroke: #d5ddd7; }
+:root[data-theme="dark"] .th-line { stroke: #56615a; }
+:root[data-theme="dark"] .th-hl { fill: #2f5a42; }
+:root[data-theme="dark"] .th-digit { fill: #e9eee9; }
+:root[data-theme="dark"] .th-digit.th-user { fill: #8cb6ff; }
+:root[data-theme="dark"] .th-2048-board { fill: #4a443c; }
+:root[data-theme="dark"] .th-card-face { fill: #2a2e37; }
+:root[data-theme="dark"] .th-ms-frame { fill: #3b4352; }
+:root[data-theme="dark"] .th-ms-closed { fill: #5d6a80; stroke: #3b4352; }
+:root[data-theme="dark"] .th-ms-open { fill: #1f2229; stroke: #353b47; }
+:root[data-theme="dark"] .th-n1 { fill: #8cb6ff; }
+:root[data-theme="dark"] .th-n2 { fill: #6fd38d; }
+:root[data-theme="dark"] .th-pole { stroke: #e9eee9; }
+:root[data-theme="dark"] .th-well { fill: #2a2422; stroke: #5a3f38; }

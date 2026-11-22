@@ -14,7 +14,9 @@ index.html · hub.js · hub.css   게임 선택 화면 (games.json을 읽어 카
 games.json                      게임 목록. status "ready"면 공개, "soon"이면 '곧 나와요'
 common/core.js                  공통: 시드 난수·한국 날짜·설정·매일 도전/연속 출석·요약·공유·오프라인 등록 (전역 MaeilGame)
 common/base.css                 공통 색상 토큰(밝고 차분한 게임 라운지: 회백색+짙은 초록)·버튼·안내 메시지. sudoku/style.css도 같은 값
-common/thumbs.js                게임 카드 썸네일(SVG). 새 게임은 여기에 160×120으로 하나 그린다
+common/thumbs.js · thumbs.css   게임 썸네일(SVG)과 색. 새 게임은 160×120으로 하나 그리고 .thumb-게임id 색을 정한다
+common/start.js · start.css     게임별 시작 화면 공통 틀(목록 링크→제목→미리보기→이어하기→오늘의 도전→난이도→게임 시작→내 최고→큰 글씨·어두운 화면·도움말).
+                                마크업은 tools/start_screen.py가 만든다(게임 추가 시 GAMES에 한 줄). #daily로 들어오면 오늘의 도전 바로 시작
 sw.js                           사이트 전체 공용 오프라인 보관 (파일 추가 시 FILES에도 추가)
 sudoku/                         스도쿠 (자체 CLAUDE.md 규칙은 ../스도쿠게임/CLAUDE.md 참고)
 tests/                          node tests/common.test.js · node tests/games.test.js
@@ -47,5 +49,6 @@ tests/                          node tests/common.test.js · node tests/games.te
 - [x] 3주차: 지뢰찾기([열기/깃발] 전환 버튼, 매일 도전은 한 구역 열고 시작), 게임 설명 페이지 `guide/` (2026-11-22)
 - [x] 디자인 개편: 게임 라운지(카드 2~4열·썸네일·도장판) (2026-11-22, ChatGPT 제안서 + 검토 의견)
 - [x] 4주차: 블록 쌓기(버튼 줄 ◀↻▶▼⤓ + 판 위 밀기), 개인정보처리방침·소개 (2026-11-22)
+- [x] 시작 화면 통일·메인 정돈(ChatGPT 2차 제안 + 검토: 오늘의 도전을 게임 시작 위에, 이어하기 유지) (2026-11-22)
 - [ ] 옛 주소 maeil-sudoku 넘김 페이지 + 채널등록부·총괄 아침 안내·시너지 링크 교체 (대표님 확인 후)
 - 설명 글은 `tools/make_guides.py`를 고쳐 다시 만든다. 개인정보처리방침은 통계·광고 도입 **전에** 고친다(4항)

@@ -4,10 +4,11 @@ const $ = (id) => document.getElementById(id);
 const { DIFFICULTIES } = SudokuGenerator;
 const SITE_URL = `${MaeilGame.SITE_URL}sudoku/`;
 const STAT_ROWS = [
-  ['easy', '쉬움'], ['medium', '보통'], ['hard', '어려움'], ['expert', '매우 어려움'], ['daily', '오늘의 문제'],
+  ['easy', '쉬움'], ['medium', '보통'], ['hard', '어려움'], ['expert', '매우 어려움'], ['daily', '오늘의 도전'],
 ];
 
 let game = null;
+let picker = null; // 시작 화면(난이도 선택·오늘의 도전) — common/start.js
 let selected = -1;
 let memoMode = false;
 let paused = false;
@@ -52,7 +53,7 @@ function dateLabel(dateKey) {
 }
 
 function gameLabel(state) {
-  return state.daily ? '오늘의 문제' : DIFFICULTIES[state.difficulty].label;
+  return state.daily ? '오늘의 도전' : DIFFICULTIES[state.difficulty].label;
 }
 
 function loadSavedGame() {
@@ -144,21 +145,15 @@ function updateSummary() {
 function renderStart() {
   const today = todayKey();
   const dailySeconds = SaveStore.loadDailyResult(today);
-  const dailyInfo = $('daily-info');
-  dailyInfo.classList.toggle('done', dailySeconds !== null);
-  dailyInfo.textContent = dailySeconds !== null
+  picker.setDaily(dailySeconds !== null
     ? `${dateLabel(today)} · 완료 ✓ ${formatTime(dailySeconds)}`
-    : `${dateLabel(today)} · 모두 같은 문제 (보통)`;
+    : `${dateLabel(today)} · 모두 같은 문제 (보통)`, dailySeconds !== null);
 
   const saved = loadSavedGame();
   $('continue-wrap').hidden = !saved;
+  $('start-screen').classList.toggle('has-continue', Boolean(saved));
   if (saved) $('continue-info').textContent = `${gameLabel(saved)} · ${formatTime(saved.elapsed)}`;
-
-  const stats = SaveStore.loadStats();
-  document.querySelectorAll('.difficulty-btn').forEach((button) => {
-    const best = stats[button.dataset.difficulty]?.best;
-    button.querySelector('.best').textContent = Number.isFinite(best) ? `최고 ${formatTime(best)}` : '';
-  });
+  picker.refresh();
 }
 
 function goHome() {
@@ -404,7 +399,7 @@ function checkFinished() {
 
 function showComplete({ isBest, best, previous }) {
   $('complete-difficulty').textContent = game.daily
-    ? `📅 ${dateLabel(game.daily)} 오늘의 문제`
+    ? `📅 ${dateLabel(game.daily)} 오늘의 도전`
     : `${DIFFICULTIES[game.difficulty].label} 난이도`;
   $('complete-time').textContent = formatTime(game.elapsed);
   const bestText = $('complete-best');
@@ -426,7 +421,7 @@ function showComplete({ isBest, best, previous }) {
 
 function shareText() {
   const what = game.daily
-    ? `${dateLabel(game.daily)} 오늘의 문제를`
+    ? `${dateLabel(game.daily)} 오늘의 도전을`
     : `${DIFFICULTIES[game.difficulty].label} 난이도를`;
   return `[매일 스도쿠] ${what} ${formatTimeKorean(game.elapsed)}에 풀었어요! 🎉\n같이 풀어봐요 👉`;
 }
@@ -563,8 +558,15 @@ function init() {
   applySettings();
   buildBoard();
   buildNumpad();
-  document.querySelectorAll('.difficulty-btn').forEach((button) => {
-    button.addEventListener('click', () => startGame(button.dataset.difficulty));
+  picker = MaeilStart.setup({
+    id: 'sudoku',
+    difficulties: Object.entries(DIFFICULTIES).map(([key, c]) => ({ key, label: c.label, detail: `빈칸 ${c.blanks}개` })),
+    bestText: (key) => {
+      const best = SaveStore.loadStats()[key]?.best;
+      return Number.isFinite(best) ? `내 최고 ${formatTime(best)} ·` : '';
+    },
+    onStart: startGame,
+    onDaily: startDaily,
   });
   document.querySelectorAll('.dark-toggle').forEach((button) => {
     button.addEventListener('click', () => updateSettings({ dark: !isDark() }));
@@ -573,7 +575,6 @@ function init() {
     button.addEventListener('click', () => updateSettings({ largeText: !settings.largeText }));
   });
   systemDark?.addEventListener?.('change', applySettings);
-  $('daily-btn').addEventListener('click', startDaily);
   $('continue-btn').addEventListener('click', resumeGame);
   $('stats-btn').addEventListener('click', showStats);
   $('stats-home-btn').addEventListener('click', goHome);
@@ -593,6 +594,7 @@ function init() {
   window.addEventListener('pagehide', saveBeforeLeaving);
   renderStart();
   updateSummary();
+  MaeilStart.handleDailyLink(startDaily);
   registerOffline();
 }
 

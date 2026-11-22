@@ -3,13 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="설치 없이 바로 즐기는 무료 스도쿠. 매일 새로운 오늘의 문제, 큰 글씨, 쉬운 조작.">
+  <meta name="description" content="설치 없이 바로 즐기는 무료 스도쿠. 매일 새로운 오늘의 도전, 큰 글씨, 쉬운 조작.">
   <meta name="theme-color" content="#f5f3ee">
   <meta property="og:title" content="매일 스도쿠">
-  <meta property="og:description" content="설치 없이 바로 즐기는 무료 스도쿠. 오늘의 문제에 도전해 보세요!">
+  <meta property="og:description" content="설치 없이 바로 즐기는 무료 스도쿠. 오늘의 도전에 참여해 보세요!">
   <meta property="og:type" content="website">
   <title>매일 스도쿠</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231e6b48'/%3E%3Ctext x='50' y='72' font-size='62' font-family='sans-serif' font-weight='700' fill='white' text-anchor='middle'%3E9%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../common/thumbs.css">
+  <link rel="stylesheet" href="../common/start.css">
   <link rel="stylesheet" href="style.css">
   <!-- 화면이 그려지기 전에 어두운 화면·큰 글씨 설정을 먼저 적용해 깜빡임을 막는다 -->
   <script>
@@ -23,48 +25,40 @@
   <!-- 애드센스 승인 후, 애드센스에서 받은 <script ...adsbygoogle.js...> 한 줄을 여기에 붙여넣으세요 -->
 </head>
 <body>
-  <!-- 시작 화면 -->
-  <main id="start-screen" class="screen start">
-    <a href="../" class="hub-link">← 매일게임 · 다른 게임</a>
-    <h1 class="title">매일 스도쿠</h1>
+  <!-- 시작 화면 (공통 구조: common/start.css · start.js, tools/start_screen.py로 생성) -->
+  <main id="start-screen" class="st">
+    <a href="../" class="st-back">← 게임 목록</a>
+    <header>
+      <h1 class="st-title">스도쿠</h1>
+      <p class="st-desc">가로줄·세로줄·3×3 칸에 1~9를 한 번씩 채우는 숫자 퍼즐이에요.</p>
+    </header>
+    <div class="st-preview thumb-sudoku" id="preview" aria-hidden="true"></div>
 
-    <button type="button" id="daily-btn" class="daily-btn">
-      <span class="daily-main">📅 오늘의 문제</span>
-      <small id="daily-info"></small>
+    <div id="continue-wrap" hidden>
+      <button type="button" id="continue-btn" class="st-continue">▶ 이어하기<small id="continue-info"></small></button>
+      <p class="st-note">새 게임을 시작하면 하던 게임은 사라져요</p>
+    </div>
+
+    <button type="button" id="daily-btn" class="st-daily">
+      <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
+      <span class="st-daily-go" id="daily-go">도전하기 →</span>
     </button>
 
-    <div id="continue-wrap" class="continue-wrap" hidden>
-      <button type="button" id="continue-btn" class="primary-btn continue-btn">
-        ▶ 이어하기<small id="continue-info"></small>
-      </button>
-      <p class="note-text">새 게임을 시작하면 하던 게임은 사라져요</p>
+    <section class="st-pick" aria-labelledby="pick-label">
+      <h2 class="st-label" id="pick-label">난이도</h2>
+      <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
+      <p class="st-detail" id="pick-detail"></p>
+      <button type="button" id="start-btn" class="st-start">게임 시작</button>
+      <p class="st-best"><span id="pick-best"></span> <button type="button" id="stats-btn" class="st-link">기록 보기</button></p>
+    </section>
+
+    <div class="st-tools">
+      <button type="button" class="st-tool large-text-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 5h1.6l5 13M6 13.5h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 18v-5.2M14 12.8h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>큰 글씨</button>
+      <button type="button" class="st-tool dark-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>어두운 화면</button>
+      <a class="st-tool" href="../guide/sudoku.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.9" r="1.2" fill="currentColor"/></svg>도움말</a>
     </div>
 
-    <p class="subtitle">새 게임 · 난이도를 고르세요</p>
-    <div class="difficulty-list">
-      <button type="button" class="difficulty-btn" data-difficulty="easy">
-        쉬움<small>빈칸 35개</small><small class="best"></small>
-      </button>
-      <button type="button" class="difficulty-btn" data-difficulty="medium">
-        보통<small>빈칸 45개</small><small class="best"></small>
-      </button>
-      <button type="button" class="difficulty-btn" data-difficulty="hard">
-        어려움<small>빈칸 52개</small><small class="best"></small>
-      </button>
-      <button type="button" class="difficulty-btn" data-difficulty="expert">
-        매우 어려움<small>빈칸 58개</small><small class="best"></small>
-      </button>
-    </div>
-
-    <div class="option-row">
-      <button type="button" id="stats-btn" class="option-btn">📊 기록</button>
-      <button type="button" class="option-btn large-text-toggle" aria-pressed="false">가 큰 글씨</button>
-      <button type="button" class="option-btn dark-toggle" aria-pressed="false">🌙 어두운 화면</button>
-    </div>
-
-    <a href="../guide/sudoku.html" class="hub-link">📖 스도쿠 하는 법·요령</a>
-
-    <!-- 광고 자리: 애드센스 광고 코드(<ins class="adsbygoogle" ...> 부분)를 이 안에 붙여넣으세요. 비어 있으면 화면에 보이지 않습니다. -->
+    <!-- 광고 자리: 비어 있으면 화면에 보이지 않습니다. 게임 화면에는 두지 않습니다. -->
     <aside class="ad-slot" aria-label="광고"></aside>
   </main>
 
@@ -139,6 +133,8 @@
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="../common/core.js"></script>
+  <script src="../common/thumbs.js"></script>
+  <script src="../common/start.js"></script>
   <script src="js/generator.js"></script>
   <script src="js/game.js"></script>
   <script src="js/storage.js"></script>

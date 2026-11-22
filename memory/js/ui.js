@@ -12,6 +12,7 @@
   const $ = (id) => document.getElementById(id);
 
   let game = null;
+  let picker = null; // 시작 화면(난이도 선택·오늘의 도전) — common/start.js
   let cards = [];
   let paused = false;
   let timerId = 0;
@@ -51,28 +52,15 @@
     stopTimer();
     const today = M.todayKey();
     const daily = loadDailyResult(today);
-    const info = $('daily-info');
-    info.classList.toggle('done', Boolean(daily));
-    info.textContent = daily
+    picker.setDaily(daily
       ? `${M.dateLabel(today)} · 완료 ✓ ${M.formatTime(daily.seconds)} · 시도 ${daily.attempts}번`
-      : `${M.dateLabel(today)} · 모두 같은 배치 (8쌍)`;
+      : `${M.dateLabel(today)} · 모두 같은 배치 (8쌍)`, Boolean(daily));
 
     const saved = loadGame();
     $('continue-wrap').hidden = !saved;
+    $('start-screen').classList.toggle('has-continue', Boolean(saved));
     if (saved) $('continue-info').textContent = `${label(saved)} · ${G.matchedPairs(saved)}쌍 찾음 · ${M.formatTime(saved.elapsed)}`;
-
-    const stats = loadStats();
-    $('difficulty-list').replaceChildren(...Object.entries(G.DIFFICULTIES).map(([key, config]) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'difficulty-btn';
-      button.innerHTML = '<span></span><small></small><small class="best"></small>';
-      button.children[0].textContent = config.label;
-      button.children[1].textContent = `카드 ${config.pairs * 2}장 (${config.pairs}쌍)`;
-      button.children[2].textContent = Number.isFinite(stats[key]?.best) ? `최고 ${M.formatTime(stats[key].best)}` : '';
-      button.addEventListener('click', () => start(G.create(key)));
-      return button;
-    }));
+    picker.refresh();
     showScreen('start-screen');
   }
 
@@ -234,7 +222,13 @@
 
   function init() {
     M.bindSettingButtons();
-    $('daily-btn').addEventListener('click', startDaily);
+    picker = MaeilStart.setup({
+      id: ID,
+      difficulties: Object.entries(G.DIFFICULTIES).map(([key, c]) => ({ key, label: c.label, detail: `카드 ${c.pairs * 2}장 · ${c.pairs}쌍` })),
+      bestText: (key) => { const best = loadStats()[key]?.best; return Number.isFinite(best) ? `내 최고 ${M.formatTime(best)}` : ''; },
+      onStart: (key) => start(G.create(key)),
+      onDaily: startDaily,
+    });
     $('continue-btn').addEventListener('click', () => { const saved = loadGame(); if (saved) start(saved); else renderStart(); });
     $('home-btn').addEventListener('click', () => { stopTimer(); saveGame(); renderStart(); });
     $('pause-btn').addEventListener('click', pause);
@@ -254,6 +248,7 @@
     });
     renderStart();
     updateSummary();
+    MaeilStart.handleDailyLink(startDaily);
     M.registerOffline('../');
   }
 

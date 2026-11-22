@@ -11,6 +11,7 @@
   const $ = (id) => document.getElementById(id);
 
   let game = null;
+  let picker = null; // 시작 화면(난이도 선택·오늘의 도전) — common/start.js
   let cells = [];
   let flagMode = false;
   let paused = false;
@@ -54,28 +55,16 @@
     stopTimer();
     const today = M.todayKey();
     const daily = loadDailyResult(today);
-    const info = $('daily-info');
-    info.classList.toggle('done', Boolean(daily));
-    if (!daily) info.textContent = `${M.dateLabel(today)} · 모두 같은 판 (보통, 한 구역 열고 시작)`;
-    else if (daily.won) info.textContent = `${M.dateLabel(today)} · 성공 ✓ ${M.formatTime(daily.seconds)}`;
-    else info.textContent = `${M.dateLabel(today)} · 참여 ✓ 다시 도전해 성공해 보세요`;
+    let info = `${M.dateLabel(today)} · 모두 같은 판 (한 구역 열고 시작)`;
+    if (daily?.won) info = `${M.dateLabel(today)} · 성공 ✓ ${M.formatTime(daily.seconds)}`;
+    else if (daily) info = `${M.dateLabel(today)} · 참여 ✓ 다시 도전해 성공해 보세요`;
+    picker.setDaily(info, Boolean(daily));
 
     const saved = loadGame();
     $('continue-wrap').hidden = !saved;
+    $('start-screen').classList.toggle('has-continue', Boolean(saved));
     if (saved) $('continue-info').textContent = `${label(saved)} · ${M.formatTime(saved.elapsed)}`;
-
-    const stats = loadStats();
-    $('difficulty-list').replaceChildren(...Object.entries(G.DIFFICULTIES).map(([key, config]) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'difficulty-btn';
-      button.innerHTML = '<span></span><small></small><small class="best"></small>';
-      button.children[0].textContent = config.label;
-      button.children[1].textContent = `${config.cols}×${config.rows} 판 · 지뢰 ${config.mines}개`;
-      button.children[2].textContent = Number.isFinite(stats[key]?.best) ? `최고 ${M.formatTime(stats[key].best)}` : '';
-      button.addEventListener('click', () => start(G.create(key)));
-      return button;
-    }));
+    picker.refresh();
     showScreen('start-screen');
   }
 
@@ -288,7 +277,13 @@
 
   function init() {
     M.bindSettingButtons();
-    $('daily-btn').addEventListener('click', startDaily);
+    picker = MaeilStart.setup({
+      id: ID,
+      difficulties: Object.entries(G.DIFFICULTIES).map(([key, c]) => ({ key, label: c.label, detail: `${c.cols}×${c.rows} 판 · 지뢰 ${c.mines}개` })),
+      bestText: (key) => { const s = loadStats()[key]; return Number.isFinite(s?.best) ? `내 최고 ${M.formatTime(s.best)} · 성공 ${s.won}/${s.played}번` : ''; },
+      onStart: (key) => start(G.create(key)),
+      onDaily: startDaily,
+    });
     $('continue-btn').addEventListener('click', () => { const saved = loadGame(); if (saved) start(saved); else renderStart(); });
     $('home-btn').addEventListener('click', () => { stopTimer(); saveGame(); renderStart(); });
     $('pause-btn').addEventListener('click', () => (game?.over ? showResult() : pause()));
@@ -313,6 +308,7 @@
     });
     renderStart();
     updateSummary();
+    MaeilStart.handleDailyLink(startDaily);
     M.registerOffline('../');
   }
 

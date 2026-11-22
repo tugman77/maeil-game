@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="설치·회원가입 없이 바로 하는 무료 게임 모음. 스도쿠, 2048, 카드 짝맞추기, 지뢰찾기. 매일 도전과 연속 출석.">
+  <meta name="description" content="설치·회원가입 없이 바로 하는 무료 게임 모음. 스도쿠, 2048, 카드 짝맞추기, 지뢰찾기, 블록 쌓기. 매일 도전과 연속 출석.">
   <meta name="theme-color" content="#f5f3ee">
   <meta property="og:title" content="매일게임 — 오늘도, 가볍게 한 판">
   <meta property="og:description" content="설치 없이 바로 하는 무료 두뇌 게임. 오늘의 도전에 참여해 보세요!">
@@ -11,6 +11,7 @@
   <title>매일게임 — 오늘도, 가볍게 한 판</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231e6b48'/%3E%3Crect x='22' y='22' width='24' height='24' rx='5' fill='white'/%3E%3Crect x='54' y='22' width='24' height='24' rx='5' fill='white' opacity='.55'/%3E%3Crect x='22' y='54' width='24' height='24' rx='5' fill='white' opacity='.55'/%3E%3Crect x='54' y='54' width='24' height='24' rx='5' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="common/base.css">
+  <link rel="stylesheet" href="common/thumbs.css">
   <link rel="stylesheet" href="hub.css">
   <!-- 화면이 그려지기 전에 어두운 화면·큰 글씨 설정을 먼저 적용해 깜빡임을 막는다 -->
   <script>
@@ -26,33 +27,38 @@
 <body>
   <main class="hub">
     <header class="hub-header">
-      <h1 class="hub-title">매일게임</h1>
-      <p class="hub-tagline">오늘도, 가볍게 한 판.</p>
+      <div>
+        <h1 class="hub-title">매일게임</h1>
+        <p class="hub-tagline">오늘도, 가볍게 한 판.</p>
+      </div>
+      <div class="hub-settings" role="group" aria-label="화면 설정">
+        <button type="button" class="set-btn large-text-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 5h1.6l5 13M6 13.5h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 18v-5.2M14 12.8h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>큰 글씨</button>
+        <button type="button" class="set-btn dark-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>어두운 화면</button>
+      </div>
     </header>
 
-    <section class="today-card" aria-labelledby="today-date">
+    <section class="today-card" aria-labelledby="today-title">
       <div class="today-row">
-        <h2 class="today-date" id="today-date"></h2>
-        <p class="streak" id="streak"></p>
+        <h2 class="today-title" id="today-title">오늘의 도전 <span class="today-date" id="today-date"></span></h2>
+        <span class="today-count" id="today-count"></span>
+        <span class="streak" id="streak"></span>
       </div>
-      <ul class="stamps" id="stamps" aria-label="오늘의 도전 게임별 완료"></ul>
-      <p class="today-progress" id="today-progress"></p>
-      <a class="recent-link" id="recent-link" hidden></a>
+      <ul class="stamps" id="stamps" aria-label="게임별 오늘의 도전 (누르면 바로 시작)"></ul>
     </section>
 
     <h2 class="section-title">전체 게임</h2>
     <ul class="game-grid" id="game-grid"></ul>
 
-    <div class="option-row hub-options">
-      <button type="button" class="option-btn large-text-toggle" aria-pressed="false">가 큰 글씨</button>
-      <button type="button" class="option-btn dark-toggle" aria-pressed="false">🌙 어두운 화면</button>
-    </div>
+    <section id="soon-wrap" hidden>
+      <h2 class="section-title">곧 만나요</h2>
+      <ul class="soon-list" id="soon-list"></ul>
+    </section>
 
     <!-- 광고 자리: 애드센스 광고 코드(<ins class="adsbygoogle" ...> 부분)를 이 안에 붙여넣으세요. 비어 있으면 화면에 보이지 않습니다. -->
     <aside class="ad-slot" aria-label="광고"></aside>
 
     <footer class="hub-footer">
-      <p><a href="guide/" class="footer-link">📖 게임 방법·요령</a></p>
+      <p><a href="guide/" class="footer-link">게임 방법·요령</a></p>
       <p><a href="about.html">소개</a> · <a href="privacy.html">개인정보처리방침</a></p>
       <p>기록은 이 기기의 브라우저에만 저장돼요 · 설치·회원가입 없음</p>
     </footer>
