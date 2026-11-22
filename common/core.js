@@ -165,7 +165,7 @@ const MaeilGame = (() => {
     root.dataset.theme = dark ? 'dark' : 'light';
     root.classList.toggle('large-text', Boolean(settings.largeText));
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.content = dark ? '#15171c' : '#f4f1ea';
+    if (meta) meta.content = dark ? '#131714' : '#f5f3ee';
     const pressed = { '.dark-toggle': dark, '.large-text-toggle': settings.largeText, '.sound-toggle': settings.sound };
     Object.entries(pressed).forEach(([selector, on]) => {
       document.querySelectorAll(selector).forEach((button) => button.setAttribute('aria-pressed', String(Boolean(on))));

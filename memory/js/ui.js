@@ -34,11 +34,7 @@
   const label = (state) => (state.daily ? `📅 ${M.dateLabel(state.daily)} 오늘의 도전` : `${G.DIFFICULTIES[state.difficulty].label} · ${G.DIFFICULTIES[state.difficulty].pairs}쌍`);
 
   function updateSummary() {
-    const daily = loadDailyResult(M.todayKey());
-    if (daily) {
-      M.setSummary(ID, `오늘의 도전 ✓ ${M.formatTime(daily.seconds)}`);
-      return;
-    }
+    // 가장 많이 한 난이도의 최고 기록만. ('오늘 완료'는 게임 목록이 출석 기록으로 따로 표시한다)
     const stats = loadStats();
     const played = Object.keys(G.DIFFICULTIES).filter((key) => Number.isFinite(stats[key]?.best))
       .sort((a, b) => stats[b].played - stats[a].played);

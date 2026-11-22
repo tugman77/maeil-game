@@ -37,11 +37,7 @@
   };
 
   function updateSummary() {
-    const daily = loadDailyResult(M.todayKey());
-    if (daily) {
-      M.setSummary(ID, daily.won ? `오늘의 도전 ✓ ${M.formatTime(daily.seconds)}` : '오늘의 도전 참여 ✓');
-      return;
-    }
+    // 가장 많이 한 난이도의 최고 기록만. ('오늘 완료'는 게임 목록이 출석 기록으로 따로 표시한다)
     const stats = loadStats();
     const played = Object.keys(G.DIFFICULTIES).filter((key) => Number.isFinite(stats[key]?.best))
       .sort((a, b) => stats[b].played - stats[a].played);

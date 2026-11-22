@@ -1,26 +1,26 @@
 /* ---------- 색상 (밝은 화면) ---------- */
 :root {
-  --bg: #f4f1ea;
+  --bg: #f5f3ee;
   --surface: #ffffff;
-  --text: #1a1a1a;
-  --muted: #555555;
+  --text: #1d2420;
+  --muted: #59615c;
   --given: #111111;
   --user: #1d4ed8;
   --note: #3d4a5c;
   --line: #b4bcc8;
   --line-bold: #222222;
-  --peer: #e6edf9;
-  --same: #b9cff5;
+  --peer: #e8f1eb;
+  --same: #c4e0cf;
   --selected: #ffe08a;
   --error-text: #c81e1e;
   --error-bg: #fde0e0;
-  --primary: #1d4ed8;
+  --primary: #1e6b48;
   --primary-text: #ffffff;
   --button: #ffffff;
-  --button-border: #c4cad3;
-  --active: #dbe7ff;
-  --gold: #a35a00;
-  --done: #1f7a3a;
+  --button-border: #c9cdc6;
+  --active: #e2eee6;
+  --gold: #9a5b00;
+  --done: #1e6b48;
 
   /* 글자 크기 비율 (큰 글씨 모드에서 커진다) */
   --cell-font: 0.62;
@@ -41,27 +41,27 @@
 
 /* ---------- 색상 (어두운 화면) ---------- */
 :root[data-theme="dark"] {
-  --bg: #15171c;
-  --surface: #1f2229;
-  --text: #eceef2;
-  --muted: #a9b0bc;
+  --bg: #131714;
+  --surface: #1c221e;
+  --text: #e9eee9;
+  --muted: #a6b0a9;
   --given: #f4f5f7;
   --user: #8cb6ff;
   --note: #b9c3d4;
   --line: #3d434e;
   --line-bold: #c9ced6;
-  --peer: #253049;
-  --same: #36548a;
+  --peer: #1f3328;
+  --same: #2f5a42;
   --selected: #6e5c17;
   --error-text: #ff8a8a;
   --error-bg: #4b2328;
-  --primary: #3a6ee0;
-  --primary-text: #ffffff;
-  --button: #262a33;
-  --button-border: #474e5b;
-  --active: #2d3f66;
-  --gold: #f2b84b;
-  --done: #6fd38f;
+  --primary: #5bbf8c;
+  --primary-text: #0c1a12;
+  --button: #232a25;
+  --button-border: #3c463f;
+  --active: #24392c;
+  --gold: #ffc061;
+  --done: #7fd3a6;
   color-scheme: dark;
 }
 
@@ -148,8 +148,8 @@ button:focus-visible {
   justify-content: center;
   gap: 2px;
   background: var(--surface);
-  color: var(--user);
-  border: 2.5px solid var(--user);
+  color: var(--primary);
+  border: 2.5px solid var(--primary);
   border-radius: 14px;
   padding: 6px 0;
 }

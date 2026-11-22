@@ -13,7 +13,8 @@
 index.html · hub.js · hub.css   게임 선택 화면 (games.json을 읽어 카드 생성)
 games.json                      게임 목록. status "ready"면 공개, "soon"이면 '곧 나와요'
 common/core.js                  공통: 시드 난수·한국 날짜·설정·매일 도전/연속 출석·요약·공유·오프라인 등록 (전역 MaeilGame)
-common/base.css                 공통 색상 토큰·버튼·안내 메시지
+common/base.css                 공통 색상 토큰(밝고 차분한 게임 라운지: 회백색+짙은 초록)·버튼·안내 메시지. sudoku/style.css도 같은 값
+common/thumbs.js                게임 카드 썸네일(SVG). 새 게임은 여기에 160×120으로 하나 그린다
 sw.js                           사이트 전체 공용 오프라인 보관 (파일 추가 시 FILES에도 추가)
 sudoku/                         스도쿠 (자체 CLAUDE.md 규칙은 ../스도쿠게임/CLAUDE.md 참고)
 tests/                          node tests/common.test.js · node tests/games.test.js
@@ -24,7 +25,8 @@ tests/                          node tests/common.test.js · node tests/games.te
 1. `게임id/index.html`에서 `../common/base.css`, `../common/core.js`를 불러온다. 맨 위에 `<a href="../">← 매일게임</a>`.
 2. 매일 도전 판은 `MaeilGame.dailyRandom('게임id')`(한국 날짜 기준 시드)로 만든다. 판이 진행되며 난수를 계속 쓰는 게임(2048·블록 쌓기)은 `randomState`/`nextRandom`으로 상태를 게임 저장에 넣는다.
    화면 틀은 `../common/game.css`(시작·게임·결과 화면, `.header-btn.armed` 두 번 눌러 실행). 2048·memory가 본보기.
-3. 매일 도전을 끝내면 `MaeilGame.recordDaily('게임id')`, 기록이 바뀌면 `MaeilGame.setSummary('게임id', '최고 1,024점')`, 시작하면 `markPlayed('게임id')`.
+3. 매일 도전을 끝내면 `MaeilGame.recordDaily('게임id')`, 기록이 바뀌면 `MaeilGame.setSummary('게임id', '최고 1,024점')`(최고 기록만 — '오늘 완료'는 허브가 출석으로 표시), 시작하면 `markPlayed('게임id')`.
+   games.json에 `short`(도장판 짧은 이름)도 넣는다.
 4. 저장 키는 `maeil-game.게임id.*` 형식.
 5. `guide/게임id.html` 설명·요령 글을 쓴다(광고 승인용, 건강 효과 같은 확인 안 되는 주장 금지). 글 틀은 `guide/*.html` 복사.
 6. `games.json`의 status를 `ready`로, `sw.js` FILES에 파일 추가 → `node tests/common.test.js` 통과 확인(설명 페이지·sw 누락도 잡음).
@@ -43,4 +45,5 @@ tests/                          node tests/common.test.js · node tests/games.te
 - [x] 1주차: 공통 모듈·허브·스도쿠 옮기기 (2026-11-22)
 - [x] 2주차: 2048, 카드 짝맞추기 (2026-11-22)
 - [x] 3주차: 지뢰찾기([열기/깃발] 전환 버튼, 매일 도전은 한 구역 열고 시작), 게임 설명 페이지 `guide/` (2026-11-22)
+- [x] 디자인 개편: 게임 라운지(카드 2~4열·썸네일·도장판) (2026-11-22, ChatGPT 제안서 + 검토 의견)
 - [ ] 4주차: 블록 쌓기(늦으면 2차), 개인정보처리방침·소개, 옛 주소 넘김

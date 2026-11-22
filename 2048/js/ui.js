@@ -30,12 +30,10 @@
   const label = (state) => (state.daily ? `📅 ${M.dateLabel(state.daily)} 오늘의 도전` : `${G.DIFFICULTIES[state.difficulty].label} 난이도`);
 
   function updateSummary() {
-    const today = M.todayKey();
-    const daily = loadDailyResult(today);
+    // 최고 점수만. ('오늘 완료'는 게임 목록이 출석 기록으로 따로 표시한다)
     const stats = loadStats();
     const best = Math.max(0, ...Object.values(stats).map((s) => s.best || 0));
-    if (daily) M.setSummary(ID, `오늘의 도전 ✓ ${fmt(daily.score)}점`);
-    else if (best > 0) M.setSummary(ID, `최고 ${fmt(best)}점`);
+    if (best > 0) M.setSummary(ID, `최고 ${fmt(best)}점`);
   }
 
   // ---------- 화면 전환 ----------

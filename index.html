@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="설치·회원가입 없이 바로 하는 무료 게임 모음. 스도쿠, 2048, 카드 짝맞추기, 지뢰찾기. 매일 도전과 연속 출석.">
-  <meta name="theme-color" content="#f4f1ea">
-  <meta property="og:title" content="매일게임 — 출퇴근 5분, 매일 한 판">
+  <meta name="theme-color" content="#f5f3ee">
+  <meta property="og:title" content="매일게임 — 오늘도, 가볍게 한 판">
   <meta property="og:description" content="설치 없이 바로 하는 무료 두뇌 게임. 오늘의 도전에 참여해 보세요!">
   <meta property="og:type" content="website">
-  <title>매일게임 — 출퇴근 5분, 매일 한 판</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%231d4ed8'/%3E%3Ctext x='50' y='70' font-size='56' font-family='sans-serif' font-weight='700' fill='white' text-anchor='middle'%3E%E2%97%86%3C/text%3E%3C/svg%3E">
+  <title>매일게임 — 오늘도, 가볍게 한 판</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231e6b48'/%3E%3Crect x='22' y='22' width='24' height='24' rx='5' fill='white'/%3E%3Crect x='54' y='22' width='24' height='24' rx='5' fill='white' opacity='.55'/%3E%3Crect x='22' y='54' width='24' height='24' rx='5' fill='white' opacity='.55'/%3E%3Crect x='54' y='54' width='24' height='24' rx='5' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="common/base.css">
   <link rel="stylesheet" href="hub.css">
   <!-- 화면이 그려지기 전에 어두운 화면·큰 글씨 설정을 먼저 적용해 깜빡임을 막는다 -->
@@ -27,29 +27,25 @@
   <main class="hub">
     <header class="hub-header">
       <h1 class="hub-title">매일게임</h1>
-      <p class="hub-tagline">출퇴근 5분, 매일 한 판</p>
+      <p class="hub-tagline">오늘도, 가볍게 한 판.</p>
     </header>
 
-    <section class="today-card" aria-label="오늘의 도전">
+    <section class="today-card" aria-labelledby="today-date">
       <div class="today-row">
-        <p class="today-date" id="today-date"></p>
+        <h2 class="today-date" id="today-date"></h2>
         <p class="streak" id="streak"></p>
       </div>
+      <ul class="stamps" id="stamps" aria-label="오늘의 도전 게임별 완료"></ul>
       <p class="today-progress" id="today-progress"></p>
+      <a class="recent-link" id="recent-link" hidden></a>
     </section>
 
-    <h2 class="section-title">게임 고르기</h2>
-    <ul class="game-list" id="game-list"></ul>
-
-    <div id="soon-wrap" hidden>
-      <h2 class="section-title">곧 나와요</h2>
-      <ul class="game-list soon-list" id="soon-list"></ul>
-    </div>
+    <h2 class="section-title">전체 게임</h2>
+    <ul class="game-grid" id="game-grid"></ul>
 
     <div class="option-row hub-options">
       <button type="button" class="option-btn large-text-toggle" aria-pressed="false">가 큰 글씨</button>
       <button type="button" class="option-btn dark-toggle" aria-pressed="false">🌙 어두운 화면</button>
-      <button type="button" class="option-btn sound-toggle" aria-pressed="true">🔊 소리</button>
     </div>
 
     <!-- 광고 자리: 애드센스 광고 코드(<ins class="adsbygoogle" ...> 부분)를 이 안에 붙여넣으세요. 비어 있으면 화면에 보이지 않습니다. -->
@@ -62,6 +58,7 @@
   </main>
 
   <script src="common/core.js"></script>
+  <script src="common/thumbs.js"></script>
   <script src="hub.js"></script>
 </body>
 </html>

@@ -71,7 +71,7 @@ function applySettings() {
   const dark = isDark();
   root.dataset.theme = dark ? 'dark' : 'light';
   root.classList.toggle('large-text', settings.largeText);
-  document.querySelector('meta[name="theme-color"]').content = dark ? '#15171c' : '#f4f1ea';
+  document.querySelector('meta[name="theme-color"]').content = dark ? '#131714' : '#f5f3ee';
   document.querySelectorAll('.dark-toggle').forEach((button) => {
     button.setAttribute('aria-pressed', String(dark));
   });
@@ -127,15 +127,9 @@ function showScreen(id) {
 }
 
 // ---------- 게임 목록에 보여 줄 한 줄 기록 ----------
-// 오늘의 문제를 풀었으면 그 시간, 아니면 가장 많이 푼 난이도의 최고 기록
+// 가장 많이 푼 난이도의 최고 기록. ('오늘 완료'는 게임 목록이 출석 기록으로 따로 표시한다)
 
 function updateSummary() {
-  const today = todayKey();
-  const dailySeconds = SaveStore.loadDailyResult(today);
-  if (dailySeconds !== null) {
-    MaeilGame.setSummary('sudoku', `오늘의 문제 ✓ ${formatTime(dailySeconds)}`);
-    return;
-  }
   const stats = SaveStore.loadStats();
   const played = STAT_ROWS.filter(([key]) => key !== 'daily' && Number.isFinite(stats[key]?.best))
     .sort((a, b) => stats[b[0]].solved - stats[a[0]].solved);

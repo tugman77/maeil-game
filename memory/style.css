@@ -1,13 +1,13 @@
 /* 카드 판: 열 수(--cols)와 줄 수(--rows)에 맞춰 화면 폭·높이 중 작은 쪽에 맞춘다. */
 :root {
-  --card-back: #1d4ed8;
-  --card-back-2: #3b6cf0;
+  --card-back: #6d4bb5;
+  --card-back-2: #7d5cc6;
   --card-face: #ffffff;
   --card-matched: #e5f5ea;
 }
 :root[data-theme="dark"] {
-  --card-back: #2c4fa8;
-  --card-back-2: #3a5fc0;
+  --card-back: #55408f;
+  --card-back-2: #624c9e;
   --card-face: #2a2e37;
   --card-matched: #1f3a29;
 }
