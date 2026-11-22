@@ -72,3 +72,9 @@
 }
 .mode-btn[aria-pressed="true"] { background: var(--primary); color: var(--primary-text); border-color: var(--primary); }
 #mode-flag[aria-pressed="true"] { background: #c2410c; border-color: #c2410c; }
+
+/* 칸이 열릴 때 톡 (지연 시간은 ui.js가 거리에 따라 준다) */
+@media (prefers-reduced-motion: no-preference) {
+  .mcell.pop-open { animation: cell-open 220ms ease-out both; }
+  @keyframes cell-open { from { scale: 0.6; opacity: 0.3; } to { scale: 1; opacity: 1; } }
+}

@@ -159,6 +159,7 @@
     if (paused || !game || game.over) return;
     const wasStarted = game.started;
     let result = 'ignored';
+    const before = game.revealed.slice();
     if (kind === 'flag') {
       result = G.toggleFlag(game, i) ? 'flag' : 'ignored';
     } else if (game.revealed[i]) {
@@ -169,13 +170,38 @@
     if (result === 'ignored') return;
     if (!wasStarted && game.started) startTimer();
     render();
+    // 새로 열린 칸: 누른 곳에서 가까운 칸부터 물결처럼
+    const opened = [];
+    game.revealed.forEach((open, k) => { if (open && !before[k]) opened.push(k); });
+    ripple(opened, i);
+
+    if (result === 'flag') MaeilFx.play(game.flagged[i] ? 'flag' : 'unflag');
+    else if (result === 'boom') { MaeilFx.play('boom'); MaeilFx.buzz([40, 30, 70]); }
+    else if (opened.length) MaeilFx.play('open');
+
     if (result === 'boom' || result === 'win') {
       stopTimer();
-      render();
-      setTimeout(() => finish(result === 'win'), result === 'win' ? 500 : 1100);
+      $('timer').textContent = M.formatTime(game.elapsed);
+      // (판은 위에서 이미 끝난 모습으로 그렸다) 지면 지뢰가, 이기면 깃발이 차례로 드러난다
+      const shown = [];
+      game.mines.forEach((m, k) => { if (m && !before[k]) shown.push(k); });
+      ripple(shown, result === 'boom' ? game.exploded : i, 45);
+      setTimeout(() => finish(result === 'win'), result === 'win' ? 900 : 1500);
     } else {
       saveGame();
     }
+  }
+
+  // 칸들을 기준 칸에서의 거리 순서로 톡톡 나타나게 한다(휴대폰 '동작 줄이기'면 CSS가 생략)
+  function ripple(list, origin, stepMs = 28) {
+    const oc = origin % game.cols;
+    const or = Math.floor(origin / game.cols);
+    list.forEach((k) => {
+      const dist = Math.max(Math.abs((k % game.cols) - oc), Math.abs(Math.floor(k / game.cols) - or));
+      const cell = cells[k];
+      cell.style.animationDelay = `${Math.min(dist * stepMs, 600)}ms`;
+      cell.classList.add('pop-open');
+    });
   }
 
   function setMode(flag) {
@@ -258,6 +284,11 @@
     $('share-btn').hidden = !won && !game.daily;
     $('again-btn').textContent = game.daily ? '오늘의 도전 다시' : (won ? '새 게임' : '다시 도전');
     showScreen('result-screen');
+    if (!lastResult.celebrated) { // '결과 ▶'로 다시 볼 때는 연출을 되풀이하지 않는다
+      lastResult.celebrated = true;
+      MaeilFx.countUp($('result-time'), Math.floor(game.elapsed), M.formatTime);
+      MaeilFx.celebrate({ isBest, won });
+    }
   }
 
   // 결과 화면에서 끝난 판을 다시 본다. 위의 정지 버튼이 '결과 ▶'로 바뀐다.

@@ -102,8 +102,21 @@
     renderToday(ready, today);
   }
 
+  // 소리(효과음·진동) 켜기/끄기 — 켜면 확인음
+  function bindSound() {
+    const sync = () => document.querySelectorAll('.sound-toggle').forEach((b) => b.setAttribute('aria-pressed', String(Boolean(M.loadSettings().sound))));
+    document.querySelectorAll('.sound-toggle').forEach((button) => button.addEventListener('click', () => {
+      const on = !M.loadSettings().sound;
+      M.saveSettings({ sound: on, soundAsked: true });
+      sync();
+      if (on) MaeilFx.play('on');
+    }));
+    sync();
+  }
+
   async function init() {
     M.bindSettingButtons();
+    bindSound();
     let games = [];
     try {
       const response = await fetch('games.json', { cache: 'no-cache' });

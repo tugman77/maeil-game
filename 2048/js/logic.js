@@ -62,24 +62,30 @@ const Game2048 = (() => {
   }
 
   // 한 줄을 민다: [2,2,4,0] → [4,4,0,0], 얻은 점수 4
+  // sources: 줄 안에서 각 타일이 어디(k)에서 어디(to)로 갔는지 — 화면에서 미끄러지는 움직임을 그릴 때 쓴다.
   function slideLine(values) {
-    const tiles = values.filter((v) => v !== 0);
+    const tiles = [];
+    values.forEach((v, k) => { if (v !== 0) tiles.push({ v, k }); });
     const out = [];
     const merged = [];
+    const sources = [];
     let gained = 0;
     for (let i = 0; i < tiles.length; i++) {
-      if (i + 1 < tiles.length && tiles[i] === tiles[i + 1]) {
-        const value = tiles[i] * 2;
-        merged.push(out.length);
+      const to = out.length;
+      if (i + 1 < tiles.length && tiles[i].v === tiles[i + 1].v) {
+        const value = tiles[i].v * 2;
+        merged.push(to);
+        sources.push({ from: tiles[i].k, to }, { from: tiles[i + 1].k, to });
         out.push(value);
         gained += value;
         i++;
       } else {
-        out.push(tiles[i]);
+        sources.push({ from: tiles[i].k, to });
+        out.push(tiles[i].v);
       }
     }
     while (out.length < values.length) out.push(0);
-    return { out, gained, merged };
+    return { out, gained, merged, sources };
   }
 
   function canMove(cells) {
@@ -94,16 +100,18 @@ const Game2048 = (() => {
 
   // 결과: { moved, gained, merged: 합쳐진 칸들, spawned: 새 숫자 칸, reachedGoal: 이번에 처음 2048 }
   function move(state, direction) {
-    const none = { moved: false, gained: 0, merged: [], spawned: -1, reachedGoal: false };
+    const none = { moved: false, gained: 0, merged: [], moves: [], spawned: -1, reachedGoal: false };
     if (state.over || !LINES[direction]) return none;
     const before = { cells: state.cells.slice(), score: state.score, rng: state.rng, won: state.won };
     const next = state.cells.slice();
     let gained = 0;
     const merged = [];
+    const moves = []; // { from: 판 칸, to: 판 칸 } — 움직이지 않은 타일도 포함
     LINES[direction].forEach((line) => {
       const result = slideLine(line.map((i) => state.cells[i]));
       result.out.forEach((value, k) => { next[line[k]] = value; });
       result.merged.forEach((k) => merged.push(line[k]));
+      result.sources.forEach(({ from, to }) => moves.push({ from: line[from], to: line[to] }));
       gained += result.gained;
     });
     if (next.every((value, i) => value === state.cells[i])) return none;
@@ -117,7 +125,7 @@ const Game2048 = (() => {
     const reachedGoal = !state.won && state.cells.some((value) => value >= GOAL);
     if (reachedGoal) state.won = true;
     state.over = !canMove(state.cells);
-    return { moved: true, gained, merged, spawned, reachedGoal };
+    return { moved: true, gained, merged, moves, spawned, reachedGoal };
   }
 
   function undo(state) {

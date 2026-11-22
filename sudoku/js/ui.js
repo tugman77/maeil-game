@@ -328,7 +328,50 @@ function inputDigit(digit) {
     : Game.setValue(game, selected, digit);
   if (!changed) return;
   afterChange();
-  if (!memoMode) checkFinished();
+  if (memoMode) {
+    MaeilFx.play('tap');
+  } else {
+    celebrateInput(selected);
+    checkFinished();
+  }
+}
+
+// ---------- 숫자를 넣었을 때의 연출 ----------
+// 넣은 칸이 톡 튀고, 줄·세로줄·3×3 칸 하나를 맞게 다 채우면 그 칸들이 물결처럼 반짝인다.
+function unitsOf(i) {
+  const row = Math.floor(i / 9);
+  const col = i % 9;
+  const br = Math.floor(row / 3) * 3;
+  const bc = Math.floor(col / 3) * 3;
+  const range = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  return [
+    range.map((k) => row * 9 + k),
+    range.map((k) => k * 9 + col),
+    range.map((k) => (br + Math.floor(k / 3)) * 9 + bc + (k % 3)),
+  ];
+}
+
+function celebrateInput(i) {
+  MaeilFx.pulse(cells[i], 'pop', 220);
+  const value = game.values[i];
+  if (value && settings.showErrors && value !== game.solution[i] && Game.conflicts(game).has(i)) {
+    MaeilFx.play('error');
+    MaeilFx.buzz(30);
+    return;
+  }
+  const done = unitsOf(i).filter((unit) => unit.every((k) => game.values[k] === game.solution[k]));
+  if (!done.length) {
+    MaeilFx.play('place');
+    return;
+  }
+  MaeilFx.play('wave');
+  MaeilFx.buzz(15);
+  const ci = { r: Math.floor(i / 9), c: i % 9 };
+  new Set(done.flat()).forEach((k) => {
+    const dist = Math.max(Math.abs(Math.floor(k / 9) - ci.r), Math.abs((k % 9) - ci.c));
+    cells[k].style.animationDelay = `${dist * 45}ms`;
+    MaeilFx.pulse(cells[k], 'wave', 600 + dist * 45);
+  });
 }
 
 function eraseSelected() {
@@ -368,6 +411,8 @@ function useHint() {
     return;
   }
   afterChange();
+  MaeilFx.play('hint');
+  celebrateInput(selected);
   checkFinished();
 }
 
@@ -414,6 +459,8 @@ function showComplete({ isBest, best, previous }) {
   $('new-game-btn').dataset.difficulty = game.difficulty;
   hideToast();
   showScreen('complete-screen');
+  MaeilFx.countUp($('complete-time'), Math.floor(game.elapsed), formatTime);
+  MaeilFx.celebrate({ isBest, won: true });
   $('share-btn').focus();
 }
 

@@ -8,7 +8,7 @@
     stats: 'maeil-game.memory.stats.v1', // { easy: { played, best(초), bestAttempts }, ..., daily: {...} }
     daily: 'maeil-game.memory.daily.v1', // { date, seconds, attempts } 그날 가장 빠른 기록
   };
-  const MISS_SHOW_MS = 900; // 틀린 두 장을 보여 주는 시간
+  const MISS_SHOW_MS = 1100; // 틀린 두 장을 보여 주는 시간(뒤집히는 0.3초 포함)
   const $ = (id) => document.getElementById(id);
 
   let game = null;
@@ -97,11 +97,17 @@
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'card';
+      // 카드 = 안쪽 판(뒤집히며 회전) 위에 뒷면·앞면 두 겹
+      const inner = document.createElement('span');
+      inner.className = 'card-inner';
+      inner.setAttribute('aria-hidden', 'true');
+      const back = document.createElement('span');
+      back.className = 'card-back';
       const face = document.createElement('span');
       face.className = 'face';
       face.textContent = card.symbol;
-      face.setAttribute('aria-hidden', 'true');
-      button.append(face);
+      inner.append(back, face);
+      button.append(inner);
       button.addEventListener('click', () => onFlip(i));
       return button;
     });
@@ -132,7 +138,19 @@
     if (result === 'ignored') return;
     if (!wasStarted) startTimer();
     render();
+    if (result === 'first') MaeilFx.play('flip');
+    if (result === 'match' || result === 'done') {
+      MaeilFx.play('match');
+      MaeilFx.buzz(15);
+      // 방금 맞힌 두 장이 뒤집힌 뒤 톡 튄다
+      game.cards.forEach((card, k) => { if (card.matched && card.symbol === game.cards[index].symbol) setTimeout(() => MaeilFx.pulse(cards[k], 'bounce', 400), 260); });
+    }
     if (result === 'miss') {
+      MaeilFx.play('flip');
+      setTimeout(() => {
+        MaeilFx.play('miss');
+        game.open.forEach((k) => MaeilFx.pulse(cards[k], 'shake', 420));
+      }, 300);
       missTimer = setTimeout(() => { G.hideMiss(game); render(); }, MISS_SHOW_MS);
     }
     if (result === 'done') {
@@ -208,6 +226,8 @@
       : `최고 기록 ${M.formatTime(previous)}`;
     $('again-btn').textContent = game.daily ? '오늘의 도전 다시' : '새 게임';
     showScreen('result-screen');
+    MaeilFx.countUp($('result-time'), seconds, M.formatTime);
+    MaeilFx.celebrate({ isBest, won: true });
     $('share-btn').focus();
   }
 

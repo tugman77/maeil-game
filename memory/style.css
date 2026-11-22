@@ -29,30 +29,54 @@
   .board { --avail-h: calc(100dvh - 230px); }
 }
 
+/* 카드: 안쪽 판이 Y축으로 180도 돌며 뒷면 → 앞면 (진짜 카드처럼) */
 .card {
   border: none;
   border-radius: 12px;
   padding: 0;
-  display: grid;
-  place-items: center;
+  background: none;
+  perspective: 700px;
   font-size: calc(var(--card) * 0.52);
   line-height: 1;
+}
+.card-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 300ms ease;
+}
+.card.open .card-inner, .card.matched .card-inner { transform: rotateY(180deg); }
+.card-back, .card .face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.card-back {
   background: repeating-linear-gradient(45deg, var(--card-back), var(--card-back) 8px, var(--card-back-2) 8px, var(--card-back-2) 16px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  transition: transform 160ms ease;
 }
-.card .face { visibility: hidden; }
-.card.open, .card.matched {
+.card .face {
+  transform: rotateY(180deg);
   background: var(--card-face);
   border: 2px solid var(--button-border);
-  animation: flip 180ms ease-out;
 }
-.card.open .face, .card.matched .face { visibility: visible; }
-.card.matched { background: var(--card-matched); border-color: var(--done); cursor: default; }
-.card.miss { border-color: #d14343; }
-.card:active:not(.matched) { transform: scale(0.96); }
+.card.matched { cursor: default; }
+.card.matched .face { background: var(--card-matched); border-color: var(--done); }
+.card.miss .face { border-color: #d14343; }
 
-@keyframes flip { from { transform: scaleX(0.2); } to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: no-preference) {
+  .card:active:not(.matched) { scale: 0.96; }
+  .card.bounce { animation: card-bounce 400ms ease-out; }
+  .card.shake { animation: card-shake 420ms ease-in-out; }
+  @keyframes card-bounce { 40% { scale: 1.1; } 100% { scale: 1; } }
+  @keyframes card-shake { 20% { translate: -6px 0; } 40% { translate: 6px 0; } 60% { translate: -4px 0; } 80% { translate: 4px 0; } }
+}
 @media (prefers-reduced-motion: reduce) {
-  .card.open, .card.matched { animation: none; }
+  .card-inner { transition: none; }
 }

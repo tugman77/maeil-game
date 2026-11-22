@@ -168,6 +168,33 @@ const Blocks = (() => {
     return { cleared, gained };
   }
 
+  // 지금 조각을 이 자리에 고정하면 꽉 차서 사라질 줄 번호들 (화면에서 줄이 빛난 뒤 사라지게 할 때 쓴다)
+  function fullRowsIfLocked(state) {
+    if (state.over) return [];
+    const board = state.board.slice();
+    cellsOf(state.piece.type, state.piece.rot).forEach(([cx, cy]) => {
+      const y = state.piece.y + cy;
+      if (y >= 0) board[y * COLS + state.piece.x + cx] = 1;
+    });
+    const rows = [];
+    for (let row = 0; row < ROWS; row++) {
+      let full = true;
+      for (let col = 0; col < COLS; col++) if (!board[row * COLS + col]) { full = false; break; }
+      if (full) rows.push(row);
+    }
+    return rows;
+  }
+
+  // 조각을 떨어질 자리까지 바로 내린다(고정은 하지 않음). 내려간 칸 수 ×2점. 돌려줌: 내려간 칸 수
+  function dropToGround(state) {
+    if (state.over) return 0;
+    const target = ghostY(state);
+    const dropped = target - state.piece.y;
+    state.piece = { ...state.piece, y: target };
+    state.score += dropped * 2;
+    return dropped;
+  }
+
   // 바로 떨어뜨리기: 내려간 칸 수 ×2점
   function hardDrop(state) {
     if (state.over) return { cleared: [], gained: 0 };
@@ -194,7 +221,7 @@ const Blocks = (() => {
 
   return {
     COLS, ROWS, TYPES, DIFFICULTIES, DAILY_DIFFICULTY, LINE_SCORE, COLOR_OF,
-    cellsOf, fits, create, move, rotate, stepDown, canFall, ghostY, lock, hardDrop, interval, isValid,
+    cellsOf, fits, create, move, rotate, stepDown, canFall, ghostY, lock, hardDrop, dropToGround, fullRowsIfLocked, interval, isValid,
   };
 })();
 

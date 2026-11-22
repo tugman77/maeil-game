@@ -82,8 +82,13 @@
 .pad-btn:active, .pad-btn.held { background: var(--active); border-color: var(--primary); }
 .pad-btn.drop { background: var(--primary); color: var(--primary-text); border-color: var(--primary); }
 
+/* 꽉 찬 줄: 사라지기 전 0.25초 하얗게 빛남 */
+.bcell.clearing { background: #ffffff !important; box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.9); border-radius: 2px; }
 @media (prefers-reduced-motion: no-preference) {
-  .board.flash { animation: flash 220ms ease-out; }
-  @keyframes flash { 50% { filter: brightness(1.25); } }
+  .bcell.clearing { animation: glow 250ms ease-out; }
+  @keyframes glow { 0% { filter: brightness(1); } 40% { filter: brightness(1.6); } 100% { opacity: 0.4; } }
+  /* 바로 떨어뜨리면 판이 살짝 '쿵' */
+  .board.thud { animation: thud 160ms ease-out; }
+  @keyframes thud { 40% { transform: translateY(4px); } 100% { transform: none; } }
 }
 .pad-btn[data-act="rotate"] { font-size: 32px; font-weight: 700; }

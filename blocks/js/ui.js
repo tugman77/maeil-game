@@ -26,6 +26,9 @@
   let lockAcc = 0;
   let lockResets = 0;
   let dirty = true;
+  let clearing = null; // { rows, until } 줄이 빛나는 중
+  let levelSeen = 1;
+  const CLEAR_MS = 250;
 
   // ---------- 저장 ----------
   const loadStats = () => M.read(KEYS.stats) || {};
@@ -97,8 +100,10 @@
         if (y >= 0) view[y * G.COLS + x] = color;
       });
     }
+    const glowing = new Set(clearing ? clearing.rows : []);
     view.forEach((value, i) => {
-      const cls = value ? `bcell f c${value}` : ghost.has(i) ? 'bcell ghost' : 'bcell';
+      let cls = value ? `bcell f c${value}` : ghost.has(i) ? 'bcell ghost' : 'bcell';
+      if (glowing.has(Math.floor(i / G.COLS))) cls += ' clearing';
       if (cells[i].className !== cls) cells[i].className = cls;
     });
     // 다음 블록 (4×4 안에 가운데 정렬)
@@ -122,6 +127,8 @@
     dropAcc = 0;
     lockAcc = 0;
     lockResets = 0;
+    clearing = null;
+    levelSeen = state.level;
     M.markPlayed(ID);
     saveGame();
     buildBoard();
@@ -159,7 +166,13 @@
     const dt = Math.min(now - lastTime, 100); // 화면이 잠깐 멈췄다 돌아와도 한꺼번에 떨어지지 않게
     lastTime = now;
     game.elapsed += dt / 1000;
-    if (G.canFall(game)) {
+    if (clearing) {
+      // 줄이 빛나는 동안은 멈춰 있다가, 끝나면 고정하고 줄을 지운다
+      if (now >= clearing.until) {
+        clearing = null;
+        afterLock(G.lock(game));
+      }
+    } else if (G.canFall(game)) {
       lockAcc = 0;
       dropAcc += dt;
       if (dropAcc >= G.interval(game)) {
@@ -169,23 +182,38 @@
       }
     } else {
       lockAcc += dt;
-      if (lockAcc >= LOCK_DELAY) afterLock(G.lock(game));
+      if (lockAcc >= LOCK_DELAY) beginLock();
     }
     if (dirty) render();
     if (running) frame = requestAnimationFrame(tick);
   }
 
+  // 고정 시작: 꽉 찰 줄이 있으면 그 줄을 0.25초 빛낸 뒤(clearing) 지우고, 없으면 바로 고정
+  function beginLock() {
+    const rows = G.fullRowsIfLocked(game);
+    if (rows.length) {
+      clearing = { rows, until: performance.now() + CLEAR_MS };
+      MaeilFx.play('clear', { lines: rows.length });
+      MaeilFx.buzz(rows.length >= 4 ? [30, 40, 30] : 20);
+      dirty = true;
+      render();
+    } else {
+      MaeilFx.play('lock');
+      afterLock(G.lock(game));
+    }
+  }
+
   function afterLock(result) {
+    const levelBefore = levelSeen;
     dropAcc = 0;
     lockAcc = 0;
     lockResets = 0;
     dirty = true;
-    if (result.cleared.length) {
-      const board = $('board');
-      board.classList.remove('flash');
-      void board.offsetWidth; // 애니메이션 다시 시작
-      board.classList.add('flash');
-      if (result.cleared.length >= 4) M.showToast('🎉 네 줄 한 번에!');
+    levelSeen = game.level;
+    if (result.cleared.length >= 4) M.showToast('🎉 네 줄 한 번에!');
+    else if (game.level > levelBefore) {
+      M.showToast(`🎉 ${game.level}단계! 조금 더 빨라져요`);
+      MaeilFx.play('levelup');
     }
     if (game.over) {
       stopLoop();
@@ -206,11 +234,11 @@
   }
 
   function act(kind) {
-    if (!game || game.over || paused || !running) return;
+    if (!game || game.over || paused || !running || clearing) return;
     if (kind === 'left' && G.move(game, -1)) touched();
     else if (kind === 'right' && G.move(game, 1)) touched();
-    else if (kind === 'rotate' && G.rotate(game, 1)) touched();
-    else if (kind === 'rotateBack' && G.rotate(game, -1)) touched();
+    else if (kind === 'rotate' && G.rotate(game, 1)) { touched(); MaeilFx.play('rotate'); }
+    else if (kind === 'rotateBack' && G.rotate(game, -1)) { touched(); MaeilFx.play('rotate'); }
     else if (kind === 'down') {
       if (G.stepDown(game)) {
         game.score += 1;
@@ -218,7 +246,12 @@
         dirty = true;
       }
     } else if (kind === 'drop') {
-      afterLock(G.hardDrop(game));
+      // 바로 떨어뜨리기: 바닥까지 내리고 '쿵'(판이 살짝 흔들림) → 고정
+      if (G.dropToGround(game) > 0) MaeilFx.pulse($('board'), 'thud', 160);
+      MaeilFx.play('thud');
+      dirty = true;
+      render();
+      beginLock();
     }
     if (dirty) render();
   }
@@ -270,6 +303,8 @@
       : `최고 점수 ${fmt(stats[key].best)}`;
     $('again-btn').textContent = game.daily ? '오늘의 도전 다시' : '새 게임';
     showScreen('result-screen');
+    MaeilFx.countUp($('result-score'), game.score, fmt);
+    MaeilFx.celebrate({ isBest: isBest && game.score > 0, won: false });
     $('share-btn').focus();
   }
 

@@ -13,7 +13,12 @@
 
   let game = null;
   let picker = null; // 시작 화면(난이도 선택·오늘의 도전) — common/start.js
-  const tiles = [];
+  const slots = [];
+  let layer = null;
+  let tileAt = [];
+  let animTimer = 0;
+  let pending = {};
+  const SLIDE_MS = 105; // 타일이 미끄러지는 시간(ms)
 
   // ---------- 저장 ----------
   const loadStats = () => M.read(KEYS.stats) || {};
@@ -59,15 +64,34 @@
   }
 
   // ---------- 게임 ----------
+  // 판: 바닥 칸 16개(빈 자리) + 그 위에 떠서 움직이는 숫자 타일 층
   function buildBoard() {
     const board = $('board');
     for (let i = 0; i < G.SIZE * G.SIZE; i++) {
-      const tile = document.createElement('div');
-      tile.className = 'tile';
-      tile.setAttribute('role', 'gridcell');
-      board.appendChild(tile);
-      tiles.push(tile);
+      const slot = document.createElement('div');
+      slot.className = 'slot';
+      slot.setAttribute('role', 'gridcell');
+      board.appendChild(slot);
+      slots.push(slot);
     }
+    layer = document.createElement('div');
+    layer.className = 'layer';
+    layer.setAttribute('aria-hidden', 'true');
+    board.appendChild(layer);
+  }
+
+  function placeTile(el, index) {
+    el.style.setProperty('--x', index % G.SIZE);
+    el.style.setProperty('--y', Math.floor(index / G.SIZE));
+  }
+
+  function makeTile(value, index) {
+    const el = document.createElement('div');
+    const digits = String(value).length;
+    el.className = `tile ${value > 2048 ? 'vbig' : `v${value}`}${digits >= 3 ? ` d${Math.min(digits, 5)}` : ''}`;
+    el.textContent = value;
+    placeTile(el, index);
+    return el;
   }
 
   function start(state) {
@@ -90,20 +114,21 @@
   }
 
   function render(effects = {}) {
+    clearTimeout(animTimer);
+    animTimer = 0;
     const stats = loadStats();
+    tileAt = new Array(G.SIZE * G.SIZE).fill(null);
+    const els = [];
     game.cells.forEach((value, i) => {
-      const tile = tiles[i];
-      const digits = String(value).length;
-      tile.className = 'tile';
-      if (value) {
-        tile.classList.add(value > 2048 ? 'vbig' : `v${value}`);
-        if (digits >= 3) tile.classList.add(`d${Math.min(digits, 5)}`);
-      }
-      if (i === effects.spawned) tile.classList.add('new');
-      if (effects.merged?.includes(i)) tile.classList.add('merged');
-      tile.textContent = value || '';
-      tile.setAttribute('aria-label', value ? String(value) : '빈칸');
+      slots[i].setAttribute('aria-label', value ? String(value) : '빈칸');
+      if (!value) return;
+      const el = makeTile(value, i);
+      if (i === effects.spawned) el.classList.add('new');
+      if (effects.merged?.includes(i)) el.classList.add('merged');
+      tileAt[i] = el;
+      els.push(el);
     });
+    layer.replaceChildren(...els);
     $('score').textContent = fmt(game.score);
     $('best').textContent = fmt(Math.max(game.score, stats[statKey(game)]?.best || 0));
     $('undo-btn').disabled = game.undoLeft <= 0 || game.history.length === 0;
@@ -113,17 +138,44 @@
     $('restart-btn').hidden = Boolean(game.daily);
   }
 
+  // 밀기: 타일이 0.1초 동안 미끄러져 간 뒤, 합쳐진 타일이 톡 튀고 새 타일이 나타난다.
   function doMove(direction) {
     if (!game || game.over || $('game-screen').hidden) return;
+    if (animTimer) render(pending); // 앞의 움직임이 끝나기 전에 또 밀면 바로 마무리하고 이어서
     const result = G.move(game, direction);
     if (!result.moved) return;
-    render(result);
-    if (result.reachedGoal) M.showToast('🎉 2048 달성! 계속해서 더 큰 숫자에 도전해 보세요');
+    pending = result;
+    result.moves.forEach(({ from, to }) => { if (tileAt[from]) placeTile(tileAt[from], to); });
+    animTimer = setTimeout(() => render(result), SLIDE_MS);
+    $('score').textContent = fmt(game.score);
+    if (result.gained) floatScore(result.gained);
+
+    if (result.merged.length) {
+      const top = Math.max(...result.merged.map((i) => game.cells[i]));
+      MaeilFx.play('merge', { level: Math.log2(top) - 1 });
+    } else {
+      MaeilFx.play('slide');
+    }
+    if (result.reachedGoal) {
+      M.showToast('🎉 2048 달성! 계속해서 더 큰 숫자에 도전해 보세요');
+      MaeilFx.play('success');
+      MaeilFx.buzz([20, 40, 20]);
+    }
     if (game.over) {
-      setTimeout(finish, 450);
+      setTimeout(finish, 650);
     } else {
       saveGame();
     }
+  }
+
+  // 점수 옆에 '+8'이 떠올랐다 사라진다
+  function floatScore(gained) {
+    const box = $('score').parentElement;
+    const tag = document.createElement('span');
+    tag.className = 'score-float';
+    tag.textContent = `+${fmt(gained)}`;
+    box.appendChild(tag);
+    setTimeout(() => tag.remove(), 750);
   }
 
   function undoMove() {
@@ -172,6 +224,8 @@
       : `최고 점수 ${fmt(loadStats()[statKey(game)].best)}`;
     $('again-btn').textContent = game.daily ? '오늘의 도전 다시' : '새 게임';
     showScreen('result-screen');
+    MaeilFx.countUp($('result-score'), game.score, fmt);
+    MaeilFx.celebrate({ isBest, won: game.won });
     $('share-btn').focus();
   }
 

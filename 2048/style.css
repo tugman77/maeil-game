@@ -28,7 +28,20 @@
   border-radius: 14px;
 }
 
+/* 바닥 칸(빈 자리)과, 그 위에서 움직이는 숫자 타일 층 */
+.board { position: relative; }
+.slot { border-radius: 8px; background: var(--empty); }
+.layer { position: absolute; inset: calc(var(--board) * 0.025); }
+
 .tile {
+  --gap: calc(var(--board) * 0.025);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc((100% - 3 * var(--gap)) / 4);
+  height: calc((100% - 3 * var(--gap)) / 4);
+  transform: translate(calc(var(--x) * (100% + var(--gap))), calc(var(--y) * (100% + var(--gap))));
+  transition: transform 105ms ease-in-out;
   display: grid;
   place-items: center;
   border-radius: 8px;
@@ -57,9 +70,25 @@
 .tile.vbig { background: var(--tbig); color: #fff; }
 
 .tile.new { animation: appear 160ms ease-out; }
-.tile.merged { animation: pop 160ms ease-out; }
-@keyframes appear { from { transform: scale(0.3); opacity: 0.3; } to { transform: scale(1); opacity: 1; } }
-@keyframes pop { 50% { transform: scale(1.14); } }
+.tile.merged { animation: pop 180ms ease-out; z-index: 1; }
+/* 위치는 transform(이동)이 쓰므로, 커지고 작아지는 움직임은 scale 속성으로 따로 준다 */
+@keyframes appear { from { scale: 0.2; opacity: 0.2; } to { scale: 1; opacity: 1; } }
+@keyframes pop { 50% { scale: 1.16; } }
+
+/* 점수 옆 '+8' */
+.stat-box { position: relative; }
+.score-float {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  translate: -50% 0;
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 15px;
+  pointer-events: none;
+  animation: fx-float-up 700ms ease-out forwards;
+}
 @media (prefers-reduced-motion: reduce) {
-  .tile.new, .tile.merged { animation: none; }
+  .tile { transition: none; }
+  .tile.new, .tile.merged, .score-float { animation: none; }
 }

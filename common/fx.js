@@ -188,5 +188,19 @@ const MaeilFx = (() => {
     setTimeout(() => el.classList.remove(cls), ms);
   }
 
-  return { play, buzz, countUp, confetti, pulse, soundOn };
+  // 결과 화면 연출: 새 기록이면 색종이+축하음, 성공이면 축하음, 아니면 부드러운 끝 소리
+  function celebrate({ isBest = false, won = true } = {}) {
+    if (isBest) {
+      play('record');
+      buzz([25, 50, 25]);
+      setTimeout(confetti, 150);
+    } else if (won) {
+      play('success');
+      buzz(25);
+    } else {
+      play('over');
+    }
+  }
+
+  return { play, buzz, countUp, confetti, pulse, celebrate, soundOn };
 })();
