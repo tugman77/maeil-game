@@ -40,8 +40,9 @@ tests/                          node tests/common.test.js · node tests/games.te
 - 도메인은 게임을 어느 정도 만든 뒤 정한다. 옮길 때 '기록 옮기기'(옛 주소에서 `#` 뒷부분으로 기록 전달) 필수 — localStorage는 주소별이라 그냥 옮기면 기록·출석이 사라진다.
 
 ## 배포 (예정)
-저장소 `tugman77/maeil-game` → GitHub Pages(main 루트) → `https://tugman77.github.io/maeil-game/`.
-같은 `tugman77.github.io`라 매일 스도쿠 기록을 그대로 이어받는다. 옛 주소 `maeil-sudoku`는 4주차에 넘김 페이지로 바꾸고, 총괄 아침 안내·`게임점검.js` 주소도 교체.
+저장소 `tugman77/maeil-game` → GitHub Pages(main 루트) → `https://tugman77.github.io/maeil-game/`. push하면 1~2분 뒤 반영.
+같은 `tugman77.github.io`라 매일 스도쿠 기록을 그대로 이어받는다. 옛 주소 `maeil-sudoku`는 넘김만 한다(`../스도쿠게임`).
+컨트롤타워 `게임점검.js`가 매일 사이트·sw.js 파일·스도쿠 생성기(배포본=로컬)를 점검한다 — sw.js FILES에 없는 파일을 넣거나 생성기를 고치면 걸린다.
 
 ## 진행
 - [x] 1주차: 공통 모듈·허브·스도쿠 옮기기 (2026-11-22)
@@ -50,5 +51,6 @@ tests/                          node tests/common.test.js · node tests/games.te
 - [x] 디자인 개편: 게임 라운지(카드 2~4열·썸네일·도장판) (2026-11-22, ChatGPT 제안서 + 검토 의견)
 - [x] 4주차: 블록 쌓기(버튼 줄 ◀↻▶▼⤓ + 판 위 밀기), 개인정보처리방침·소개 (2026-11-22)
 - [x] 시작 화면 통일·메인 정돈(ChatGPT 2차 제안 + 검토: 오늘의 도전을 게임 시작 위에, 이어하기 유지) (2026-11-22)
-- [ ] 옛 주소 maeil-sudoku 넘김 페이지 + 채널등록부·총괄 아침 안내·시너지 링크 교체 (대표님 확인 후)
+- [x] 옛 주소 maeil-sudoku → 넘김 페이지(+옛 서비스 워커 자동 해제), 채널등록부 `매일게임`·아침 안내 '오늘의 도전'·블로그 4곳 배너 링크 교체 (2026-11-22)
+- 문의처: 지금은 GitHub 문의 게시판(about.html·privacy.html). 대표님이 메일 주소를 주시면 교체
 - 설명 글은 `tools/make_guides.py`를 고쳐 다시 만든다. 개인정보처리방침은 통계·광고 도입 **전에** 고친다(4항)
