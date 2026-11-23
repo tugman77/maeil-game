@@ -102,7 +102,8 @@
     $('place-btn').disabled = thinking || selected < 0 || game.over || game.turn !== G.BLACK;
     $('place-btn').textContent = selected >= 0 ? `${coord(selected)}에 두기` : '둘 곳을 선택하세요';
     const status = game.over ? (game.winner === G.BLACK ? '승리! 내 돌이 더 많아요' : game.winner === G.WHITE ? '대국이 끝났어요' : '같은 수로 무승부예요')
-      : thinking ? (thinking === 'hint' ? '추천할 수를 살펴보고 있어요…' : '컴퓨터가 생각하는 중…')
+      : thinking ? (thinking === 'hint' ? '추천할 수를 살펴보고 있어요…'
+        : `${game.lastPassed === G.BLACK ? '내가 둘 곳이 없어 차례를 넘겼어요. ' : ''}컴퓨터가 생각하는 중…`)
       : `${game.lastPassed ? (game.lastPassed === G.WHITE ? '컴퓨터가 둘 곳이 없어 차례를 넘겼어요. ' : '내가 둘 곳이 없어 차례를 넘겼어요. ') : ''}${game.turn === G.BLACK ? '내 차례 · 밝은 원을 선택하세요' : '컴퓨터 차례'}`;
     $('game-status').classList.toggle('thinking', Boolean(thinking));
     if ($('game-status').textContent !== status) $('game-status').textContent = status;

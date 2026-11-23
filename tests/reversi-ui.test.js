@@ -143,6 +143,7 @@ test('내가 패스하면 컴퓨터가 연속으로 두고, 무르기는 내 선
   b.click('continue-btn'); b.advance(350); b.workers[0].reply(example.index);
   assert.equal(b.get(GAME).turn,G.WHITE);
   assert.ok(b.element('game-status').textContent.includes('컴퓨터'));
+  assert.ok(b.element('game-status').textContent.includes('내가 둘 곳이 없어 차례를 넘겼어요'));
   b.advance(350); assert.equal(b.workers.length,2);
   const expected=example.state.history.at(-1);
   b.click('undo-btn');
