@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "site": "https://tugman77.github.io/maeil-game/",
+  "repository": "tugman77/maeil-game",
+  "policy": {
+    "requested_on": "2026-11-23",
+    "timezone": "Asia/Seoul",
+    "target_new_games_per_day": 1,
+    "first_run_not_before": "2026-11-24",
+    "suggested_local_time": "09:00",
+    "schedule_registration_status": "not_registered",
+    "schedule_id": null,
+    "schedule_note": "이 파일은 작업 계획이며 예약 실행기가 아니다. 현재 대화에는 프로젝트 예약 등록 도구가 없어 실제 자동 실행은 등록하지 못했다.",
+    "audience": "40대 이상이 간편하게 조작하면서 전략 보드게임도 즐기는 이용자",
+    "quality_rule": "완성·검사가 끝난 게임만 공개. 어려운 게임은 여러 날에 걸쳐 완성할 수 있으며 미완성 게임으로 일일 목표를 채우지 않는다."
+  },
+  "completed": [
+    { "id": "reversi", "name": "리버시", "completed_on": "2026-11-23", "status": "published" }
+  ],
+  "backlog": [
+    { "id": "morris", "name": "나인 멘스 모리스", "status": "pending" },
+    { "id": "chamgonu", "name": "참고누", "status": "pending", "note": "모리스와 공통 규칙을 재사용하되 한국 전통 규칙의 차이를 확인한다." },
+    { "id": "golf-solitaire", "name": "골프형 솔리테어", "status": "pending" },
+    { "id": "sichuan", "name": "사천성", "status": "pending" },
+    { "id": "klondike", "name": "클론다이크 솔리테어", "status": "pending" },
+    { "id": "freecell", "name": "프리셀", "status": "pending" },
+    { "id": "mancala", "name": "만칼라", "status": "pending" },
+    { "id": "checkers", "name": "체커", "status": "pending" },
+    { "id": "shanghai", "name": "상하이 패 짝맞추기", "status": "pending" },
+    { "id": "nonogram", "name": "노노그램", "status": "pending" },
+    { "id": "sokoban", "name": "창고 밀기", "status": "pending" },
+    { "id": "gostop", "name": "맞고", "status": "pending", "note": "점수·특수 규칙과 컴퓨터 공정성을 검증하는 여러 날의 개발을 허용한다." },
+    { "id": "janggi", "name": "장기", "status": "pending", "note": "사용 가능한 엔진과 웹 실행 방식을 검토하고 통합 범위를 기록한다." },
+    { "id": "go", "name": "바둑", "status": "pending", "note": "9줄부터 시작하고 큰 판은 같은 게임의 기능 확장으로 다룬다." }
+  ],
+  "runs": []
+}
