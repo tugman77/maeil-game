@@ -66,7 +66,16 @@ const GameThumbs = (() => {
     );
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks };
+  // 스네이크: 굽은 몸통·두 눈·먹이. 허브와 시작 화면에 같은 그림을 쓴다.
+  function snake() {
+    return svg('<rect x="22" y="15" width="116" height="90" rx="10" class="th-snake-board"/>'
+      + '<path d="M42 84 V42 H78 V78 H104 V57" fill="none" class="th-snake-body" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>'
+      + '<rect x="95" y="40" width="19" height="23" rx="7" class="th-snake-head"/>'
+      + '<circle cx="100" cy="47" r="2" class="th-snake-eye"/><circle cx="109" cy="47" r="2" class="th-snake-eye"/>'
+      + '<circle cx="111" cy="83" r="7" class="th-snake-food"/><path d="M112 76 Q111 69 117 70" fill="none" class="th-snake-body" stroke-width="3" stroke-linecap="round"/>');
+  }
+
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

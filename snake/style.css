@@ -1,0 +1,65 @@
+/* 스네이크: 정사각 판 + 한 손으로 누르는 큰 방향 버튼. */
+:root {
+  --snake-board: #edf3e4;
+  --snake-grid: #dce6d0;
+  --snake-body: #54843c;
+  --snake-head: #244d2b;
+  --snake-eye: #ffffff;
+  --snake-food: #c94d35;
+}
+:root[data-theme="dark"] {
+  --snake-board: #18231b;
+  --snake-grid: #233426;
+  --snake-body: #8dbc68;
+  --snake-head: #ceeba8;
+  --snake-eye: #163422;
+  --snake-food: #fa9674;
+}
+.snake-game { gap: 10px; }
+.snake-game .game-header { width: min(100%, 440px); }
+.snake-game .stat-box small { font-size: .8rem; }
+.snake-status { width: min(100%, 440px); margin: 0; color: var(--muted); text-align: center; font-size: .9rem; }
+.snake-game .board-area { max-width: 100%; }
+.snake-board {
+  --board-size: min(440px, calc(100vw - 36px), max(200px, calc(100dvh - 300px)));
+  width: var(--board-size);
+  height: var(--board-size);
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  grid-template-rows: repeat(16, minmax(0, 1fr));
+  background: var(--snake-board);
+  border: 2px solid var(--button-border);
+  border-radius: 12px;
+  overflow: hidden;
+  touch-action: none;
+}
+.snake-cell { position: relative; border-right: 1px solid var(--snake-grid); border-bottom: 1px solid var(--snake-grid); }
+.snake-cell.body { background: var(--snake-body); border: 1px solid var(--snake-board); border-radius: 30%; }
+.snake-cell.tail { opacity: .75; }
+.snake-cell.head { background: var(--snake-head); border-radius: 35%; }
+.snake-cell.head::after {
+  content: ''; position: absolute; width: 20%; height: 20%; left: 58%; top: 16%;
+  background: var(--snake-eye); border-radius: 50%; box-shadow: 0 .45em 0 var(--snake-eye);
+}
+.snake-cell.head.up { transform: rotate(-90deg); }
+.snake-cell.head.down { transform: rotate(90deg); }
+.snake-cell.head.left { transform: rotate(180deg); }
+.snake-cell.food::before { content: ''; position: absolute; inset: 19%; background: var(--snake-food); border-radius: 45% 45% 50% 50%; }
+.snake-cell.food::after { content: ''; position: absolute; width: 24%; height: 15%; left: 48%; top: 10%; background: var(--snake-body); border-radius: 90% 0; transform: rotate(-20deg); }
+.snake-cell.hit { outline: 2px solid var(--snake-food); outline-offset: -2px; }
+.snake-pad { width: min(100%, 286px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.snake-pad button { min-height: 54px; font-size: 23px; border: 1px solid var(--button-border); background: var(--button); border-radius: 13px; touch-action: manipulation; }
+.snake-pad button:active { background: var(--active); border-color: var(--primary); }
+.snake-pad [data-direction="up"] { grid-column: 2; }
+.snake-pad [data-direction="left"] { grid-column: 1; grid-row: 2; }
+.snake-pad [data-direction="down"] { grid-column: 2; grid-row: 2; }
+.snake-pad [data-direction="right"] { grid-column: 3; grid-row: 2; }
+.snake-game .pause-overlay { padding: 18px; text-align: center; }
+.snake-game .pause-overlay p { margin: 0; }
+.snake-game .pause-overlay .primary-btn { min-width: 160px; }
+.snake-help { max-width: 440px; font-size: .85rem; }
+@supports not (height: 100dvh) { .snake-board { --board-size: min(440px, calc(100vw - 36px), max(200px, calc(100vh - 300px))); } }
+@media (prefers-reduced-motion: no-preference) {
+  .snake-board.ate { animation: snake-bite 180ms ease-out; }
+  @keyframes snake-bite { 50% { border-color: var(--snake-body); box-shadow: 0 0 0 3px var(--active); } }
+}

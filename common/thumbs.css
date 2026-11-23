@@ -5,11 +5,13 @@
 .thumb-memory { --tint: #e7e0f3; }
 .thumb-minesweeper { --tint: #d9eaf7; }
 .thumb-blocks { --tint: #f7ddd6; }
+.thumb-snake { --tint: #e4eed5; }
 :root[data-theme="dark"] .thumb-sudoku { --tint: #1f3328; }
 :root[data-theme="dark"] .thumb-2048 { --tint: #3a3022; }
 :root[data-theme="dark"] .thumb-memory { --tint: #2c2540; }
 :root[data-theme="dark"] .thumb-minesweeper { --tint: #1c2d3d; }
 :root[data-theme="dark"] .thumb-blocks { --tint: #3b2622; }
+:root[data-theme="dark"] .thumb-snake { --tint: #263520; }
 
 .thumb text, .st-preview text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; text-anchor: middle; font-weight: 800; }
 .th-paper { fill: #ffffff; }
@@ -37,6 +39,11 @@
 .th-b2 { fill: #2f8f6b; }
 .th-b3 { fill: #f2b01e; }
 .th-fallback { font-size: 54px; fill: var(--primary); }
+.th-snake-board { fill: #f4f8ec; stroke: #b8caa5; stroke-width: 2; }
+.th-snake-body { stroke: #699347; }
+.th-snake-head { fill: #244d2b; }
+.th-snake-eye { fill: #ffffff; }
+.th-snake-food { fill: #c94d35; }
 
 :root[data-theme="dark"] .th-paper { fill: #2a302c; }
 :root[data-theme="dark"] .th-frame { stroke: #d5ddd7; }
@@ -53,3 +60,8 @@
 :root[data-theme="dark"] .th-n2 { fill: #6fd38d; }
 :root[data-theme="dark"] .th-pole { stroke: #e9eee9; }
 :root[data-theme="dark"] .th-well { fill: #2a2422; stroke: #5a3f38; }
+:root[data-theme="dark"] .th-snake-board { fill: #18231b; stroke: #47613d; }
+:root[data-theme="dark"] .th-snake-body { stroke: #8dbc68; }
+:root[data-theme="dark"] .th-snake-head { fill: #ceeba8; }
+:root[data-theme="dark"] .th-snake-eye { fill: #163422; }
+:root[data-theme="dark"] .th-snake-food { fill: #fa9674; }

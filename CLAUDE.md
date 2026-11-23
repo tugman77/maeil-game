@@ -22,7 +22,7 @@ common/start.js · start.css     게임별 시작 화면 공통 틀(목록 링�
 sw.js                           사이트 전체 공용 오프라인 보관 (파일 추가 시 FILES에도 추가)
 sudoku/                         스도쿠 (자체 CLAUDE.md 규칙은 ../스도쿠게임/CLAUDE.md 참고)
 tests/                          node tests/common.test.js · node tests/games.test.js
-2048/ · memory/                 각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
+2048/ · memory/ · minesweeper/ · blocks/ · snake/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
 ```
 
 ## 새 게임 붙이는 법
@@ -55,5 +55,6 @@ tests/                          node tests/common.test.js · node tests/games.te
 - [x] 시작 화면 통일·메인 정돈(ChatGPT 2차 제안 + 검토: 오늘의 도전을 게임 시작 위에, 이어하기 유지) (2026-11-22)
 - [x] 옛 주소 maeil-sudoku → 넘김 페이지(+옛 서비스 워커 자동 해제), 채널등록부 `매일게임`·아침 안내 '오늘의 도전'·블로그 4곳 배너 링크 교체 (2026-11-22)
 - [x] 효과음·움직임 (2026-11-23): 2048 미끄러짐·합치기 톡, 블록 줄 빛남→지우기·쿵·단계 알림, 지뢰 물결 열기·지뢰/깃발 차례로, 카드 입체 뒤집기·흔들림·튐, 스도쿠 줄 완성 물결, 화면 전환·버튼 눌림, 결과 숫자 올라가기·새 기록 색종이, 진동(안드로이드)
+- [x] 2차 첫 게임 스네이크 (2026-11-23, Codex): 16×16 판, 방향 버튼·밀기·방향키/WASD, 쉬움·보통·어려움, 자동 일시정지·이어하기, 최고 점수·공유, 매일 도전(보통·먹이 10개 목표), 썸네일·설명·오프라인 연결. 검사: `node --test tests/snake*.test.js` (규칙 9개·화면 흐름 8개, 브라우저 배치 확인은 별도).
 - 문의처: 지금은 GitHub 문의 게시판(about.html·privacy.html). 대표님이 메일 주소를 주시면 교체
 - 설명 글은 `tools/make_guides.py`를 고쳐 다시 만든다. 개인정보처리방침은 통계·광고 도입 **전에** 고친다(4항)
