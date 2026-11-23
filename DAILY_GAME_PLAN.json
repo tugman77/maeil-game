@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -20,18 +20,38 @@
   "backlog": [
     { "id": "morris", "name": "나인 멘스 모리스", "status": "pending" },
     { "id": "chamgonu", "name": "참고누", "status": "pending", "note": "모리스와 공통 규칙을 재사용하되 한국 전통 규칙의 차이를 확인한다." },
+    { "id": "initial-quiz", "name": "초성 퀴즈", "status": "pending", "note": "검수한 문제은행과 힌트, 복수 정답 처리를 마련한다." },
+    { "id": "proverb-quiz", "name": "속담 완성", "status": "pending", "note": "속담 빈칸을 보기에서 고르고 정답 해설을 제공한다." },
     { "id": "golf-solitaire", "name": "골프형 솔리테어", "status": "pending" },
     { "id": "sichuan", "name": "사천성", "status": "pending" },
+    { "id": "word-search", "name": "한글 단어 찾기", "status": "pending" },
     { "id": "klondike", "name": "클론다이크 솔리테어", "status": "pending" },
     { "id": "freecell", "name": "프리셀", "status": "pending" },
     { "id": "mancala", "name": "만칼라", "status": "pending" },
     { "id": "checkers", "name": "체커", "status": "pending" },
     { "id": "shanghai", "name": "상하이 패 짝맞추기", "status": "pending" },
+    { "id": "crossword", "name": "가로세로 낱말퍼즐", "status": "pending", "note": "교차 글자·정답·해설을 검증한 문제부터 제공한다." },
+    { "id": "daily-word", "name": "하루 한 단어", "status": "pending", "note": "한글 글자·자모 힌트 방식을 정하고 허용 단어 목록을 검수한다." },
     { "id": "nonogram", "name": "노노그램", "status": "pending" },
     { "id": "sokoban", "name": "창고 밀기", "status": "pending" },
     { "id": "gostop", "name": "맞고", "status": "pending", "note": "점수·특수 규칙과 컴퓨터 공정성을 검증하는 여러 날의 개발을 허용한다." },
     { "id": "janggi", "name": "장기", "status": "pending", "note": "사용 가능한 엔진과 웹 실행 방식을 검토하고 통합 범위를 기록한다." },
     { "id": "go", "name": "바둑", "status": "pending", "note": "9줄부터 시작하고 큰 판은 같은 게임의 기능 확장으로 다룬다." }
+  ],
+  "additional_candidates": [
+    { "id": "sliding-puzzle", "name": "숫자 슬라이드 퍼즐" },
+    { "id": "hanoi", "name": "하노이 탑" },
+    { "id": "connect-four", "name": "사목" },
+    { "id": "peg-solitaire", "name": "구슬 빼기" },
+    { "id": "dice-combinations", "name": "주사위 족보" },
+    { "id": "make-ten", "name": "합 10 만들기" },
+    { "id": "hex", "name": "헥스" },
+    { "id": "chess", "name": "체스" },
+    { "id": "three-player-gostop", "name": "3인 고스톱" },
+    { "id": "spot-differences", "name": "틀린 그림 찾기", "note": "그림 제작과 정답 영역 검수 부담을 고려해 후순위로 둔다." }
+  ],
+  "existing_game_extensions": [
+    { "id": "memory", "feature": "그림을 모두 보여주는 짝맞추기 모드", "note": "기존 카드 짝맞추기 확장으로 다루고 신규 게임 수에 중복 집계하지 않는다." }
   ],
   "runs": []
 }
