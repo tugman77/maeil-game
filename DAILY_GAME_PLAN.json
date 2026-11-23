@@ -37,15 +37,18 @@
       "commit": "b4c22d2a6770b7a9261959c2af3dbcf6fd724a56",
       "url": "https://tugman77.github.io/maeil-game/sichuan/",
       "deployment_run": 45202370380
-    }
-  ],
-  "backlog": [
+    },
     {
       "id": "number-baseball",
       "name": "숫자야구",
-      "status": "ready_to_publish",
-      "note": "기본·오늘의 도전은 서로 다른 세 자리, 첫 자리 0 불가. 쉬움은 1~6·후보 수 표시, 어려움은 네 자리. 힌트 횟수·추측 횟수·시간 기록."
-    },
+      "completed_on": "2026-11-24",
+      "status": "published",
+      "commit": "b7380d11b94f4a7da1f934deb75aa8f0de624a79",
+      "url": "https://tugman77.github.io/maeil-game/number-baseball/",
+      "deployment_run": 45205474043
+    }
+  ],
+  "backlog": [
     {
       "id": "freecell",
       "name": "프리셀",
@@ -285,14 +288,18 @@
     },
     {
       "game": "number-baseball",
-      "status": "verified_pending_deploy",
+      "status": "published",
       "requested_on": "2026-11-24",
       "trigger": "user_requested",
       "base_commit": "9a2824f70fe1a489ca253b91fe0a931005b3bff8",
       "note": "사용자가 사천성 이후 다음 게임 제작을 직접 요청함. 하루 목표와 별개로 명시적 제작 지시에 따라 진행.",
       "verified_on": "2026-11-24",
       "tests": "숫자야구 26개 및 전체 node --test 107개, common·games 검사. 세 자리 419,904쌍 판정 비교.",
-      "verification_limit": "실제 브라우저 모바일·PC 화면 배치 검수 불가"
+      "verification_limit": "실제 브라우저 모바일·PC 화면 배치 검수 불가",
+      "completed_on": "2026-11-24",
+      "commit": "b7380d11b94f4a7da1f934deb75aa8f0de624a79",
+      "url": "https://tugman77.github.io/maeil-game/number-baseball/",
+      "deployment_run": 45205474043
     }
   ]
 }
