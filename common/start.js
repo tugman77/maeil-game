@@ -15,7 +15,10 @@ const MaeilStart = (() => {
     if (!keys.includes(selected)) selected = keys.includes(options.defaultKey || 'medium') ? (options.defaultKey || 'medium') : keys[0];
 
     const preview = $('preview');
-    if (preview && typeof GameThumbs !== 'undefined') preview.innerHTML = GameThumbs.render({ id, name: '' });
+    if (preview && typeof GameThumbs !== 'undefined') {
+      preview.innerHTML = GameThumbs.render({ id, name: '' });
+      fitPreview(preview);
+    }
 
     const list = $('difficulty-list');
     list.classList.toggle('four', difficulties.length === 4);
@@ -98,6 +101,25 @@ const MaeilStart = (() => {
         }
       },
     };
+  }
+
+  // 썸네일은 목록 카드용이라 160×120 안에 여백이 있다. 시작 화면에서는 그림 둘레만 남기고 잘라 칸을 꽉 채운다.
+  // 화면에 보일 때(크기가 생길 때) 한 번 잰다 — #daily로 바로 게임에 들어가 시작 화면이 숨어 있으면 나중에.
+  function fitPreview(preview) {
+    const svg = preview.querySelector('svg');
+    if (!svg || typeof svg.getBBox !== 'function') return;
+    const fit = () => {
+      try {
+        const box = svg.getBBox();
+        if (!(box.width > 0 && box.height > 0)) return false;
+        const m = 5; // 테두리 굵기·그림자 여유
+        svg.setAttribute('viewBox', `${box.x - m} ${box.y - m} ${box.width + m * 2} ${box.height + m * 2}`);
+        return true;
+      } catch { return false; }
+    };
+    if (fit() || typeof ResizeObserver !== 'function') return;
+    const watch = new ResizeObserver(() => { if (fit()) watch.disconnect(); });
+    watch.observe(preview);
   }
 
   // 효과음: 처음 한 번 "효과음을 켤까요?"를 묻고(어느 게임에서든 한 번 답하면 끝), 소리 버튼으로 켜고 끈다.

@@ -34,7 +34,7 @@
 .st-desc { margin: 4px 0 0; color: var(--muted); font-size: 0.95em; }
 
 /* 대표 카드: 큰 그림(게임 색 배경 + 빛 + 점무늬 + 그림자) + 오늘의 도전 띠. 모든 게임 같은 모양.
-   그림 높이는 화면 높이에 맞춘다 — 작은 휴대폰에서도 '게임 시작'이 첫 화면에 들어오게(최소 104px, 최대 190px). */
+   그림 높이는 화면 높이에 맞춘다 — 작은 휴대폰에서도 '게임 시작'이 첫 화면에 들어오게(최소 110px, 최대 240px). */
 .st-hero {
   border-radius: 18px;
   overflow: hidden;
@@ -44,20 +44,20 @@
 }
 .st-hero.no-daily { border-color: var(--button-border); }
 .st-preview {
-  --hero-h: clamp(104px, calc(100vh - 470px), 190px);
+  --hero-h: clamp(110px, calc(100vh - 470px), 240px);
   height: var(--hero-h);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 0;
+  padding: 8px 0;
   background:
     radial-gradient(ellipse 46% 62% at 50% 52%, rgb(255 255 255 / .62), transparent 72%),
     radial-gradient(rgb(0 0 0 / .07) 1.2px, transparent 1.6px) 0 0 / 14px 14px,
     var(--tint, var(--active));
 }
-@supports (height: 100dvh) { .st-preview { --hero-h: clamp(104px, calc(100dvh - 470px), 190px); } }
-.st.has-continue .st-preview { --hero-h: clamp(96px, calc(100dvh - 540px), 150px); }
-:root.large-text .st-preview { --hero-h: clamp(96px, calc(100dvh - 520px), 170px); }
+@supports (height: 100dvh) { .st-preview { --hero-h: clamp(110px, calc(100dvh - 470px), 240px); } }
+.st.has-continue .st-preview { --hero-h: clamp(100px, calc(100dvh - 560px), 190px); }
+:root.large-text .st-preview { --hero-h: clamp(100px, calc(100dvh - 540px), 210px); }
 :root.large-text .st.has-continue .st-preview { --hero-h: 96px; }
 .st-preview svg { height: 100%; width: auto; max-width: 100%; filter: drop-shadow(0 6px 8px rgb(0 0 0 / .18)); }
 :root[data-theme="dark"] .st-preview {
@@ -68,8 +68,8 @@
     var(--tint, var(--active));
 }
 :root[data-theme="dark"] .st-preview svg { filter: drop-shadow(0 6px 10px rgb(0 0 0 / .45)); }
-.st-hero.no-daily .st-preview { --hero-h: clamp(120px, calc(100dvh - 400px), 210px); }
-.st.has-continue .st-hero.no-daily .st-preview { --hero-h: clamp(104px, calc(100dvh - 480px), 170px); }
+.st-hero.no-daily .st-preview { --hero-h: clamp(120px, calc(100dvh - 410px), 260px); }
+.st.has-continue .st-hero.no-daily .st-preview { --hero-h: clamp(104px, calc(100dvh - 500px), 210px); }
 
 .st-continue {
   width: 100%;
