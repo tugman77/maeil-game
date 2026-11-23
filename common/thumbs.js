@@ -179,7 +179,19 @@ const GameThumbs = (() => {
       + '<text x="53.5" y="92.5" class="th-nb-score">1S</text><text x="106.5" y="92.5" class="th-nb-score">2B</text>');
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball };
+  function freecell() {
+    let body = '<rect x="15" y="8" width="130" height="104" rx="12" class="th-fc-board"/>';
+    for (let i = 0; i < 4; i++) body += `<rect x="${25+i*14}" y="18" width="11" height="17" rx="2" class="th-fc-cell"/>`;
+    for (let i = 0; i < 4; i++) body += `<rect x="${88+i*11}" y="18" width="9" height="17" rx="2" class="th-fc-cell"/>`;
+    const cards = [['K', '♠', false], ['Q', '♥', true], ['J', '♣', false], ['A', '♦', true]];
+    cards.forEach(([value, suit, red], i) => {
+      const x = 27+i*27, y = 44+(i%2)*9;
+      body += `<rect x="${x}" y="${y}" width="24" height="43" rx="4" class="th-fc-card"/><text x="${x+12}" y="${y+17}" class="th-fc-text${red ? ' th-fc-red' : ''}">${value}</text><text x="${x+12}" y="${y+34}" class="th-fc-text${red ? ' th-fc-red' : ''}">${suit}</text>`;
+    });
+    return svg(body);
+  }
+
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -52,8 +52,8 @@
     {
       "id": "freecell",
       "name": "프리셀",
-      "status": "pending",
-      "note": "같은 날짜에는 같은 판 번호. 오늘의 도전은 풀이가 검증된 판을 사용한다."
+      "status": "ready_to_publish",
+      "note": "24개 무작위 판의 전체 풀이를 검증하고 줄·무늬 변환 후 재검증해 사용. 같은 난이도·전용 판 번호는 같은 배치, 오늘의 도전은 보통."
     },
     {
       "id": "klondike",
@@ -300,6 +300,17 @@
       "commit": "b7380d11b94f4a7da1f934deb75aa8f0de624a79",
       "url": "https://tugman77.github.io/maeil-game/number-baseball/",
       "deployment_run": 45205474043
+    },
+    {
+      "game": "freecell",
+      "status": "verified_pending_deploy",
+      "requested_on": "2026-11-24",
+      "trigger": "user_requested",
+      "base_commit": "3bde73f5745f61ed84c09a7dbfc9e0c4be47ece7",
+      "note": "사용자의 다음 게임 제작 지시에 따라 진행. 자동 예약 아님.",
+      "verified_on": "2026-11-24",
+      "tests": "프리셀 25개 및 전체 node --test 132개, common·games 검사. 24개 원본 독립 단일 이동 검증 및 변환 1,095판 풀이 검증.",
+      "verification_limit": "실제 브라우저 모바일·PC 화면 배치 검수 불가"
     }
   ]
 }

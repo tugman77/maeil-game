@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const ROOT = path.join(__dirname, '../..');
 
-module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash = '', search, workers = true } = {}) {
+module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash = '', search, workers = true, scripts = [] } = {}) {
   const pool = [];
   class Element {
     constructor(tag = 'div') {
@@ -84,7 +84,7 @@ module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash
     MaeilFx: { play() {}, pulse() {}, buzz() {}, countUp() {}, celebrate() {} },
   });
   vm.runInContext(`Date.now = () => ${Date.parse('2026-11-23T03:00:00Z')}`, context);
-  for (const file of ['common/core.js', 'common/start.js', `${id}/js/logic.js`, `${id}/js/ui.js`]) {
+  for (const file of ['common/core.js', 'common/start.js', ...scripts, `${id}/js/logic.js`, `${id}/js/ui.js`]) {
     vm.runInContext(fs.readFileSync(path.join(ROOT,file),'utf8'),context,{ filename:file });
   }
   return {

@@ -9,6 +9,7 @@
 .thumb-reversi { --tint: #dcebd9; }
 .thumb-sichuan { --tint: #dcece8; }
 .thumb-number-baseball { --tint: #dce9f3; }
+.thumb-freecell { --tint: #e1ebe2; }
 .thumb-omok { --tint: #f1e4cc; }
 .thumb-bricks { --tint: #dde4f6; }
 .thumb-runner { --tint: #fbedc4; }
@@ -21,6 +22,12 @@
 :root[data-theme="dark"] .thumb-reversi { --tint: #24372b; }
 :root[data-theme="dark"] .thumb-sichuan { --tint: #203a33; }
 :root[data-theme="dark"] .thumb-number-baseball { --tint: #233345; }
+:root[data-theme="dark"] .thumb-freecell { --tint: #24382c; }
+.th-fc-board { fill: #3c7955; }
+.th-fc-cell { fill: none; stroke: #c0d7bf; stroke-width: 1.1; }
+.th-fc-card { fill: #fffef8; stroke: #c7cebd; }
+.th-fc-text { fill: #20342a; font: 700 15px -apple-system, BlinkMacSystemFont, sans-serif; text-anchor: middle; }
+.th-fc-red { fill: #b52733; }
 .th-nb-board { fill: #6685a1; }
 .th-nb-tile { fill: #fcfdfd; }
 .th-nb-digit { fill: #2c4358; font: 700 28px -apple-system, BlinkMacSystemFont, sans-serif; text-anchor: middle; }

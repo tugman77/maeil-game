@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="설치 없이 즐기는 무료 프리셀. 네 칸의 프리셀과 빈 줄을 활용해 52장을 A부터 K까지 정리하세요. 풀이 검증 판, 되돌리기, 이어하기와 오늘의 도전을 제공합니다.">
+  <meta name="theme-color" content="#f5f3ee">
+  <meta property="og:title" content="프리셀 — 매일게임">
+  <meta property="og:description" content="네 칸의 프리셀을 활용해 52장을 정리하세요. 매일 같은 풀이 검증 판으로 도전!">
+  <meta property="og:type" content="website">
+  <title>프리셀 — 매일게임</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%233c7955'/%3E%3Crect x='20' y='12' width='60' height='76' rx='9' fill='%23fffef8'/%3E%3Ctext x='50' y='62' font-size='40' font-family='serif' text-anchor='middle' fill='%2320342a'%3EA%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../common/base.css">
+  <link rel="stylesheet" href="../common/game.css">
+  <link rel="stylesheet" href="../common/thumbs.css">
+  <link rel="stylesheet" href="../common/start.css">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || localStorage.getItem('maeil-sudoku.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- 시작 화면 (공통 구조: common/start.css · start.js, tools/start_screen.py로 생성) -->
+  <main id="start-screen" class="st">
+    <a href="../" class="st-back">← 게임 목록</a>
+    <header>
+      <h1 class="st-title">프리셀</h1>
+      <p class="st-desc">빈 프리셀과 빈 줄을 활용해 같은 무늬를 A부터 K까지 정리하세요.</p>
+    </header>
+    <!-- 대표 카드: 큰 그림 + 오늘의 도전 띠. 오늘의 도전을 끝낸 날엔 띠가 '게임 시작' 아래(#daily-done-slot)로 작게 내려간다 -->
+    <div class="st-hero thumb-freecell" id="hero">
+      <div class="st-preview" id="preview" aria-hidden="true"></div>
+      <button type="button" id="daily-btn" class="st-daily">
+        <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
+        <span class="st-daily-go" id="daily-go">도전하기 →</span>
+      </button>
+    </div>
+
+    <div class="st-ask" id="sound-ask" hidden>
+      <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>효과음을 켤까요?</span>
+      <button type="button" id="sound-yes" class="st-ask-yes">켜기</button>
+      <button type="button" id="sound-no" class="st-ask-no">괜찮아요</button>
+    </div>
+
+    <div id="continue-wrap" hidden>
+      <button type="button" id="continue-btn" class="st-continue">▶ 이어하기<small id="continue-info"></small></button>
+      <p class="st-note">새 게임을 시작하면 하던 게임은 사라져요</p>
+    </div>
+
+    <section class="st-pick" aria-labelledby="pick-label">
+      <h2 class="st-label" id="pick-label">난이도</h2>
+      <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
+      <p class="st-detail" id="pick-detail"></p>
+      <button type="button" id="start-btn" class="st-start">게임 시작</button>
+      <p class="st-best"><span id="pick-best"></span></p>
+    </section>
+
+    <div id="daily-done-slot"></div>
+
+    <div class="st-tools">
+      <button type="button" class="st-tool large-text-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 5h1.6l5 13M6 13.5h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 18v-5.2M14 12.8h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>큰 글씨</button>
+      <button type="button" class="st-tool dark-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>어두운 화면</button>
+      <button type="button" class="st-tool sound-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>소리</button>
+      <a class="st-tool" href="../guide/freecell.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.9" r="1.2" fill="currentColor"/></svg>도움말</a>
+    </div>
+
+    <!-- 광고 자리: 비어 있으면 화면에 보이지 않습니다. 게임 화면에는 두지 않습니다. -->
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+
+  <!-- 게임 화면 -->
+  <main id="game-screen" class="screen game-screen" hidden>
+    <header class="game-header">
+      <button type="button" id="home-btn" class="header-btn">처음</button>
+      <div class="header-stats">
+        <div class="stat-box"><small>이동</small><b id="moves">0</b></div>
+        <div class="stat-box"><small>시간</small><b id="timer">00:00</b></div>
+      </div>
+      <button type="button" id="pause-btn" class="header-btn">일시정지</button>
+    </header>
+    <p id="game-label" class="game-label"></p>
+    <div id="play-area" class="play-area">
+      <p id="deal-info" class="deal-info"></p>
+      <div class="selection-bar">
+        <p id="selection-info">카드 선택 후 목적지 누르기</p>
+        <button type="button" id="cancel-btn" class="header-btn" disabled>취소</button>
+      </div>
+      <p id="game-status" class="game-status" role="status" aria-live="polite" aria-atomic="true"></p>
+      <div class="tools">
+        <button type="button" id="undo-btn" class="header-btn" disabled>되돌리기</button>
+        <button type="button" id="hint-btn" class="header-btn">추천 이동</button>
+        <button type="button" id="auto-btn" class="header-btn">자동 정리</button>
+      </div>
+      <div class="top-area">
+        <section class="top-group" aria-labelledby="free-title">
+          <h2 id="free-title">프리셀 · 한 칸에 한 장</h2>
+          <div id="free-cells" class="cell-row" role="group" aria-labelledby="free-title"></div>
+        </section>
+        <section class="top-group" aria-labelledby="foundation-title">
+          <h2 id="foundation-title">완성 칸 · 같은 무늬 A부터 K까지</h2>
+          <div id="foundations" class="cell-row" role="group" aria-labelledby="foundation-title"></div>
+        </section>
+      </div>
+      <div class="progress-row"><p id="foundation-count">0/52장 정리</p><p>줄에서는 다른 색 · K부터 A 방향</p></div>
+      <p class="layout-note">카드 줄은 1~4번, 아래에 5~8번이 있어요.</p>
+      <div id="tableau" class="tableau" role="group" aria-label="프리셀 카드 줄 8개"></div>
+      <p id="help-counts" class="help-counts"></p>
+      <div class="bottom-tools">
+        <button type="button" id="restart-btn" class="header-btn">처음 배치</button>
+        <button type="button" class="option-btn large-text-toggle" aria-pressed="false">큰 글씨</button>
+        <button type="button" class="option-btn dark-toggle" aria-pressed="false">어두운 화면</button>
+        <a href="../guide/freecell.html">프리셀 하는 법·요령</a>
+      </div>
+    </div>
+    <div id="pause-overlay" class="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
+      <p id="pause-title" class="pause-title">잠깐 쉬어 가세요</p>
+      <button type="button" id="resume-btn" class="primary-btn">계속하기</button>
+    </div>
+  </main>
+  <!-- 결과 화면 -->
+  <main id="result-screen" class="screen result-screen" hidden>
+    <p class="result-emoji" aria-hidden="true">🎉</p>
+    <h2 class="result-title">52장을 모두 정리했어요!</h2>
+    <p class="result-sub" id="result-sub"></p>
+    <div class="result-card">
+      <p class="result-label">카드 이동</p>
+      <p class="result-big" id="result-moves"></p>
+      <p class="result-detail" id="result-detail"></p>
+      <p class="result-best" id="result-best"></p>
+    </div>
+    <p class="result-note">추천·되돌리기 사용 횟수도 함께 기록해요.</p>
+    <button type="button" id="share-btn" class="primary-btn">결과 공유하기</button>
+    <div class="button-pair">
+      <button type="button" id="again-btn" class="secondary-btn">같은 판 다시</button>
+      <button type="button" id="result-home-btn" class="secondary-btn">처음으로</button>
+    </div>
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+  <script src="../common/core.js"></script>
+  <script src="../common/thumbs.js"></script>
+  <script src="../common/start.js"></script>
+  <script src="../common/fx.js"></script>
+  <script src="js/deals.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
