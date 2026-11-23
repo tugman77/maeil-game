@@ -18,8 +18,11 @@ common/base.css                 공통 색상 토큰(밝고 차분한 게임 라
 common/thumbs.js · thumbs.css   게임 썸네일(SVG)과 색. 새 게임은 160×120으로 하나 그리고 .thumb-게임id 색을 정한다
 common/fx.js                    효과음(Web Audio 합성, 파일 없음)·진동·숫자 올라가기·색종이·celebrate(). MaeilFx.play('merge') 식.
                                 효과음은 처음 꺼짐, 시작 화면에서 한 번 묻는다(settings.soundAsked). 움직임은 '동작 줄이기'면 생략
-common/start.js · start.css     게임별 시작 화면 공통 틀(목록 링크→제목→미리보기→이어하기→오늘의 도전→난이도→게임 시작→내 최고→큰 글씨·어두운 화면·도움말).
-                                마크업은 tools/start_screen.py가 만든다(게임 추가 시 GAMES에 한 줄). #daily로 들어오면 오늘의 도전 바로 시작
+common/start.js · start.css     게임별 시작 화면 공통 틀(목록 링크→제목→대표 카드[큰 그림+오늘의 도전 띠]→이어하기→난이도(한 줄)→게임 시작→내 최고
+                                →[오늘의 도전 끝낸 날: 작은 '다시 도전' 줄]→큰 글씨·어두운 화면·소리·도움말). 그림 높이는 화면 높이에 맞춰 104~190px,
+                                이어하기가 보이면 자동으로 줄인다(.has-continue는 start.js가 붙임). 마크업은 tools/start_screen.py가 만든다(게임 추가 시 GAMES에 한 줄).
+                                #daily로 들어오면 오늘의 도전 바로 시작
+                                난이도 이름은 모든 게임 '쉬움·보통·어려움'(4단계면 '고수' 추가) — 4칸까지 한 줄에 들어가게 짧게
 sw.js                           사이트 전체 공용 오프라인 보관 (파일 추가 시 FILES에도 추가)
 sudoku/                         스도쿠 (자체 CLAUDE.md 규칙은 ../스도쿠게임/CLAUDE.md 참고)
 tests/                          node tests/common.test.js · node tests/games.test.js · node --test tests/snake*.test.js tests/phase2.test.js

@@ -32,7 +32,14 @@
       <h1 class="st-title">오목</h1>
       <p class="st-desc">컴퓨터와 번갈아 돌을 놓아 다섯 개를 먼저 한 줄로 이으면 이겨요.</p>
     </header>
-    <div class="st-preview thumb-omok" id="preview" aria-hidden="true"></div>
+    <!-- 대표 카드: 큰 그림 + 오늘의 도전 띠. 오늘의 도전을 끝낸 날엔 띠가 '게임 시작' 아래(#daily-done-slot)로 작게 내려간다 -->
+    <div class="st-hero thumb-omok" id="hero">
+      <div class="st-preview" id="preview" aria-hidden="true"></div>
+      <button type="button" id="daily-btn" class="st-daily">
+        <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
+        <span class="st-daily-go" id="daily-go">도전하기 →</span>
+      </button>
+    </div>
 
     <div class="st-ask" id="sound-ask" hidden>
       <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>효과음을 켤까요?</span>
@@ -45,11 +52,6 @@
       <p class="st-note">새 게임을 시작하면 하던 게임은 사라져요</p>
     </div>
 
-    <button type="button" id="daily-btn" class="st-daily">
-      <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
-      <span class="st-daily-go" id="daily-go">도전하기 →</span>
-    </button>
-
     <section class="st-pick" aria-labelledby="pick-label">
       <h2 class="st-label" id="pick-label">난이도</h2>
       <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
@@ -57,6 +59,8 @@
       <button type="button" id="start-btn" class="st-start">게임 시작</button>
       <p class="st-best"><span id="pick-best"></span></p>
     </section>
+
+    <div id="daily-done-slot"></div>
 
     <div class="st-tools">
       <button type="button" class="st-tool large-text-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 5h1.6l5 13M6 13.5h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 18v-5.2M14 12.8h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>큰 글씨</button>

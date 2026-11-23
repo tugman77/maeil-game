@@ -1,10 +1,12 @@
 // 화면 그리기와 버튼·키보드 처리.
 // 게임 규칙은 game.js, 문제 생성은 generator.js, 저장은 storage.js가 맡는다.
 const $ = (id) => document.getElementById(id);
-const { DIFFICULTIES } = SudokuGenerator;
+// 화면 이름만 바꾼다(문제 생성기는 그대로): 매우 어려움 → 고수. 모든 게임 난이도를 한 줄·짧은 이름으로 맞춤
+const DIFFICULTIES = Object.fromEntries(Object.entries(SudokuGenerator.DIFFICULTIES)
+  .map(([key, c]) => [key, key === 'expert' ? { ...c, label: '고수' } : c]));
 const SITE_URL = `${MaeilGame.SITE_URL}sudoku/`;
 const STAT_ROWS = [
-  ['easy', '쉬움'], ['medium', '보통'], ['hard', '어려움'], ['expert', '매우 어려움'], ['daily', '오늘의 도전'],
+  ['easy', '쉬움'], ['medium', '보통'], ['hard', '어려움'], ['expert', '고수'], ['daily', '오늘의 도전'],
 ];
 
 let game = null;

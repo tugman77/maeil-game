@@ -23,7 +23,7 @@
   function legacySudokuSummary() {
     const stats = M.read('maeil-sudoku.stats.v1');
     if (!stats || typeof stats !== 'object') return '';
-    const labels = { easy: '쉬움', medium: '보통', hard: '어려움', expert: '매우 어려움' };
+    const labels = { easy: '쉬움', medium: '보통', hard: '어려움', expert: '고수' };
     const played = Object.keys(labels).filter((key) => Number.isFinite(stats[key]?.best))
       .sort((a, b) => stats[b].solved - stats[a].solved);
     return played.length ? `내 최고 ${M.formatTime(stats[played[0]].best)} (${labels[played[0]]})` : '';

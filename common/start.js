@@ -1,5 +1,6 @@
 // 게임별 시작 화면 공통 동작(모든 게임이 같은 구조).
-// 순서: ← 게임 목록 → 제목·설명 → 미리보기 → 이어하기(있을 때) → 오늘의 도전 → 난이도 선택 → 게임 시작 → 내 최고 → 큰 글씨·어두운 화면·도움말
+// 순서: ← 게임 목록 → 제목·설명 → 대표 카드(큰 그림 + 오늘의 도전 띠) → 이어하기(있을 때) → 난이도(모든 게임 한 줄) → 게임 시작 → 내 최고
+//       → (오늘의 도전을 끝낸 날: 작은 '다시 도전' 줄) → 큰 글씨·어두운 화면·소리·도움말
 // 난이도는 고르기만 하고 '게임 시작'으로 시작한다. 마지막에 고른 난이도를 기억한다(처음엔 보통).
 // 게임 목록의 도장(주소 끝 #daily)으로 들어오면 오늘의 도전을 바로 시작한다.
 const MaeilStart = (() => {
@@ -63,6 +64,15 @@ const MaeilStart = (() => {
       $('start-btn').textContent = `${config.label} 게임 시작`;
     }
 
+    // 이어하기 칸이 보이면 그림을 줄인다(.has-continue). 게임마다 따로 붙이지 않아도 되게 여기서 지켜본다.
+    const continueWrap = $('continue-wrap');
+    const screen = $('start-screen');
+    if (continueWrap && screen && typeof MutationObserver === 'function') {
+      const sync = () => screen.classList.toggle('has-continue', !continueWrap.hidden);
+      new MutationObserver(sync).observe(continueWrap, { attributes: true, attributeFilter: ['hidden'] });
+      sync();
+    }
+
     $('start-btn').addEventListener('click', () => onStart(selected));
     $('daily-btn').addEventListener('click', onDaily);
     setupSound();
@@ -71,13 +81,21 @@ const MaeilStart = (() => {
     return {
       refresh,
       get selected() { return selected; },
-      // 오늘의 도전 카드: done이면 '다시 도전'
+      // 오늘의 도전: 아직이면 대표 카드(그림 아래 띠), 끝냈으면 '게임 시작' 아래로 작게 내려 '다시 도전'
       setDaily(info, done) {
         const el = $('daily-info');
         el.textContent = info;
         el.classList.toggle('done', Boolean(done));
         $('daily-go').textContent = done ? '다시 도전 →' : '도전하기 →';
-        $('daily-btn').classList.toggle('done', Boolean(done));
+        const btn = $('daily-btn');
+        btn.classList.toggle('done', Boolean(done));
+        const hero = $('hero');
+        const slot = $('daily-done-slot');
+        if (hero && slot && typeof slot.append === 'function') {
+          const target = done ? slot : hero;
+          if (btn.parentElement !== target) target.append(btn);
+          hero.classList?.toggle('no-daily', Boolean(done));
+        }
       },
     };
   }

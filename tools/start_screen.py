@@ -17,7 +17,14 @@ def block(gid, title, desc, stats=False):
       <h1 class="st-title">{title}</h1>
       <p class="st-desc">{desc}</p>
     </header>
-    <div class="st-preview thumb-{gid}" id="preview" aria-hidden="true"></div>
+    <!-- 대표 카드: 큰 그림 + 오늘의 도전 띠. 오늘의 도전을 끝낸 날엔 띠가 '게임 시작' 아래(#daily-done-slot)로 작게 내려간다 -->
+    <div class="st-hero thumb-{gid}" id="hero">
+      <div class="st-preview" id="preview" aria-hidden="true"></div>
+      <button type="button" id="daily-btn" class="st-daily">
+        <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
+        <span class="st-daily-go" id="daily-go">도전하기 →</span>
+      </button>
+    </div>
 
     <div class="st-ask" id="sound-ask" hidden>
       <span>{ICON_SOUND}효과음을 켤까요?</span>
@@ -30,11 +37,6 @@ def block(gid, title, desc, stats=False):
       <p class="st-note">새 게임을 시작하면 하던 게임은 사라져요</p>
     </div>
 
-    <button type="button" id="daily-btn" class="st-daily">
-      <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
-      <span class="st-daily-go" id="daily-go">도전하기 →</span>
-    </button>
-
     <section class="st-pick" aria-labelledby="pick-label">
       <h2 class="st-label" id="pick-label">난이도</h2>
       <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
@@ -42,6 +44,8 @@ def block(gid, title, desc, stats=False):
       <button type="button" id="start-btn" class="st-start">게임 시작</button>
       <p class="st-best"><span id="pick-best"></span>{stats_btn}</p>
     </section>
+
+    <div id="daily-done-slot"></div>
 
     <div class="st-tools">
       <button type="button" class="st-tool large-text-toggle" aria-pressed="false">{ICON_TEXT}큰 글씨</button>
