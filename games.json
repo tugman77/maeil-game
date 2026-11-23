@@ -7,5 +7,6 @@
   {"id": "snake", "short": "스네이크", "name": "스네이크", "desc": "먹을수록 길어지는 꼬리물기", "icon": "🐍", "path": "snake/", "status": "ready", "daily": true, "tags": ["액션"], "added": "2026-11-23"},
   {"id": "omok", "short": "오목", "name": "오목", "desc": "컴퓨터와 다섯 알 먼저 잇기", "icon": "⚫", "path": "omok/", "status": "ready", "daily": true, "tags": ["퍼즐"], "added": "2026-11-23"},
   {"id": "bricks", "short": "벽돌", "name": "벽돌깨기", "desc": "공을 튕겨 벽돌 모두 깨기", "icon": "🧱", "path": "bricks/", "status": "ready", "daily": true, "tags": ["액션"], "added": "2026-11-23"},
-  {"id": "runner", "short": "러너", "name": "점프 러너", "desc": "눌러서 장애물 뛰어넘기", "icon": "🐥", "path": "runner/", "status": "ready", "daily": true, "tags": ["액션"], "added": "2026-11-23"}
+  {"id": "runner", "short": "러너", "name": "점프 러너", "desc": "눌러서 장애물 뛰어넘기", "icon": "🐥", "path": "runner/", "status": "ready", "daily": true, "tags": ["액션"], "added": "2026-11-23"},
+  {"id": "reversi", "short": "리버시", "name": "리버시", "desc": "컴퓨터와 돌을 뒤집는 전략 한 판", "icon": "⚪", "path": "reversi/", "status": "ready", "daily": true, "tags": ["퍼즐", "보드"], "added": "2026-11-23"}
 ]

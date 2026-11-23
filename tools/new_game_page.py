@@ -129,7 +129,29 @@ RUNNER = '''  <main id="game-screen" class="screen game-screen runner-game" hidd
     <p id="game-status" class="note-text runner-help" role="status" aria-live="polite">화면 아무 곳이나 눌러도 점프 · PC는 스페이스바</p>
   </main>'''
 
+REVERSI = '''  <main id="game-screen" class="screen game-screen reversi-game" hidden>
+    <header class="game-header">
+      <button type="button" id="home-btn" class="header-btn">처음으로</button>
+      <div class="header-stats">
+        <div id="black-stat" class="stat-box"><small>나 · 흑</small><b id="black-count">2</b></div>
+        <div id="white-stat" class="stat-box"><small>컴퓨터 · 백</small><b id="white-count">2</b></div>
+      </div>
+      <button type="button" id="undo-btn" class="header-btn">무르기</button>
+    </header>
+    <p id="game-label" class="game-label"></p>
+    <p id="game-status" class="reversi-status" role="status" aria-live="polite"></p>
+    <div id="board" class="reversi-board" role="group" aria-label="리버시 8×8 판. 방향키로 이동, Enter로 선택하고 한 번 더 누르면 놓기."></div>
+    <div class="reversi-actions">
+      <button type="button" id="place-btn" class="primary-btn" disabled>둘 곳을 선택하세요</button>
+      <button type="button" id="hint-btn" class="secondary-btn">추천 수 보기</button>
+      <button type="button" id="clear-pick-btn" class="secondary-btn" disabled>선택 취소</button>
+    </div>
+    <p id="move-detail" class="reversi-help">밝은 원이 있는 칸에 둘 수 있어요</p>
+    <p class="reversi-help">제한 시간 없음 · 무르기 횟수 제한 없음 · <a href="../guide/reversi.html">게임 방법</a></p>
+  </main>'''
+
 SPECS = {
+  'reversi': ('리버시', '설치 없이 바로 하는 리버시. 컴퓨터와 돌을 뒤집어 마지막에 더 많이 남기세요. 난이도 3단계, 무르기·추천 수·이어하기, 오늘의 도전.', '컴퓨터와 돌 뒤집기 한 판. 시간 제한 없이 천천히 생각하세요.', '245b40', 'fff5c0', 'R', REVERSI, '⚫', '내 돌 : 컴퓨터 돌'),
   'omok': ('오목', '설치 없이 바로 하는 오목. 컴퓨터와 13×13 판에서 다섯 알을 먼저 이어 보세요. 쉬움·보통·어려움, 무르기, 오늘의 도전.', '컴퓨터와 두는 오목 한 판. 오늘의 도전에서 이겨 보세요!', '7a5a2e', 'ffffff', '五', OMOK, '⚫', '이긴 수'),
   'bricks': ('벽돌깨기', '설치 없이 바로 하는 벽돌깨기. 받침대로 공을 튕겨 벽돌을 모두 깨세요. 손가락 하나로 조작, 오늘의 도전 판.', '공을 튕겨 벽돌을 깨는 한 판. 오늘의 도전 판을 깨 보세요!', '3b5bab', 'ffffff', 'B', BRICKS, '🧱', '점수'),
   'runner': ('점프 러너', '설치 없이 바로 하는 점프 러너. 화면을 눌러 장애물을 뛰어넘고 멀리 달리세요. 오늘의 도전은 500m.', '누르면 점프! 장애물을 넘어 얼마나 멀리 갈 수 있을까요?', 'e0a21a', 'ffffff', 'J', RUNNER, '🐥', '달린 거리'),

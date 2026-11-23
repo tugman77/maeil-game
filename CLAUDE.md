@@ -4,7 +4,7 @@
 
 ## 기술 규칙
 - HTML + CSS + 순수 JavaScript만 (프레임워크·빌드 도구·외부 라이브러리 금지). 저장은 localStorage, 서버·로그인 없음
-- 화면 문구는 한국어. 40~60대 대상: 큰 글씨, 누르는 곳 최소 44px, 높은 색 대비, 세로 화면·한 손 조작 우선
+- 화면 문구는 한국어. 40대 이상이 편하게 즐기는 게임 모음: 큰 글씨, 누르는 곳 최소 44px, 높은 색 대비, 세로 화면·한 손 조작 우선. 전략 보드게임도 포함하며 규칙을 의도적으로 유아화하지 않는다.
 - 지원: 크롬·사파리·엣지·삼성 인터넷 최신판, 화면 폭 360px 이상
 - 게임 화면(조작 버튼 근처)에는 광고를 두지 않는다. 광고 자리는 `.ad-slot`(비어 있으면 숨김) — 선택·결과 화면만
 
@@ -23,7 +23,8 @@ common/start.js · start.css     게임별 시작 화면 공통 틀(목록 링�
 sw.js                           사이트 전체 공용 오프라인 보관 (파일 추가 시 FILES에도 추가)
 sudoku/                         스도쿠 (자체 CLAUDE.md 규칙은 ../스도쿠게임/CLAUDE.md 참고)
 tests/                          node tests/common.test.js · node tests/games.test.js · node --test tests/snake*.test.js tests/phase2.test.js
-2048/ · memory/ · minesweeper/ · blocks/ · snake/ · omok/ · bricks/ · runner/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
+2048/ · memory/ · minesweeper/ · blocks/ · snake/ · omok/ · bricks/ · runner/ · reversi/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
+reversi/js/ai-worker.js         리버시 AI 계산 전용 Worker(중단·오래된 응답 무시), Worker 미지원 시 제한된 계산으로 대체
 ```
 
 ## 새 게임 붙이는 법
@@ -59,5 +60,6 @@ tests/                          node tests/common.test.js · node tests/games.te
 - [x] 2차 첫 게임 스네이크 (2026-11-23, Codex): 16×16 판, 방향 버튼·밀기·방향키/WASD, 쉬움·보통·어려움, 자동 일시정지·이어하기, 최고 점수·공유, 매일 도전(보통·먹이 10개 목표), 썸네일·설명·오프라인 연결. 검사: `node --test tests/snake*.test.js` (규칙 9개·화면 흐름 8개, 브라우저 배치 확인은 별도).
 - [x] 2차 나머지 3종 (2026-11-23): 오목(13×13·흑 선·금수 없음, 미리보기 후 두기, 컴퓨터 3단계·무르기 3/1/0, 오늘의 도전=정해진 첫 모양에서 보통 컴퓨터 이기기), 벽돌깨기(캔버스, 손가락 좌우·누르면 출발, 공 3개·단계 상승, 오늘의 도전=오늘의 판 모두 깨기), 점프 러너(캔버스, 누르면 점프·땅 닿기 직전 누름 허용, 목숨 3/2/1, 오늘의 도전=같은 길 500m). 효과음 stone·bounce·brick·jump·hurt 추가
 - [x] 메인 정돈(ChatGPT 3차 의견 검토): 목록 순서 고정(최근 게임은 '최근' 표시만), games.json에 tags·added, 새 게임 NEW 표시. **다음 단계(미적용)**: 게임 12개쯤 → 분류 버튼(전체/퍼즐/액션)·오늘의 도전 요약+전체 보기, 20개쯤 → 검색
+- [x] 리버시(2026-11-23, Codex): 열 번째 게임. 표준 8×8·흑 선공·자동 패스·실제 돌 수 계가, 난이도 3단계 AI(위치·기동성 평가, 반복 심화 탐색, Worker 계산), 착수 미리보기·확정·추천 수, 횟수 제한 없는 한 차례 무르기(응수·패스·난수 복원), 이어하기·승무패·공유·날짜별 시작 판. 검사: `node --test tests/reversi*.test.js`. 실제 브라우저 배치 검수는 별도.
 - 문의처: 지금은 GitHub 문의 게시판(about.html·privacy.html). 대표님이 메일 주소를 주시면 교체
 - 설명 글은 `tools/make_guides.py`를 고쳐 다시 만든다. 개인정보처리방침은 통계·광고 도입 **전에** 고친다(4항)

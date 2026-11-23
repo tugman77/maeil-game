@@ -1,0 +1,51 @@
+/* 8×8 판: 폭 360px에서 칸마다 44px를 확보한다. 큰 글씨도 판을 가리지 않는다. */
+:root {
+  --rev-board: #317451; --rev-square: #377d58; --rev-line: #215b3d;
+  --rev-black: #191f1c; --rev-white: #faf9ef; --rev-mark: #fbd779;
+}
+:root[data-theme="dark"] {
+  --rev-board: #245b40; --rev-square: #2a6648; --rev-line: #163e2b;
+  --rev-black: #101512; --rev-white: #eeeedd; --rev-mark: #ffda82;
+}
+.reversi-game { padding-left: 0; padding-right: 0; gap: 12px; }
+.reversi-game .game-header, .reversi-game .game-label, .reversi-status,
+.reversi-actions, .reversi-help { width: min(calc(100% - 24px), 472px); }
+.reversi-game .header-stats { gap: 6px; }
+.reversi-game .stat-box { min-width: 74px; }
+.reversi-game .stat-box small { font-size: .8rem; }
+.reversi-game .stat-box b { font-size: 1.3rem; }
+.reversi-game .stat-box.active { border-color: var(--primary); background: var(--active); }
+.reversi-game .game-label { text-align: center; }
+.reversi-status { min-height: 1.6em; margin: 0; text-align: center; font-weight: 700; }
+.reversi-status.thinking { color: var(--muted); font-weight: 500; }
+.reversi-board {
+  width: min(100%, 480px); aspect-ratio: 1; display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr)); grid-template-rows: repeat(8, minmax(0, 1fr));
+  padding: 2px; border: 2px solid var(--rev-line); border-radius: 12px;
+  overflow: hidden; background: var(--rev-board); touch-action: manipulation;
+  box-shadow: 0 4px 16px rgb(0 0 0 / .12);
+}
+.rev-cell { position: relative; min-width: 0; padding: 0; border: 1px solid var(--rev-line); background: var(--rev-board); }
+.rev-cell:nth-child(16n + 2), .rev-cell:nth-child(16n + 4), .rev-cell:nth-child(16n + 6), .rev-cell:nth-child(16n + 8),
+.rev-cell:nth-child(16n + 9), .rev-cell:nth-child(16n + 11), .rev-cell:nth-child(16n + 13), .rev-cell:nth-child(16n + 15) { background: var(--rev-square); }
+.rev-disc { position: absolute; inset: 10%; border-radius: 50%; pointer-events: none; }
+.rev-cell.black .rev-disc { background: radial-gradient(circle at 32% 25%, #59655c, var(--rev-black) 65%); box-shadow: 0 2px 3px rgb(0 0 0 / .4); }
+.rev-cell.white .rev-disc { background: radial-gradient(circle at 32% 25%, #ffffff, var(--rev-white) 65%, #c6cbbe); box-shadow: 0 2px 3px rgb(0 0 0 / .35); }
+.rev-cell.legal::after { content: ''; position: absolute; inset: 36%; border: 2px solid #f0f4d9; border-radius: 50%; pointer-events: none; }
+.rev-cell.selected { outline: 3px solid var(--rev-mark); outline-offset: -4px; z-index: 1; }
+.rev-cell.selected .rev-disc { background: var(--rev-black); opacity: .6; border: 2px dashed var(--rev-mark); }
+.rev-cell.selected::after { display: none; }
+.rev-cell.last .rev-disc::after { content: ''; position: absolute; inset: 35%; border-radius: 50%; background: var(--rev-mark); border: 1px solid #705116; }
+.rev-cell.hint::before { content: '추천'; position: absolute; inset: 3px 0 auto; text-align: center; color: #fff5c0; font-size: 12px; font-weight: 800; z-index: 2; pointer-events: none; }
+.rev-cell:focus-visible { outline: 3px solid var(--rev-mark); outline-offset: -4px; z-index: 3; }
+.reversi-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.reversi-actions .primary-btn { grid-column: 1 / -1; }
+.reversi-actions button:disabled { opacity: .5; cursor: default; }
+.reversi-help { margin: 0; color: var(--muted); font-size: .9rem; text-align: center; }
+.reversi-help a { color: var(--primary); }
+.reversi-game .game-header { flex-wrap: wrap; }
+@media (max-width: 380px) { .reversi-game .stat-box { min-width: 68px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .rev-cell.changed .rev-disc { animation: rev-flip 260ms ease-out; }
+  @keyframes rev-flip { 0% { transform: scaleX(.15); } 100% { transform: scaleX(1); } }
+}

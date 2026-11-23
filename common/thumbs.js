@@ -143,7 +143,19 @@ const GameThumbs = (() => {
       + '<circle cx="126" cy="24" r="8" class="th-run-sun"/>');
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner };
+  function reversi() {
+    let body = '<rect x="29" y="9" width="102" height="102" rx="9" class="th-rev-frame"/>';
+    const black = new Set([6, 9, 10]), white = new Set([5, 8]);
+    for (let i = 0; i < 16; i++) {
+      const x = 33 + i % 4 * 24, y = 13 + Math.floor(i / 4) * 24;
+      body += `<rect x="${x}" y="${y}" width="24" height="24" class="th-rev-cell"/>`;
+      if (black.has(i) || white.has(i)) body += `<circle cx="${x+12}" cy="${y+12}" r="9" class="${black.has(i) ? 'th-rev-black' : 'th-rev-white'}"/>`;
+      else if (i === 0 || i === 4 || i === 12) body += `<circle cx="${x+12}" cy="${y+12}" r="3" class="th-rev-legal"/>`;
+    }
+    return svg(body);
+  }
+
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();
