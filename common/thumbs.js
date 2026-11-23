@@ -66,13 +66,36 @@ const GameThumbs = (() => {
     );
   }
 
-  // 스네이크: 굽은 몸통·두 눈·먹이. 허브와 시작 화면에 같은 그림을 쓴다.
+  // 스네이크: 칸 판 위에서 마디로 이어진 뱀(꼬리는 가늘게) → 눈·갈라진 혀가 있는 머리가 사과를 향한다.
   function snake() {
-    return svg('<rect x="22" y="15" width="116" height="90" rx="10" class="th-snake-board"/>'
-      + '<path d="M42 84 V42 H78 V78 H104 V57" fill="none" class="th-snake-body" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>'
-      + '<rect x="95" y="40" width="19" height="23" rx="7" class="th-snake-head"/>'
-      + '<circle cx="100" cy="47" r="2" class="th-snake-eye"/><circle cx="109" cy="47" r="2" class="th-snake-eye"/>'
-      + '<circle cx="111" cy="83" r="7" class="th-snake-food"/><path d="M112 76 Q111 69 117 70" fill="none" class="th-snake-body" stroke-width="3" stroke-linecap="round"/>');
+    const X = (c) => 24 + c * 16;
+    const Y = (r) => 14 + r * 16;
+    let grid = '';
+    for (let c = 1; c < 7; c++) grid += `<line x1="${X(c)}" y1="14" x2="${X(c)}" y2="110" class="th-snake-grid"/>`;
+    for (let r = 1; r < 6; r++) grid += `<line x1="24" y1="${Y(r)}" x2="136" y2="${Y(r)}" class="th-snake-grid"/>`;
+    // 꼬리 → 머리 바로 앞 (ㄱ자로 꺾여 올라가는 몸통)
+    const body = [[0, 4], [1, 4], [2, 4], [2, 3], [2, 2], [2, 1]];
+    // 몸통은 칸 중심을 잇는 굵은 선으로 매끄럽게, 위에 마디 무늬
+    const path = body.concat([[3, 1]]).map(([c, r], i) => `${i ? 'L' : 'M'}${X(c) + 8} ${Y(r) + 8}`).join(' ');
+    const spots = body.slice(1).map(([c, r]) => `<circle cx="${X(c) + 8}" cy="${Y(r) + 8}" r="2.2" class="th-snake-spot"/>`).join('');
+    const hx = X(3) + 9; // 머리 중심
+    const hy = Y(1) + 8;
+    return svg(
+      `<rect x="24" y="14" width="112" height="96" rx="8" class="th-snake-board"/>${grid}`
+      + `<path d="${path}" fill="none" class="th-snake-body" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/>`
+      + `<circle cx="${X(0) + 6}" cy="${Y(4) + 8}" r="5" class="th-snake-tail"/>${spots}`
+      // 혀(갈라진 끝)
+      + `<path d="M${hx + 9} ${hy} h8 l4 -4 M${hx + 17} ${hy} l4 4" fill="none" class="th-snake-tongue" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`
+      // 머리: 몸보다 큰 둥근 머리 + 앞을 보는 두 눈
+      + `<ellipse cx="${hx}" cy="${hy}" rx="12" ry="10" class="th-snake-head"/>`
+      + `<circle cx="${hx + 3}" cy="${hy - 5}" r="3.6" class="th-snake-eye"/><circle cx="${hx + 3}" cy="${hy + 5}" r="3.6" class="th-snake-eye"/>`
+      + `<circle cx="${hx + 4.4}" cy="${hy - 5}" r="1.8" class="th-snake-pupil"/><circle cx="${hx + 4.4}" cy="${hy + 5}" r="1.8" class="th-snake-pupil"/>`
+      // 사과
+      + `<circle cx="${X(6) + 6}" cy="${Y(1) + 9}" r="9" class="th-snake-food"/>`
+      + `<path d="M${X(6) + 6} ${Y(1)} q1 -5 4 -6" fill="none" class="th-snake-stem" stroke-width="2" stroke-linecap="round"/>`
+      + `<path d="M${X(6) + 8} ${Y(1) - 2} q6 -5 9 0 q-5 3 -9 0z" class="th-snake-leaf"/>`
+      + `<circle cx="${X(6) + 3}" cy="${Y(1) + 6}" r="2.2" class="th-snake-shine"/>`,
+    );
   }
 
   const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake };

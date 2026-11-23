@@ -40,10 +40,18 @@
 .th-b3 { fill: #f2b01e; }
 .th-fallback { font-size: 54px; fill: var(--primary); }
 .th-snake-board { fill: #f4f8ec; stroke: #b8caa5; stroke-width: 2; }
-.th-snake-body { stroke: #699347; }
-.th-snake-head { fill: #244d2b; }
+.th-snake-grid { stroke: #dde7d0; stroke-width: 1; }
+.th-snake-body { stroke: #5c9a3c; }
+.th-snake-tail { fill: #5c9a3c; }
+.th-snake-spot { fill: #8cc466; }
+.th-snake-head { fill: #2f6b2a; }
 .th-snake-eye { fill: #ffffff; }
-.th-snake-food { fill: #c94d35; }
+.th-snake-pupil { fill: #1b2a1b; }
+.th-snake-tongue { stroke: #d6334a; }
+.th-snake-food { fill: #d8432f; }
+.th-snake-stem { stroke: #6b4a2b; }
+.th-snake-leaf { fill: #5c9a3c; }
+.th-snake-shine { fill: #ffffff; opacity: .55; }
 
 :root[data-theme="dark"] .th-paper { fill: #2a302c; }
 :root[data-theme="dark"] .th-frame { stroke: #d5ddd7; }
@@ -61,7 +69,13 @@
 :root[data-theme="dark"] .th-pole { stroke: #e9eee9; }
 :root[data-theme="dark"] .th-well { fill: #2a2422; stroke: #5a3f38; }
 :root[data-theme="dark"] .th-snake-board { fill: #18231b; stroke: #47613d; }
-:root[data-theme="dark"] .th-snake-body { stroke: #8dbc68; }
-:root[data-theme="dark"] .th-snake-head { fill: #ceeba8; }
-:root[data-theme="dark"] .th-snake-eye { fill: #163422; }
-:root[data-theme="dark"] .th-snake-food { fill: #fa9674; }
+:root[data-theme="dark"] .th-snake-grid { stroke: #24352a; }
+:root[data-theme="dark"] .th-snake-body { stroke: #7fb85a; }
+:root[data-theme="dark"] .th-snake-tail { fill: #7fb85a; }
+:root[data-theme="dark"] .th-snake-spot { fill: #a9d98a; }
+:root[data-theme="dark"] .th-snake-head { fill: #a9d98a; }
+:root[data-theme="dark"] .th-snake-pupil { fill: #10200f; }
+:root[data-theme="dark"] .th-snake-tongue { stroke: #ff6b7d; }
+:root[data-theme="dark"] .th-snake-food { fill: #f26a52; }
+:root[data-theme="dark"] .th-snake-leaf { fill: #7fb85a; }
+:root[data-theme="dark"] .th-snake-stem { stroke: #c49a6c; }
