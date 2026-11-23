@@ -38,13 +38,22 @@
       </div>
     </header>
 
+    <!-- 오늘의 도전: 연속 출석 + 오늘의 추천 한 판(날짜로 정해 누구나 같은 게임). 하나만 해도 출석이 이어진다 -->
     <section class="today-card" aria-labelledby="today-title">
       <div class="today-row">
         <h2 class="today-title" id="today-title">오늘의 도전 <span class="today-date" id="today-date"></span></h2>
-        <span class="today-count" id="today-count"></span>
         <span class="streak" id="streak"></span>
       </div>
-      <ul class="stamps" id="stamps" aria-label="게임별 오늘의 도전 (누르면 바로 시작)"></ul>
+      <p class="today-msg" id="today-msg"></p>
+      <a class="today-pick" id="today-pick" href="./">
+        <span class="today-thumb" id="today-thumb" aria-hidden="true"></span>
+        <span class="today-pick-body">
+          <small id="today-pick-label">오늘의 추천</small>
+          <strong id="today-pick-name"></strong>
+          <span class="today-pick-desc" id="today-pick-desc"></span>
+        </span>
+        <span class="today-go" id="today-go">도전하기 →</span>
+      </a>
     </section>
 
     <h2 class="section-title">전체 게임</h2>

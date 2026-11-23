@@ -29,7 +29,7 @@
 :root[data-theme="dark"] .thumb-bricks { --tint: #222b40; }
 :root[data-theme="dark"] .thumb-runner { --tint: #3a3119; }
 
-.thumb text, .st-preview text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; text-anchor: middle; font-weight: 800; }
+.thumb text, .st-preview text, .today-thumb text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; text-anchor: middle; font-weight: 800; }
 .th-paper { fill: #ffffff; }
 .th-frame { fill: none; stroke: #1d2420; stroke-width: 3; }
 .th-line { stroke: #9aa39d; stroke-width: 1.2; }

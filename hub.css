@@ -29,51 +29,48 @@
 .set-btn svg { width: 1.15em; height: 1.15em; flex: none; }
 .set-btn[aria-pressed="true"] { background: var(--active); border-color: var(--primary); font-weight: 700; }
 
-/* ---------- 오늘의 도전: 제목 한 줄 + 도장판 ---------- */
+/* ---------- 오늘의 도전: 연속 출석 + 오늘의 추천 한 판 ---------- */
 .today-card {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 18px;
-  padding: 12px 14px;
+  padding: 12px 14px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
+.today-card[hidden] { display: none; }
 .today-row { display: flex; align-items: baseline; gap: 4px 10px; flex-wrap: wrap; }
 .today-title { margin: 0; font-size: 1.08em; }
 .today-date { color: var(--muted); font-weight: 600; font-size: 0.9em; margin-left: 2px; }
-.today-count { font-weight: 800; color: var(--primary); }
-.today-count.all::after { content: ' 👏'; }
-.streak { margin-left: auto; color: var(--gold); font-weight: 700; }
+.streak { margin-left: auto; color: var(--gold); font-weight: 800; }
 .streak:empty { display: none; }
+.today-msg { margin: 0; color: var(--muted); font-size: 0.92em; font-weight: 600; }
+.today-msg.done { color: var(--primary); font-weight: 700; }
 
-.stamps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
-.stamp {
-  display: inline-flex;
+.today-pick {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  min-height: 44px;
-  padding: 6px 14px 6px 8px;
-  border-radius: 999px;
-  border: 1.5px dashed var(--button-border);
+  gap: 12px;
+  min-height: 72px;
+  padding: 8px 12px 8px 8px;
+  border: 2px solid var(--primary);
+  border-radius: 14px;
+  background: var(--bg);
   color: var(--text);
   text-decoration: none;
-  font-weight: 600;
-  background: var(--bg);
 }
-.stamp-mark {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  border: 2px solid var(--button-border);
-  font-size: 15px;
-  line-height: 1;
-}
-.stamp.done { border-style: solid; border-color: var(--primary); background: var(--active); }
-.stamp.done .stamp-mark { background: var(--primary); border-color: var(--primary); color: var(--primary-text); }
-a.stamp:hover { border-color: var(--primary); }
+.today-pick.done { border-color: var(--button-border); }
+.today-pick:hover { background: var(--active); }
+.today-thumb { flex: none; width: 80px; height: 60px; border-radius: 10px; overflow: hidden; background: var(--tint, var(--active)); }
+.today-thumb svg { width: 100%; height: 100%; display: block; }
+.today-pick-body { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.3; }
+.today-pick-body small { color: var(--primary); font-weight: 800; font-size: 0.8em; }
+.today-pick-body strong { font-size: 1.08em; }
+.today-pick-desc { color: var(--muted); font-size: 0.85em; word-break: keep-all; }
+.today-go { flex: none; color: var(--primary); font-weight: 800; }
+@media (max-width: 400px) { .today-go { display: none; } .today-pick::after { content: '›'; color: var(--primary); font-size: 1.8em; font-weight: 700; line-height: 1; } }
+:root.large-text .today-thumb { width: 72px; height: 54px; }
 
 /* ---------- 게임 카드 ---------- */
 .section-title { font-size: 1.05em; margin: 6px 0 -4px; color: var(--muted); font-weight: 700; }

@@ -1,4 +1,4 @@
-// 게임 선택 화면: games.json을 읽어 게임 카드(썸네일)를 만들고, 오늘의 도전 도장판·연속 출석을 보여 준다.
+// 게임 선택 화면: games.json을 읽어 게임 카드(썸네일)를 만들고, 오늘의 도전(연속 출석 + 오늘의 추천 한 판)을 보여 준다.
 // 새 게임은 games.json에 한 줄 추가하고 status를 "ready"로 바꾸면 카드가 생긴다("soon"이면 '곧 만나요'). 썸네일은 common/thumbs.js.
 // games.json의 tags(퍼즐·액션)는 게임이 12개쯤 되면 분류 버튼에 쓴다. added(출시일)부터 2주 동안 'NEW' 표시.
 (() => {
@@ -29,26 +29,47 @@
     return played.length ? `내 최고 ${M.formatTime(stats[played[0]].best)} (${labels[played[0]]})` : '';
   }
 
-  // 오늘의 도전: 제목 한 줄(완료 개수·연속 출석) + 도장판. 도장을 누르면 그 게임의 오늘의 도전이 바로 시작된다(#daily).
+  // 오늘의 도전: 연속 출석 + 오늘의 추천 한 판.
+  // 추천은 날짜로 돌아가며 정한다(누구나 같은 날 같은 게임). 추천을 이미 했으면 아직 안 한 다음 게임을 권한다.
+  // 목표는 '하루 하나' — 어느 게임이든 오늘의 도전 하나만 끝내면 연속 출석이 이어진다(core.js recordDaily).
+  const PICK_START = '2026-11-23';
+  function todayPick(daily, today) {
+    const n = daily.length;
+    const base = ((M.daysBetween(PICK_START, today) % n) + n) % n;
+    const order = daily.map((_, k) => daily[(base + k) % n]);
+    const next = order.find((game) => !M.dailyDone(game.id, today));
+    if (!next) return { game: order[0], kind: 'all' };
+    return { game: next, kind: next === order[0] ? 'pick' : 'next' };
+  }
+
   function renderToday(ready, today) {
     const daily = ready.filter((game) => game.daily);
+    const card = document.querySelector('.today-card');
+    card.hidden = daily.length === 0;
+    if (!daily.length) return;
     const doneCount = daily.filter((game) => M.dailyDone(game.id, today)).length;
-    $('today-date').textContent = M.dateLabel(today);
-    $('today-count').textContent = `${doneCount}/${daily.length} 완료`;
-    $('today-count').classList.toggle('all', doneCount === daily.length && daily.length > 0);
     const streak = M.currentStreak(today);
+    $('today-date').textContent = M.dateLabel(today);
     $('streak').textContent = streak > 0 ? `🔥 ${streak}일 연속` : '';
+    const msg = $('today-msg');
+    msg.classList.toggle('done', doneCount > 0);
+    if (doneCount === daily.length) msg.textContent = `👏 오늘의 도전 ${daily.length}개를 모두 끝냈어요!`;
+    else if (doneCount > 0) msg.textContent = `✓ 오늘 출석 완료 · ${doneCount}개 도전했어요`;
+    else if (streak > 0) msg.textContent = `오늘 하나만 하면 ${streak + 1}일 연속이에요`;
+    else msg.textContent = '아무 게임이나 하나만 끝내도 오늘 출석이에요';
 
-    $('stamps').replaceChildren(...daily.map((game) => {
-      const done = M.dailyDone(game.id, today);
-      const li = el('li');
-      const a = el('a', `stamp${done ? ' done' : ''}`);
-      a.href = `${game.path}#daily`;
-      a.append(el('span', 'stamp-mark', done ? '✓' : ''), el('span', '', game.short || game.name));
-      a.setAttribute('aria-label', `${game.name} 오늘의 도전 ${done ? '완료, 다시 하기' : '시작하기'}`);
-      li.append(a);
-      return li;
-    }));
+    const { game, kind } = todayPick(daily, today);
+    const link = $('today-pick');
+    link.href = `${game.path}#daily`;
+    link.classList.toggle('done', kind === 'all');
+    const thumb = $('today-thumb');
+    thumb.className = `today-thumb thumb-${game.id}`;
+    thumb.innerHTML = GameThumbs.render(game); // 우리 코드가 만든 고정 SVG
+    $('today-pick-label').textContent = { pick: '오늘의 추천', next: '다음 도전', all: '오늘의 추천 · 다시 해 보기' }[kind];
+    $('today-pick-name').textContent = game.name;
+    $('today-pick-desc').textContent = game.dailyDesc || game.desc;
+    $('today-go').textContent = kind === 'all' ? '다시 하기 →' : '도전하기 →';
+    link.setAttribute('aria-label', `${{ pick: '오늘의 추천', next: '다음 도전', all: '다시 해 보기' }[kind]}: ${game.name} 오늘의 도전`);
   }
 
   // 플레이 가능한 게임 카드: 썸네일(완료·최근 표시) → 이름 → 설명(넓은 화면) → 내 최고(보조) → 플레이하기 →
