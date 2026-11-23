@@ -28,15 +28,18 @@
       "name": "리버시",
       "completed_on": "2026-11-23",
       "status": "published"
-    }
-  ],
-  "backlog": [
+    },
     {
       "id": "sichuan",
       "name": "사천성",
-      "status": "ready_to_publish",
-      "note": "풀이 경로가 검증된 초기 판만 오늘의 도전에 사용하고, 힌트·무르기를 제공한다."
-    },
+      "completed_on": "2026-11-24",
+      "status": "published",
+      "commit": "b4c22d2a6770b7a9261959c2af3dbcf6fd724a56",
+      "url": "https://tugman77.github.io/maeil-game/sichuan/",
+      "deployment_run": 45202370380
+    }
+  ],
+  "backlog": [
     {
       "id": "number-baseball",
       "name": "숫자야구",
@@ -267,14 +270,18 @@
   "runs": [
     {
       "game": "sichuan",
-      "status": "verified_pending_deploy",
+      "status": "published",
       "requested_on": "2026-11-23",
       "base_commit": "3da83a48b86b73acc207a0e99ea7ca303ca6cb97",
       "trigger": "user_requested",
       "note": "사용자가 오늘 종료 후 다음 게임 제작을 직접 재지시하여 사천성 작업을 재개함. 자동 예약 아님.",
       "verified_on": "2026-11-24",
       "tests": "사천성 21개 및 전체 node --test 81개, common·games·스도쿠 회귀 검사",
-      "verification_limit": "실제 브라우저 모바일·PC 배치 검수 불가"
+      "verification_limit": "실제 브라우저 모바일·PC 배치 검수 불가",
+      "completed_on": "2026-11-24",
+      "commit": "b4c22d2a6770b7a9261959c2af3dbcf6fd724a56",
+      "url": "https://tugman77.github.io/maeil-game/sichuan/",
+      "deployment_run": 45202370380
     }
   ]
 }
