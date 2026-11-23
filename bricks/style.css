@@ -1,0 +1,16 @@
+/* 벽돌깨기: 캔버스 판(가로 320 × 세로 440 비율). 크기는 ui.js가 화면에 맞춰 정한다. */
+.bricks-game { gap: 8px; }
+.bricks-game .game-header { width: min(100%, 440px); }
+.bricks-game .stat-box { min-width: 56px; }
+.bricks-game .board-area { touch-action: none; }
+.bricks-canvas {
+  display: block;
+  border: 2px solid var(--button-border);
+  border-radius: 12px;
+  touch-action: none;
+}
+.bricks-game .pause-overlay { border-radius: 12px; }
+.bricks-help { max-width: 420px; }
+@media (prefers-reduced-motion: no-preference) {
+  .board-area.shake { animation: fx-shake 380ms ease-in-out; }
+}

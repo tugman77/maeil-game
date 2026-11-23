@@ -1,5 +1,6 @@
 // 게임 선택 화면: games.json을 읽어 게임 카드(썸네일)를 만들고, 오늘의 도전 도장판·연속 출석을 보여 준다.
 // 새 게임은 games.json에 한 줄 추가하고 status를 "ready"로 바꾸면 카드가 생긴다("soon"이면 '곧 만나요'). 썸네일은 common/thumbs.js.
+// games.json의 tags(퍼즐·액션)는 게임이 12개쯤 되면 분류 버튼에 쓴다. added(출시일)부터 2주 동안 'NEW' 표시.
 (() => {
   const M = MaeilGame;
   const $ = (id) => document.getElementById(id);
@@ -61,6 +62,7 @@
     const tags = el('span', 'thumb-tags');
     if (game.daily && M.dailyDone(game.id, today)) tags.append(el('span', 'tag tag-done', '✓ 오늘 완료'));
     if (game.id === recentId) tags.append(el('span', 'tag', '최근'));
+    else if (isNew(game, today)) tags.append(el('span', 'tag tag-new', 'NEW'));
     if (tags.childNodes.length) thumb.append(tags);
 
     const body = el('span', 'card-body');
@@ -76,6 +78,11 @@
     li.append(a);
     return li;
   }
+
+  const NEW_DAYS = 14;
+  let launchDay = ''; // 사이트를 연 날(가장 이른 added). 그날 함께 나온 게임에는 NEW를 붙이지 않는다.
+  const isNew = (game, today) => typeof game.added === 'string' && game.added > launchDay
+    && M.daysBetween(game.added, today) >= 0 && M.daysBetween(game.added, today) < NEW_DAYS;
 
   // 출시 예정: 작은 가로 카드 + '출시 예정' 배지 (누를 수 없음)
   function soonCard(game) {
@@ -93,10 +100,10 @@
     const summaries = M.loadSummaries();
     const recentId = M.recentGame();
     const ready = games.filter((game) => game.status === 'ready');
+    launchDay = ready.map((g) => g.added).filter((d) => typeof d === 'string').sort()[0] || '';
     const soon = games.filter((game) => game.status !== 'ready');
-    // 최근 한 게임을 맨 앞에 (도장판은 games.json 순서 그대로 — 매일 같은 자리)
-    const ordered = ready.slice().sort((a, b) => (b.id === recentId) - (a.id === recentId));
-    $('game-grid').replaceChildren(...ordered.map((game) => card(game, summaries, today, recentId)));
+    // 목록 순서는 games.json 순서로 고정(매일 같은 자리). 최근 게임은 카드의 '최근' 표시로만 알린다.
+    $('game-grid').replaceChildren(...ready.map((game) => card(game, summaries, today, recentId)));
     $('soon-list').replaceChildren(...soon.map(soonCard));
     $('soon-wrap').hidden = soon.length === 0;
     renderToday(ready, today);

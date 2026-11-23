@@ -1,0 +1,75 @@
+/* 오목: 나무 판 + 교차점 버튼(13×13). 칸을 누르면 흐린 돌(미리보기), 한 번 더 누르면 놓인다. */
+:root {
+  --omok-wood: #e2b975;
+  --omok-wood-edge: #b98a45;
+  --omok-line: #6b4a22;
+  --omok-black: #1c1c1c;
+  --omok-white: #fbfaf6;
+  --omok-mark: #d6334a;
+}
+:root[data-theme="dark"] {
+  --omok-wood: #b48c52;
+  --omok-wood-edge: #7d5c2e;
+  --omok-line: #3f2b12;
+  --omok-black: #0d0d0d;
+  --omok-white: #f1efe7;
+  --omok-mark: #ff6b7d;
+}
+.omok-game { gap: 10px; }
+.omok-status { margin: 0; min-height: 1.4em; font-weight: 700; text-align: center; }
+.omok-status.thinking { color: var(--muted); font-weight: 600; }
+.omok-board {
+  --size: min(460px, calc(100vw - 24px), max(260px, calc(100dvh - 250px)));
+  width: var(--size);
+  height: var(--size);
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  grid-template-rows: repeat(13, 1fr);
+  padding: calc(var(--size) / 60);
+  background: var(--omok-wood);
+  border: 3px solid var(--omok-wood-edge);
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / .15);
+  touch-action: manipulation;
+}
+@supports not (height: 100dvh) { .omok-board { --size: min(460px, calc(100vw - 24px), max(260px, calc(100vh - 250px))); } }
+.omok-pt {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  min-width: 0;
+  min-height: 0;
+  cursor: pointer;
+}
+/* 교차선: 가운데를 지나는 가로·세로 선. 가장자리는 판 안쪽으로만 */
+.omok-pt::before, .omok-pt::after { content: ''; position: absolute; background: var(--omok-line); pointer-events: none; }
+.omok-pt::before { left: 0; right: 0; top: calc(50% - .5px); height: 1px; }
+.omok-pt::after { top: 0; bottom: 0; left: calc(50% - .5px); width: 1px; }
+.omok-pt.c0::before { left: 50%; }
+.omok-pt.c12::before { right: 50%; }
+.omok-pt.r0::after { top: 50%; }
+.omok-pt.r12::after { bottom: 50%; }
+.omok-pt .star { position: absolute; width: 18%; height: 18%; left: 41%; top: 41%; border-radius: 50%; background: var(--omok-line); }
+.omok-pt .stone {
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  z-index: 1;
+}
+.omok-pt.black .stone { background: radial-gradient(circle at 35% 30%, #5a5a5a, var(--omok-black) 60%); box-shadow: 0 1px 2px rgb(0 0 0 / .5); }
+.omok-pt.white .stone { background: radial-gradient(circle at 35% 30%, #ffffff, var(--omok-white) 55%, #d9d6cc); box-shadow: 0 1px 2px rgb(0 0 0 / .4); }
+.omok-pt.ghost .stone { background: var(--omok-black); opacity: .38; }
+.omok-pt.ghost { outline: 2px dashed var(--omok-black); outline-offset: -2px; border-radius: 50%; }
+.omok-pt.last .stone::after { content: ''; position: absolute; inset: 34%; border-radius: 50%; background: var(--omok-mark); }
+.omok-pt.win .stone { box-shadow: 0 0 0 2px var(--omok-mark), 0 0 8px 2px var(--omok-mark); }
+.omok-pt:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; border-radius: 4px; }
+.omok-place { width: min(100%, 360px); }
+.omok-place:disabled { opacity: .4; cursor: default; }
+.omok-help { max-width: 440px; }
+@media (prefers-reduced-motion: no-preference) {
+  .omok-pt.drop .stone { animation: omok-drop 160ms ease-out; }
+  .omok-pt.win .stone { animation: omok-win 900ms ease-in-out 2; }
+  @keyframes omok-drop { from { transform: scale(1.35); opacity: .3; } to { transform: scale(1); opacity: 1; } }
+  @keyframes omok-win { 50% { transform: scale(1.12); } }
+}

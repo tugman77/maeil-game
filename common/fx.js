@@ -101,6 +101,14 @@ const MaeilFx = (() => {
     record: () => { notes([523, 659, 784, 1047], { gap: 0.09, dur: 0.12, vol: 0.1 }); notes([1319, 1568], { gap: 0.06, vol: 0.05 }); },
     over: () => notes([392, 330, 262], { gap: 0.14, dur: 0.14, vol: 0.08, type: 'triangle' }),
     on: () => notes([659, 988], { gap: 0.07, vol: 0.08 }),
+    // 오목: 내 돌 '딱', 컴퓨터 돌은 조금 낮게
+    stone: ({ ai = false } = {}) => { tone({ f: ai ? 820 : 980, f2: ai ? 620 : 760, dur: 0.05, type: 'triangle', vol: 0.09 }); noise({ dur: 0.03, vol: 0.05, cutoff: 4000 }); },
+    // 벽돌깨기: 받침대 '통', 벽돌 '깡'(줄마다 음 높이), 공 놓침
+    bounce: () => tone({ f: 330, f2: 300, dur: 0.06, type: 'triangle', vol: 0.09 }),
+    brick: ({ row = 0 } = {}) => tone({ f: 660 * 2 ** ((6 - Math.min(row, 6)) / 12), dur: 0.06, type: 'square', vol: 0.035 }),
+    // 점프 러너: 점프 '뿅', 부딪힘
+    jump: () => tone({ f: 420, f2: 760, dur: 0.12, type: 'triangle', vol: 0.07 }),
+    hurt: () => { tone({ f: 300, f2: 140, dur: 0.2, type: 'sawtooth', vol: 0.05 }); noise({ dur: 0.08, vol: 0.06, cutoff: 900 }); },
   };
 
   function play(name, options) {

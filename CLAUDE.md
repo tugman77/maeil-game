@@ -11,7 +11,8 @@
 ## 구조
 ```
 index.html · hub.js · hub.css   게임 선택 화면 (games.json을 읽어 카드 생성)
-games.json                      게임 목록. status "ready"면 공개, "soon"이면 '곧 나와요'
+games.json                      게임 목록(이 순서로 고정 표시). status "ready"면 공개, "soon"이면 '곧 나와요'.
+                                tags(퍼즐·액션, 여럿 가능)·added(출시일, 사이트 연 날 이후 게임은 2주간 NEW)
 common/core.js                  공통: 시드 난수·한국 날짜·설정·매일 도전/연속 출석·요약·공유·오프라인 등록 (전역 MaeilGame)
 common/base.css                 공통 색상 토큰(밝고 차분한 게임 라운지: 회백색+짙은 초록)·버튼·안내 메시지. sudoku/style.css도 같은 값
 common/thumbs.js · thumbs.css   게임 썸네일(SVG)과 색. 새 게임은 160×120으로 하나 그리고 .thumb-게임id 색을 정한다
@@ -21,8 +22,8 @@ common/start.js · start.css     게임별 시작 화면 공통 틀(목록 링�
                                 마크업은 tools/start_screen.py가 만든다(게임 추가 시 GAMES에 한 줄). #daily로 들어오면 오늘의 도전 바로 시작
 sw.js                           사이트 전체 공용 오프라인 보관 (파일 추가 시 FILES에도 추가)
 sudoku/                         스도쿠 (자체 CLAUDE.md 규칙은 ../스도쿠게임/CLAUDE.md 참고)
-tests/                          node tests/common.test.js · node tests/games.test.js
-2048/ · memory/ · minesweeper/ · blocks/ · snake/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
+tests/                          node tests/common.test.js · node tests/games.test.js · node --test tests/snake*.test.js tests/phase2.test.js
+2048/ · memory/ · minesweeper/ · blocks/ · snake/ · omok/ · bricks/ · runner/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
 ```
 
 ## 새 게임 붙이는 법
@@ -56,5 +57,7 @@ tests/                          node tests/common.test.js · node tests/games.te
 - [x] 옛 주소 maeil-sudoku → 넘김 페이지(+옛 서비스 워커 자동 해제), 채널등록부 `매일게임`·아침 안내 '오늘의 도전'·블로그 4곳 배너 링크 교체 (2026-11-22)
 - [x] 효과음·움직임 (2026-11-23): 2048 미끄러짐·합치기 톡, 블록 줄 빛남→지우기·쿵·단계 알림, 지뢰 물결 열기·지뢰/깃발 차례로, 카드 입체 뒤집기·흔들림·튐, 스도쿠 줄 완성 물결, 화면 전환·버튼 눌림, 결과 숫자 올라가기·새 기록 색종이, 진동(안드로이드)
 - [x] 2차 첫 게임 스네이크 (2026-11-23, Codex): 16×16 판, 방향 버튼·밀기·방향키/WASD, 쉬움·보통·어려움, 자동 일시정지·이어하기, 최고 점수·공유, 매일 도전(보통·먹이 10개 목표), 썸네일·설명·오프라인 연결. 검사: `node --test tests/snake*.test.js` (규칙 9개·화면 흐름 8개, 브라우저 배치 확인은 별도).
+- [x] 2차 나머지 3종 (2026-11-23): 오목(13×13·흑 선·금수 없음, 미리보기 후 두기, 컴퓨터 3단계·무르기 3/1/0, 오늘의 도전=정해진 첫 모양에서 보통 컴퓨터 이기기), 벽돌깨기(캔버스, 손가락 좌우·누르면 출발, 공 3개·단계 상승, 오늘의 도전=오늘의 판 모두 깨기), 점프 러너(캔버스, 누르면 점프·땅 닿기 직전 누름 허용, 목숨 3/2/1, 오늘의 도전=같은 길 500m). 효과음 stone·bounce·brick·jump·hurt 추가
+- [x] 메인 정돈(ChatGPT 3차 의견 검토): 목록 순서 고정(최근 게임은 '최근' 표시만), games.json에 tags·added, 새 게임 NEW 표시. **다음 단계(미적용)**: 게임 12개쯤 → 분류 버튼(전체/퍼즐/액션)·오늘의 도전 요약+전체 보기, 20개쯤 → 검색
 - 문의처: 지금은 GitHub 문의 게시판(about.html·privacy.html). 대표님이 메일 주소를 주시면 교체
 - 설명 글은 `tools/make_guides.py`를 고쳐 다시 만든다. 개인정보처리방침은 통계·광고 도입 **전에** 고친다(4항)

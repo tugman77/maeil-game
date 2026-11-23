@@ -1,17 +1,23 @@
 /* 게임 썸네일 색 (common/thumbs.js가 그리는 SVG). 게임 목록과 각 게임 시작 화면 미리보기가 함께 쓴다.
-   게임마다 개성: 스도쿠 세이지 그린 · 2048 살구 · 카드 라벤더 · 지뢰 하늘 · 블록 산호 */
+   게임마다 개성: 스도쿠 세이지 그린 · 2048 살구 · 카드 라벤더 · 지뢰 하늘 · 블록 산호 · 스네이크 연두 · 오목 나무 · 벽돌 남색 · 러너 노랑 */
 .thumb-sudoku { --tint: #dcebe2; }
 .thumb-2048 { --tint: #f6e7cf; }
 .thumb-memory { --tint: #e7e0f3; }
 .thumb-minesweeper { --tint: #d9eaf7; }
 .thumb-blocks { --tint: #f7ddd6; }
 .thumb-snake { --tint: #e4eed5; }
+.thumb-omok { --tint: #f1e4cc; }
+.thumb-bricks { --tint: #dde4f6; }
+.thumb-runner { --tint: #fbedc4; }
 :root[data-theme="dark"] .thumb-sudoku { --tint: #1f3328; }
 :root[data-theme="dark"] .thumb-2048 { --tint: #3a3022; }
 :root[data-theme="dark"] .thumb-memory { --tint: #2c2540; }
 :root[data-theme="dark"] .thumb-minesweeper { --tint: #1c2d3d; }
 :root[data-theme="dark"] .thumb-blocks { --tint: #3b2622; }
 :root[data-theme="dark"] .thumb-snake { --tint: #263520; }
+:root[data-theme="dark"] .thumb-omok { --tint: #3a2f1f; }
+:root[data-theme="dark"] .thumb-bricks { --tint: #222b40; }
+:root[data-theme="dark"] .thumb-runner { --tint: #3a3119; }
 
 .thumb text, .st-preview text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; text-anchor: middle; font-weight: 800; }
 .th-paper { fill: #ffffff; }
@@ -79,3 +85,40 @@
 :root[data-theme="dark"] .th-snake-food { fill: #f26a52; }
 :root[data-theme="dark"] .th-snake-leaf { fill: #7fb85a; }
 :root[data-theme="dark"] .th-snake-stem { stroke: #c49a6c; }
+
+/* 오목 */
+.th-omok-wood { fill: #e2b975; stroke: #b98a45; stroke-width: 2; }
+.th-omok-line { stroke: #6b4a22; stroke-width: 1; }
+.th-omok-b { fill: #1c1c1c; }
+.th-omok-w { fill: #fbfaf6; stroke: #9c8f78; stroke-width: 1; }
+.th-omok-win { stroke: #d6334a; stroke-width: 3; stroke-linecap: round; opacity: .8; }
+/* 벽돌깨기 */
+.th-br-board { fill: #ffffff; stroke: #aab8dc; stroke-width: 2; }
+.th-br1 { fill: #e0674f; }
+.th-br2 { fill: #f2b01e; }
+.th-br3 { fill: #3b6fc4; }
+.th-br-ball { fill: #e0674f; }
+.th-br-trail { stroke: #8a96b8; }
+.th-br-paddle { fill: #1e6b48; }
+/* 점프 러너 */
+.th-run-sky { fill: #dff1fb; }
+.th-run-ground { fill: #c9a172; }
+.th-run-grass { fill: #7cc06a; }
+.th-run-dash { stroke: #b38b5d; }
+.th-run-fence { fill: #a8743f; }
+.th-run-arc { stroke: #8aa0b0; }
+.th-run-chick { fill: #ffd23f; }
+.th-run-wing { fill: #f2b01e; }
+.th-run-eye { fill: #1d2420; }
+.th-run-beak { fill: #ef7d2d; }
+.th-run-sun { fill: #ffd166; }
+:root[data-theme="dark"] .th-omok-wood { fill: #b48c52; stroke: #7d5c2e; }
+:root[data-theme="dark"] .th-omok-line { stroke: #3f2b12; }
+:root[data-theme="dark"] .th-br-board { fill: #161c24; stroke: #3c4a6b; }
+:root[data-theme="dark"] .th-br-paddle { fill: #7fb3ff; }
+:root[data-theme="dark"] .th-br-ball { fill: #ffd166; }
+:root[data-theme="dark"] .th-run-sky { fill: #243149; }
+:root[data-theme="dark"] .th-run-ground { fill: #4b3a28; }
+:root[data-theme="dark"] .th-run-grass { fill: #3d5a34; }
+:root[data-theme="dark"] .th-run-dash { stroke: #5d4a35; }
+:root[data-theme="dark"] .th-run-fence { fill: #d9c39a; }

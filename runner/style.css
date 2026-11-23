@@ -1,0 +1,26 @@
+/* 점프 러너: 가로로 긴 캔버스(360 × 200 비율) + 아래 큰 [점프!] 버튼(한 손 엄지). */
+.runner-game { gap: 10px; }
+.runner-game .game-header { width: min(100%, 520px); }
+.runner-game #lives { color: #e0674f; letter-spacing: 1px; }
+.runner-area { touch-action: none; }
+.runner-canvas {
+  display: block;
+  border: 2px solid var(--button-border);
+  border-radius: 12px;
+  touch-action: none;
+}
+.runner-game .pause-overlay { border-radius: 12px; gap: 10px; }
+.runner-jump {
+  width: min(100%, 360px);
+  min-height: 96px;
+  font-size: 1.5em;
+  border-radius: 20px;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.runner-jump:active { transform: scale(.97); }
+.runner-help { max-width: 420px; }
+@media (prefers-reduced-motion: no-preference) {
+  .board-area.shake { animation: fx-shake 380ms ease-in-out; }
+}

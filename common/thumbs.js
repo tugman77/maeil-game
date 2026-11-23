@@ -98,7 +98,52 @@ const GameThumbs = (() => {
     );
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake };
+  // 오목: 나무 판 위 흑돌 다섯 개가 대각선으로 이어지고, 백돌이 사이사이
+  function omok() {
+    const X = (c) => 34 + c * 15.5;
+    const Y = (r) => 16 + r * 14.7;
+    let lines = '';
+    for (let k = 0; k < 7; k++) {
+      lines += `<line x1="${X(k)}" y1="${Y(0)}" x2="${X(k)}" y2="${Y(6)}" class="th-omok-line"/>`;
+      lines += `<line x1="${X(0)}" y1="${Y(k)}" x2="${X(6)}" y2="${Y(k)}" class="th-omok-line"/>`;
+    }
+    const stone = (c, r, cls) => `<circle cx="${X(c)}" cy="${Y(r)}" r="6.6" class="${cls}"/>`;
+    const black = [[1, 5], [2, 4], [3, 3], [4, 2], [5, 1]].map(([c, r]) => stone(c, r, 'th-omok-b')).join('');
+    const white = [[2, 2], [3, 4], [4, 3], [1, 3], [5, 4]].map(([c, r]) => stone(c, r, 'th-omok-w')).join('');
+    return svg(`<rect x="24" y="7" width="113" height="106" rx="7" class="th-omok-wood"/>${lines}`
+      + `<line x1="${X(1)}" y1="${Y(5)}" x2="${X(5)}" y2="${Y(1)}" class="th-omok-win"/>${white}${black}`);
+  }
+
+  // 벽돌깨기: 색 벽돌 줄 + 비스듬히 튀는 공(점선 자취) + 받침대
+  function bricks() {
+    const colors = ['th-br1', 'th-br2', 'th-br3'];
+    let body = '';
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 5; c++) {
+        if (r === 2 && (c === 1 || c === 2)) continue; // 깨진 자리
+        body += `<rect x="${30 + c * 20.5}" y="${16 + r * 12}" width="18" height="9" rx="2" class="${colors[r]}"/>`;
+      }
+    }
+    return svg(`<rect x="24" y="8" width="112" height="104" rx="8" class="th-br-board"/>${body}`
+      + '<path d="M62 92 L80 58 L96 76" fill="none" class="th-br-trail" stroke-width="2" stroke-dasharray="3 4" stroke-linecap="round"/>'
+      + '<circle cx="80" cy="56" r="6" class="th-br-ball"/>'
+      + '<rect x="46" y="96" width="38" height="8" rx="4" class="th-br-paddle"/>');
+  }
+
+  // 점프 러너: 땅 위 울타리를 뛰어넘는 병아리(점프 곡선)
+  function runner() {
+    return svg('<rect x="14" y="8" width="132" height="104" rx="8" class="th-run-sky"/>'
+      + '<rect x="14" y="88" width="132" height="24" rx="0" class="th-run-ground"/><rect x="14" y="86" width="132" height="5" class="th-run-grass"/>'
+      + '<path d="M14 104 h132" class="th-run-dash" stroke-width="3" stroke-dasharray="10 12"/>'
+      + '<g class="th-run-fence"><rect x="88" y="62" width="4" height="25"/><rect x="104" y="62" width="4" height="25"/><rect x="85" y="67" width="26" height="4"/><rect x="85" y="77" width="26" height="4"/></g>'
+      + '<path d="M30 84 Q66 10 118 70" fill="none" class="th-run-arc" stroke-width="2" stroke-dasharray="3 5" stroke-linecap="round"/>'
+      + '<g transform="translate(70 34)"><ellipse cx="0" cy="0" rx="13" ry="12" class="th-run-chick"/>'
+      + '<ellipse cx="-5" cy="-2" rx="7" ry="4" transform="rotate(-25)" class="th-run-wing"/>'
+      + '<circle cx="5" cy="-4" r="2" class="th-run-eye"/><path d="M11 -2 L18 1 L11 4z" class="th-run-beak"/></g>'
+      + '<circle cx="126" cy="24" r="8" class="th-run-sun"/>');
+  }
+
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();
