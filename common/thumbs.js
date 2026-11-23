@@ -169,7 +169,17 @@ const GameThumbs = (() => {
       + '<path d="M44 19 V12 H114 V19" class="th-sc-path" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>');
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan };
+  function numberBaseball() {
+    let body = '<rect x="17" y="11" width="126" height="99" rx="13" class="th-nb-board"/>';
+    [4, 2, 7].forEach((digit, i) => {
+      const x = 30 + i * 35;
+      body += `<rect x="${x}" y="24" width="29" height="40" rx="6" class="th-nb-tile"/><text x="${x+14.5}" y="52" class="th-nb-digit">${digit}</text>`;
+    });
+    return svg(body + '<rect x="32" y="76" width="43" height="23" rx="7" class="th-nb-strike"/><rect x="85" y="76" width="43" height="23" rx="7" class="th-nb-ball"/>'
+      + '<text x="53.5" y="92.5" class="th-nb-score">1S</text><text x="106.5" y="92.5" class="th-nb-score">2B</text>');
+  }
+
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

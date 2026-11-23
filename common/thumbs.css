@@ -8,6 +8,7 @@
 .thumb-snake { --tint: #e4eed5; }
 .thumb-reversi { --tint: #dcebd9; }
 .thumb-sichuan { --tint: #dcece8; }
+.thumb-number-baseball { --tint: #dce9f3; }
 .thumb-omok { --tint: #f1e4cc; }
 .thumb-bricks { --tint: #dde4f6; }
 .thumb-runner { --tint: #fbedc4; }
@@ -19,6 +20,14 @@
 :root[data-theme="dark"] .thumb-snake { --tint: #263520; }
 :root[data-theme="dark"] .thumb-reversi { --tint: #24372b; }
 :root[data-theme="dark"] .thumb-sichuan { --tint: #203a33; }
+:root[data-theme="dark"] .thumb-number-baseball { --tint: #233345; }
+.th-nb-board { fill: #6685a1; }
+.th-nb-tile { fill: #fcfdfd; }
+.th-nb-digit { fill: #2c4358; font: 700 28px -apple-system, BlinkMacSystemFont, sans-serif; text-anchor: middle; }
+.th-nb-strike { fill: #28734c; }
+.th-nb-ball { fill: #9b6818; }
+.th-nb-score { fill: #fff; font: 700 15px -apple-system, BlinkMacSystemFont, sans-serif; text-anchor: middle; }
+:root[data-theme="dark"] .th-nb-board { fill: #435e77; }
 .th-sc-board { fill: #7ca18b; }
 .th-sc-tile { fill: #fffdf4; stroke: #527762; stroke-width: 1.4; }
 .th-sc-path { stroke: #ffd369; }

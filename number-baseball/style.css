@@ -1,0 +1,53 @@
+.game-header, .play-area { width: min(100%, 420px); }
+.game-header { gap: 6px; }
+.game-header .header-btn { padding: 6px 9px; }
+.header-stats { gap: 5px; }
+.stat-box { min-width: 54px; padding: 4px 6px; }
+.stat-box small { font-size: 14px; }
+.game-label { text-align: center; }
+.play-area { display: flex; flex-direction: column; gap: 12px; }
+.rule-strip { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; font-size: 15px; }
+.strike { color: var(--primary); }
+.ball { color: var(--gold); }
+.input-card { padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; }
+.input-card h2 { margin: 0; text-align: center; font-size: 18px; }
+.range-info { margin: 4px 0 12px; color: var(--muted); text-align: center; font-size: 14px; }
+.guess-slots { display: flex; gap: 8px; justify-content: center; }
+.guess-slot { width: 58px; min-height: 64px; border: 2px solid var(--button-border); background: var(--bg); border-radius: 12px; font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; padding: 4px; }
+.guess-slot.active { border-color: var(--primary); background: var(--active); box-shadow: 0 0 0 1px var(--primary); }
+.game-status { min-height: 3em; margin: 12px 0 8px; font-size: 15px; color: var(--muted); text-align: center; }
+.keypad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.digit-btn { min-height: 50px; padding: 4px; background: var(--button); border: 1px solid var(--button-border); border-radius: 10px; font-size: 25px; font-weight: 650; touch-action: manipulation; }
+.digit-btn:active:not(:disabled) { background: var(--active); border-color: var(--primary); }
+.digit-btn:disabled { opacity: .32; cursor: default; }
+.edit-key { font-size: 16px; font-weight: 500; }
+.submit-btn { width: 100%; margin-top: 12px; }
+.submit-btn:disabled { opacity: .45; cursor: default; }
+.helper-row { display: flex; gap: 8px; }
+.helper-row .header-btn { flex: 1; min-width: 0; }
+.hint-info, .candidate-info { margin: 0; text-align: center; font-size: 14px; color: var(--muted); }
+.candidate-info { color: var(--primary); font-weight: 600; }
+.history-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+.history-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.history-heading h2 { font-size: 18px; margin: 0; }
+.history-heading > span { color: var(--muted); font-size: 14px; }
+.empty-history { color: var(--muted); font-size: 15px; margin: 12px 0 2px; }
+.attempt-list { list-style: none; padding: 0; margin: 8px 0 0; }
+.attempt-row { display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.attempt-no { color: var(--muted); font-size: 14px; }
+.attempt-number { font-size: 23px; letter-spacing: 3px; }
+.attempt-result { display: flex; gap: 6px; font-size: 17px; font-weight: 700; white-space: nowrap; }
+.attempt-result.out { font-weight: 500; color: var(--muted); }
+.relax-note, .record-note { font-size: 14px; text-align: center; color: var(--muted); margin: 0; }
+.howto-details { padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; font-size: 16px; }
+.howto-details summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--primary); font-weight: 600; }
+.howto-details p { margin: 8px 0; }
+.howto-details a { display: inline-flex; align-items: center; min-height: 44px; color: var(--primary); }
+.in-game-settings { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.pause-overlay { position: fixed; inset: 0; border-radius: 0; padding: 24px; z-index: 20; }
+#result-answer { font-size: 28px; letter-spacing: 4px; color: var(--text); }
+:root.large-text .digit-btn { font-size: 29px; min-height: 56px; }
+:root.large-text .edit-key { font-size: 18px; }
+:root.large-text .game-status { font-size: 18px; }
+:root.large-text .guess-slot { font-size: 38px; }
+:root.large-text .attempt-number { font-size: 26px; }
