@@ -8,5 +8,6 @@
   {"id": "omok", "short": "오목", "name": "오목", "desc": "컴퓨터와 다섯 알 먼저 잇기", "icon": "⚫", "path": "omok/", "status": "ready", "daily": true, "dailyDesc": "같은 첫 모양 · 보통 컴퓨터 이기기", "tags": ["퍼즐"], "added": "2026-11-23"},
   {"id": "bricks", "short": "벽돌", "name": "벽돌깨기", "desc": "공을 튕겨 벽돌 모두 깨기", "icon": "🧱", "path": "bricks/", "status": "ready", "daily": true, "dailyDesc": "오늘의 판 · 벽돌을 모두 깨면 완료", "tags": ["액션"], "added": "2026-11-23"},
   {"id": "runner", "short": "러너", "name": "점프 러너", "desc": "눌러서 장애물 뛰어넘기", "icon": "🐥", "path": "runner/", "status": "ready", "daily": true, "dailyDesc": "같은 길 · 500m 달리면 완료", "tags": ["액션"], "added": "2026-11-23"},
-  {"id": "reversi", "short": "리버시", "name": "리버시", "desc": "컴퓨터와 돌을 뒤집는 전략 한 판", "icon": "⚪", "path": "reversi/", "status": "ready", "daily": true, "dailyDesc": "같은 첫 모양 · 보통 컴퓨터와 한 판", "tags": ["퍼즐", "보드"], "added": "2026-11-23"}
+  {"id": "reversi", "short": "리버시", "name": "리버시", "desc": "컴퓨터와 돌을 뒤집는 전략 한 판", "icon": "⚪", "path": "reversi/", "status": "ready", "daily": true, "dailyDesc": "같은 첫 모양 · 보통 컴퓨터와 한 판", "tags": ["퍼즐", "보드"], "added": "2026-11-23"},
+  {"id": "sichuan", "short": "사천성", "name": "사천성", "desc": "같은 그림을 두 번 이하로 꺾어 연결하기", "icon": "🍎", "path": "sichuan/", "status": "ready", "daily": true, "dailyDesc": "같은 패 배치 · 24쌍을 모두 연결하면 완료", "tags": ["퍼즐"], "added": "2026-11-24"}
 ]

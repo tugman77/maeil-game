@@ -7,6 +7,7 @@
 .thumb-blocks { --tint: #f7ddd6; }
 .thumb-snake { --tint: #e4eed5; }
 .thumb-reversi { --tint: #dcebd9; }
+.thumb-sichuan { --tint: #dcece8; }
 .thumb-omok { --tint: #f1e4cc; }
 .thumb-bricks { --tint: #dde4f6; }
 .thumb-runner { --tint: #fbedc4; }
@@ -17,6 +18,11 @@
 :root[data-theme="dark"] .thumb-blocks { --tint: #3b2622; }
 :root[data-theme="dark"] .thumb-snake { --tint: #263520; }
 :root[data-theme="dark"] .thumb-reversi { --tint: #24372b; }
+:root[data-theme="dark"] .thumb-sichuan { --tint: #203a33; }
+.th-sc-board { fill: #7ca18b; }
+.th-sc-tile { fill: #fffdf4; stroke: #527762; stroke-width: 1.4; }
+.th-sc-path { stroke: #ffd369; }
+:root[data-theme="dark"] .th-sc-board { fill: #315b49; }
 
 .th-rev-frame { fill: #215b3d; }
 .th-rev-cell { fill: #377d58; stroke: #215b3d; stroke-width: 1; }

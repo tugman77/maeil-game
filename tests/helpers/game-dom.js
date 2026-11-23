@@ -11,6 +11,7 @@ module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash
     constructor(tag = 'div') {
       this.tagName = tag.toUpperCase(); this.children = []; this.parentElement = null; this.listeners = {};
       this.dataset = {}; this.attributes = {}; this.className = ''; this.hidden = false; this._text = ''; this.disabled = false;
+      this.style = { setProperty: (key, value) => { this.style[key] = String(value); } };
       this.classList = { toggle: (name, on) => {
         const classes = new Set(this.className.split(' ').filter(Boolean));
         if (on === undefined) on = !classes.has(name);

@@ -1,0 +1,39 @@
+/* 여섯 열을 유지해 360px 화면에서도 각 패의 터치 영역은 44px 이상. */
+.game-screen { gap: 12px; }
+.game-header, .tool-row, .board-area, .game-status, .game-notes { width: min(100%, 420px); }
+.game-header { gap: 6px; }
+.game-header .header-btn { padding: 6px 9px; }
+.header-stats { gap: 5px; }
+.stat-box { min-width: 54px; padding: 4px 6px; }
+.stat-box small { font-size: 14px; }
+.game-label { text-align: center; }
+.game-progress { display: flex; gap: 16px; align-items: center; justify-content: center; }
+.game-progress p { margin: 0; font-size: 15px; color: var(--muted); }
+.game-progress .limit-free { color: var(--primary); font-weight: 600; }
+.board-area { background: var(--active); border: 1px solid var(--line); border-radius: 20px; touch-action: pan-y; }
+.board { display: grid; grid-template-columns: repeat(var(--cols), minmax(44px, 1fr)); gap: 4px; padding: 14px; }
+.tile { position: relative; display: grid; place-items: center; min-width: 44px; min-height: 48px; aspect-ratio: 1 / 1.08; padding: 0; border: 1px solid #b9c8b9; border-bottom-width: 3px; border-radius: 8px; background: #fffdf7; font-size: 30px; line-height: 1; box-shadow: 0 2px 0 #215b3d18; touch-action: manipulation; }
+.tile.selected { border: 3px solid var(--primary); background: var(--surface); box-shadow: 0 0 0 2px var(--primary); z-index: 2; }
+.tile.hint { border: 3px dashed var(--gold); background: var(--surface); z-index: 2; }
+.tile.removing { opacity: .55; transform: scale(.91); }
+.tile.empty { opacity: 0; pointer-events: none; }
+.tile:disabled { cursor: default; }
+.tile:focus-visible { outline-offset: 0; z-index: 3; }
+.connection { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 3; }
+.connection polyline { fill: none; stroke: var(--gold); stroke-width: 4px; stroke-linecap: round; stroke-linejoin: round; }
+.game-status { min-height: 3em; margin: 0; font-size: 16px; text-align: center; }
+.game-notes { text-align: center; }
+.game-notes p { margin: 4px 0; font-size: 14px; color: var(--muted); }
+.game-notes a { display: inline-flex; align-items: center; min-height: 44px; color: var(--primary); font-size: 15px; }
+.tool-row { flex-wrap: wrap; }
+.tool-row .header-btn { min-width: 84px; font-size: 16px; padding: 8px 5px; }
+.in-game-settings { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.in-game-settings .option-btn { font-size: 15px; }
+:root.large-text .tile { font-size: 34px; }
+:root.large-text .game-status { font-size: 19px; }
+:root[data-theme="dark"] .tile { background: #e8eddf; border-color: #8ba28c; }
+:root[data-theme="dark"] .tile.selected, :root[data-theme="dark"] .tile.hint { background: #fffdf7; }
+@media (prefers-reduced-motion: no-preference) {
+  .tile { transition: transform .16s, opacity .16s, box-shadow .16s; }
+  .tile:active:not(:disabled) { transform: scale(.95); }
+}

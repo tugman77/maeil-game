@@ -155,7 +155,21 @@ const GameThumbs = (() => {
     return svg(body);
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi };
+  function sichuan() {
+    const tile = (x, y, type) => {
+      let picture;
+      if (type === 'apple') picture = `<path d="M${x+14} ${y+12} c-14 -7 -15 17 -4 21 q4 1 6 -1 c12 4 15 -25 0 -20z" fill="#d95c47"/><path d="M${x+14} ${y+12} q-2 -9 6 -9 q2 7 -6 9" fill="#398655"/>`;
+      else if (type === 'flower') picture = `<g fill="#d39b27"><circle cx="${x+14}" cy="${y+13}" r="6"/><circle cx="${x+20}" cy="${y+19}" r="6"/><circle cx="${x+14}" cy="${y+25}" r="6"/><circle cx="${x+8}" cy="${y+19}" r="6"/></g><circle cx="${x+14}" cy="${y+19}" r="5" fill="#695032"/>`;
+      else picture = `<path d="M${x+14} ${y+7} l3 7 8 1 -6 5 2 8 -7 -4 -7 4 2 -8 -6 -5 8 -1z" fill="#558cb6"/>`;
+      return `<rect x="${x}" y="${y}" width="29" height="40" rx="5" class="th-sc-tile"/>${picture}`;
+    };
+    return svg('<rect x="18" y="7" width="124" height="107" rx="12" class="th-sc-board"/>'
+      + tile(30, 18, 'apple') + tile(65, 18, 'flower') + tile(100, 18, 'apple')
+      + tile(30, 66, 'star') + tile(65, 66, 'flower') + tile(100, 66, 'star')
+      + '<path d="M44 19 V12 H114 V19" class="th-sc-path" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>');
+  }
+
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();
