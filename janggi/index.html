@@ -97,6 +97,19 @@
         <button type="button" id="pass-btn" class="header-btn">한 수 쉼</button>
       </div>
       <p id="board-help" class="board-help"></p>
+      <aside id="captured-panel" class="captured-panel" aria-labelledby="captured-title">
+        <h2 id="captured-title">잡힌 말</h2>
+        <div class="captured-groups">
+          <section class="captured-group" aria-labelledby="captured-han-title">
+            <h3 id="captured-han-title">내가 잡은 말 · 한 <span id="captured-han-count" class="captured-count">0개</span></h3>
+            <ul id="captured-han" class="captured-list" aria-label="내가 잡은 붉은 한 말"></ul>
+          </section>
+          <section class="captured-group" aria-labelledby="captured-cho-title">
+            <h3 id="captured-cho-title">잃은 내 말 · 초 <span id="captured-cho-count" class="captured-count">0개</span></h3>
+            <ul id="captured-cho" class="captured-list" aria-label="컴퓨터가 잡은 푸른 초 말"></ul>
+          </section>
+        </div>
+      </aside>
       <details class="game-options">
         <summary>판 표시·설정·도움말</summary>
         <div class="settings-row">

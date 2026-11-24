@@ -78,3 +78,22 @@ test('이전 날짜 완료는 최신 오늘 기록을 보존, 손상 저장 무�
  const bad=browser({saved:{[GAME]:{board:[]},[STATS]:'손상'}});assert.equal(bad.element('continue-wrap').hidden,true);bad.click('start-btn');assert.ok(G.isValid(bad.get(GAME)));
  const c=browser({blockedStorage:true,hash:'#daily'});play(c,G.matingMoves(G.create('medium',{daily:'2026-11-23'}))[0]);assert.equal(c.element('result-screen').hidden,false);
 });
+test('잡힌 말: 한·초 분리, 한글 전환·저장 이어하기·무르기와 일치',()=>{
+ const p=G.create();[{from:54,to:45},{from:27,to:36},{from:45,to:36}].forEach(a=>assert.ok(G.move(p,a)));
+ const b=browser({saved:{[GAME]:p}});b.click('continue-btn');
+ assert.equal(b.element('captured-han').textContent,'兵');assert.equal(b.element('captured-han-count').textContent,'1개');assert.equal(b.element('captured-cho-count').textContent,'0개');
+ assert.match(b.element('captured-han').children[0].attributes['aria-label'],/컴퓨터 한 병/);
+ const before=b.get(GAME);b.click('script-btn');assert.equal(b.element('captured-han').textContent,'병');assert.deepEqual(b.get(GAME),before);
+ const c=browser({saved:{[GAME]:b.get(GAME),'maeil-game.janggi.display.v1':b.get('maeil-game.janggi.display.v1')}});c.click('continue-btn');assert.equal(c.element('captured-han').textContent,'병');
+ c.click('undo-btn');assert.equal(c.element('captured-han-count').textContent,'0개');assert.equal(c.element('captured-han').textContent,'아직 없어요');assert.equal(c.get(GAME).board[36],-G.P);assert.ok(G.isValid(c.get(GAME)));
+ const q=G.create();[{from:54,to:45},{from:27,to:36},{from:56,to:47},{from:36,to:45}].forEach(a=>assert.ok(G.move(q,a)));
+ const d=browser({saved:{[GAME]:q}});d.click('continue-btn');assert.equal(d.element('captured-cho').textContent,'卒');assert.equal(d.element('captured-cho-count').textContent,'1개');assert.equal(d.element('captured-han-count').textContent,'0개');
+ d.click('undo-btn');assert.equal(d.element('captured-cho-count').textContent,'0개');assert.ok(G.isValid(d.get(GAME)));
+});
+test('초기 포진·희소한 오늘 문제에서 처음부터 없는 말은 잡힌 말로 표시하지 않음',()=>{
+ for(const setup of [{},{hash:'#daily'}]){
+  const b=browser(setup);if(!setup.hash)b.click('start-btn');
+  assert.equal(b.element('captured-han-count').textContent,'0개');assert.equal(b.element('captured-cho-count').textContent,'0개');
+  assert.equal(b.element('captured-han').textContent,'아직 없어요');assert.equal(b.element('captured-cho').textContent,'아직 없어요');
+ }
+});

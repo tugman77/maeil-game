@@ -28,6 +28,25 @@
     return t===G.K?(v>0?'楚':'漢'):t===G.P?(v>0?'卒':'兵'):{2:'士',3:'車',4:'包',5:'馬',6:'象'}[t];
   }
   function pieceName(v){return `${v>0?'내 초':'컴퓨터 한'} ${G.type(v)===G.P?(v>0?'졸':'병'):G.NAMES[G.type(v)]}`;}
+  function pieceElement(v){
+    const outer=document.createElement('span');outer.className='piece '+(G.type(v)===G.K?'piece-king':[G.A,G.P].includes(G.type(v))?'piece-small':'piece-major');outer.setAttribute('aria-hidden','true');
+    const face=document.createElement('span');face.className='piece-face';face.textContent=pieceText(v);outer.append(face);return outer;
+  }
+  function renderCaptured(){
+    // Compare with this game's starting board, including sparse daily puzzles.
+    // Deriving the display preserves old saves and restores captures on undo.
+    for(const [side,name] of [[G.HAN,'han'],[G.CHO,'cho']]){
+      const tokens=[];
+      for(const type of [G.R,G.C,G.H,G.E,G.A,G.P]){
+        const v=side*type,n=game.initial.filter(p=>p===v).length-game.board.filter(p=>p===v).length;
+        for(let i=0;i<n;i++){const item=document.createElement('li');item.className='captured-token '+name;item.setAttribute('aria-label',pieceName(v)+' · 잡힌 말');item.append(pieceElement(v));tokens.push(item);}
+      }
+      $('captured-'+name+'-count').textContent=`${tokens.length}개`;
+      if(!tokens.length){const empty=document.createElement('li');empty.className='captured-empty';empty.textContent='아직 없어요';tokens.push(empty);}
+      $('captured-'+name).replaceChildren(...tokens);
+    }
+    $('captured-panel').classList.toggle('hanja',hanja);
+  }
   function buildBoard(){
     points=Array.from({length:90},(_,i)=>{const b=document.createElement('button');b.type='button';b.className='jg-cell';b.setAttribute('role','gridcell');b.addEventListener('click',()=>pick(i));return b;});
     $('board').replaceChildren(...points);
@@ -44,8 +63,9 @@
       b.className=classes.join(' ');b.disabled=Boolean(paused||thinking||game.over||game.turn!==G.CHO||game.puzzleAttempted);
       b.tabIndex=i===cursor?0:-1;b.setAttribute('aria-selected',String(i===selected));
       b.setAttribute('aria-label',`${Math.floor(i/9)+1}행 ${i%9+1}열, ${v?pieceName(v):'빈 점'}${targets.has(i)?', 이동 가능':''}${i===selected?', 선택됨':''}${checked&&i===king?', 장군':''}`);
-      if(v){const outer=document.createElement('span');outer.className='piece '+(G.type(v)===G.K?'piece-king':[G.A,G.P].includes(G.type(v))?'piece-small':'piece-major');outer.setAttribute('aria-hidden','true');const face=document.createElement('span');face.className='piece-face';face.textContent=pieceText(v);outer.append(face);b.replaceChildren(outer);}else b.replaceChildren();
+      if(v)b.replaceChildren(pieceElement(v));else b.replaceChildren();
     });
+    renderCaptured();
     $('play-area').inert=paused;$('home-btn').disabled=paused;$('pause-btn').disabled=paused;
     $('cho-points').textContent=scores.cho;$('han-points').textContent=scores.han;
     $('undo-btn').disabled=paused||!G.canUndo(game);$('hint-btn').disabled=Boolean(paused||thinking||game.over||game.turn!==G.CHO||game.puzzleAttempted);

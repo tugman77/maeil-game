@@ -52,3 +52,26 @@
 @media (orientation:landscape) and (max-height:500px) {
   .board-scroll { max-height:calc(100dvh - 110px); }
 }
+
+/* Keep the board centered at its existing width; place captures beside it only
+   when the viewport has room. Phones show both trays below the board. */
+.play-area { position:relative; }
+.captured-panel { margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--surface); }
+.captured-panel h2 { margin:0 0 10px;font-size:18px;line-height:1.3; }
+.captured-groups { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }
+.captured-group { min-width:0; }
+.captured-group h3 { margin:0 0 8px;font-size:16px;font-weight:650;line-height:1.5; }
+.captured-count { display:inline-block;margin-left:4px;color:var(--muted);font-size:14px;font-weight:500; }
+.captured-list { display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-height:36px;list-style:none;margin:0;padding:0; }
+.captured-token { display:grid;place-items:center;width:36px;height:36px; }
+.captured-token .piece { width:34px;height:34px; }
+.captured-token .piece-small { width:30px;height:30px; }
+.captured-token .piece-face { font-size:23px; }
+.captured-token .piece-small .piece-face { font-size:20px; }
+.captured-empty { color:var(--muted);font-size:14px;line-height:1.5; }
+:root.large-text .captured-token .piece-face { font-size:26px; }
+:root.large-text .captured-token .piece-small .piece-face { font-size:23px; }
+@media (min-width:960px) {
+  .captured-panel { position:absolute;top:0;left:calc(100% + 12px);width:176px;margin:0; }
+  .captured-groups { grid-template-columns:1fr;gap:16px; }
+}
