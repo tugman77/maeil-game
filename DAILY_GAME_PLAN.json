@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -83,15 +83,18 @@
       "commit": "22bec6fabb72166ffcb33021b4a2c42fde2bd82e",
       "url": "https://tugman77.github.io/maeil-game/janggi/",
       "deployment_run": 45419023103
-    }
-  ],
-  "backlog": [
+    },
     {
       "id": "go",
       "name": "바둑",
-      "status": "in_progress",
-      "note": "9줄부터 시작하고 큰 판은 같은 게임의 기능 확장으로 다룬다."
-    },
+      "completed_on": "2026-11-25",
+      "status": "published",
+      "commit": "a4f1f157b13a19850f7e6f3b8200e8dbc4682281",
+      "url": "https://tugman77.github.io/maeil-game/go/",
+      "deployment_run": 45492500525
+    }
+  ],
+  "backlog": [
     {
       "id": "gostop",
       "name": "맞고",
@@ -381,14 +384,18 @@
     },
     {
       "game": "go",
-      "status": "ready_for_publication",
+      "status": "published",
       "requested_on": "2026-11-25",
       "trigger": "user_requested",
       "base_commit": "c608fc68dd315073f76af5d657082ebbb0b30bf7",
       "note": "장기 한자 말·크기 개선과 함께 다음 바둑 제작을 직접 요청. 9줄 컴퓨터 대전과 오늘의 한 수 돌 잡기.",
       "verified_on": "2026-11-25",
       "tests": "바둑 전용 23개·전체 243개, 독립 착수/포획 비교 11,664개 및 날짜별 문제 1,000일. 공통·기존 게임·스도쿠 별도 검사 통과.",
-      "verification_limit": "브라우저 호스트 미연결로 실제 모바일/PC 화면 검수 미완료"
+      "verification_limit": "브라우저 호스트 미연결로 실제 모바일/PC 화면 검수 미완료",
+      "completed_on": "2026-11-25",
+      "commit": "a4f1f157b13a19850f7e6f3b8200e8dbc4682281",
+      "url": "https://tugman77.github.io/maeil-game/go/",
+      "deployment_run": 45492500525
     }
   ],
   "queue_changes": [
