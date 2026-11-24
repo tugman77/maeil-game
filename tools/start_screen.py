@@ -10,6 +10,7 @@ ICON_HELP = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12"
 
 def block(gid, title, desc, stats=False):
     stats_btn = ' <button type="button" id="stats-btn" class="st-link">기록 보기</button>' if stats else ''
+    extra = '<label class="formation-label" for="formation-select">내 포진 · 컴퓨터는 마상·상마 고정</label><select id="formation-select" class="formation-select"><option value="0">마상 · 상마 (기본)</option><option value="1">상마 · 마상</option><option value="2">마상 · 마상</option><option value="3">상마 · 상마</option></select>\n      ' if gid == 'janggi' else ''
     return f'''<!-- 시작 화면 (공통 구조: common/start.css · start.js, tools/start_screen.py로 생성) -->
   <main id="start-screen" class="st">
     <a href="../" class="st-back">← 게임 목록</a>
@@ -41,7 +42,7 @@ def block(gid, title, desc, stats=False):
       <h2 class="st-label" id="pick-label">난이도</h2>
       <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
       <p class="st-detail" id="pick-detail"></p>
-      <button type="button" id="start-btn" class="st-start">게임 시작</button>
+      {extra}<button type="button" id="start-btn" class="st-start">게임 시작</button>
       <p class="st-best"><span id="pick-best"></span>{stats_btn}</p>
     </section>
 
@@ -73,6 +74,7 @@ GAMES = [
   ('freecell', '프리셀', '빈 프리셀과 빈 줄을 활용해 같은 무늬를 A부터 K까지 정리하세요.', False),
   ('klondike', '클론다이크 솔리테어', '덱에서 한 장씩 뽑아 같은 무늬를 A부터 K까지 정리하세요.', False),
   ('initial-quiz', '초성 퀴즈', '초성과 뜻을 보고 글자 버튼을 눌러 생활 낱말을 맞혀 보세요.', False),
+  ('janggi', '장기', '말을 누르고 이동할 점을 골라 컴퓨터와 한 수 두어 보세요.', False),
   ('sudoku', '스도쿠', '가로줄·세로줄·3×3 칸에 1~9를 한 번씩 채우는 숫자 퍼즐이에요.', True),
 ]
 

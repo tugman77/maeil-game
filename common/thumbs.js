@@ -199,7 +199,15 @@ const GameThumbs = (() => {
   function initialQuiz() {
     return svg('<rect x="15" y="9" width="130" height="102" rx="14" class="th-iq-base"/>'+['ㄱ','ㅂ'].map((c,i)=>`<rect x="${34+i*48}" y="22" width="42" height="44" rx="9" class="th-iq-tile"/><text x="${55+i*48}" y="54" class="th-iq-text">${c}</text>`).join('')+['김','밥','꽃','산'].map((c,i)=>`<rect x="${24+i*29}" y="77" width="25" height="24" rx="5" class="th-iq-tile"/><text x="${36.5+i*29}" y="95" class="th-iq-small">${c}</text>`).join(''));
   }
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz };
+  function janggi() {
+    let body='<rect x="35" y="6" width="90" height="108" rx="8" class="th-jg-board"/>';
+    for(let i=0;i<9;i++)body+=`<line x1="${44+i*9}" y1="15" x2="${44+i*9}" y2="105" class="th-jg-line"/>`;
+    for(let i=0;i<10;i++)body+=`<line x1="44" y1="${15+i*10}" x2="116" y2="${15+i*10}" class="th-jg-line"/>`;
+    body+='<path d="M71 15 89 35 M89 15 71 35 M71 85 89 105 M89 85 71 105" class="th-jg-line"/>';
+    for(const [x,y,c,red] of [[80,25,'한',true],[80,95,'초',false],[62,55,'차',false],[98,35,'포',true],[80,75,'졸',false]])body+=`<circle cx="${x}" cy="${y}" r="10" class="th-jg-piece"/><text x="${x}" y="${y+5}" class="th-jg-text${red?' th-jg-red':''}">${c}</text>`;
+    return svg(body);
+  }
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, janggi };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

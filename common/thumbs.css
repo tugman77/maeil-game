@@ -165,3 +165,12 @@
 .th-iq-small { font-size:18px; }
 :root[data-theme="dark"] .thumb-initial-quiz { background:#22354a; }
 :root[data-theme="dark"] .th-iq-base { fill:#406e95; }
+
+/* 장기 */
+.thumb-janggi { background:#dce8df; }
+.th-jg-board { fill:#e1ce9e;stroke:#8f805c;stroke-width:2; }
+.th-jg-line { fill:none;stroke:#5a6547;stroke-width:1; }
+.th-jg-piece { fill:#fffdf5;stroke:#8d8066;stroke-width:1.5; }
+.th-jg-text { text-anchor:middle;font-size:14px;font-family:inherit;font-weight:800;fill:#164884; }
+.th-jg-red { fill:#ac252a; }
+:root[data-theme="dark"] .thumb-janggi { background:#263a30; }

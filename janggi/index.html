@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="초성을 보고 친숙한 생활 낱말을 맞히는 무료 퀴즈. 글자 버튼·힌트·이어하기와 오늘의 5문제를 즐겨 보세요.">
+  <meta name="theme-color" content="#f5f3ee">
+  <meta property="og:title" content="장기 — 매일게임">
+  <meta property="og:description" content="말과 이동할 점을 눌러 두는 컴퓨터 장기. 오늘의 한 수 외통수도 풀어 보세요.">
+  <meta property="og:type" content="website">
+  <title>장기 — 매일게임</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e6b48'/%3E%3Ctext x='32' y='45' text-anchor='middle' fill='white' font-size='40'%3E楚%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../common/base.css">
+  <link rel="stylesheet" href="../common/game.css">
+  <link rel="stylesheet" href="../common/thumbs.css">
+  <link rel="stylesheet" href="../common/start.css">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || localStorage.getItem('maeil-sudoku.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- 시작 화면 (공통 구조: common/start.css · start.js, tools/start_screen.py로 생성) -->
+  <main id="start-screen" class="st">
+    <a href="../" class="st-back">← 게임 목록</a>
+    <header>
+      <h1 class="st-title">장기</h1>
+      <p class="st-desc">말을 누르고 이동할 점을 골라 컴퓨터와 한 수 두어 보세요.</p>
+    </header>
+    <!-- 대표 카드: 큰 그림 + 오늘의 도전 띠. 오늘의 도전을 끝낸 날엔 띠가 '게임 시작' 아래(#daily-done-slot)로 작게 내려간다 -->
+    <div class="st-hero thumb-janggi" id="hero">
+      <div class="st-preview" id="preview" aria-hidden="true"></div>
+      <button type="button" id="daily-btn" class="st-daily">
+        <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
+        <span class="st-daily-go" id="daily-go">도전하기 →</span>
+      </button>
+    </div>
+
+    <div class="st-ask" id="sound-ask" hidden>
+      <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>효과음을 켤까요?</span>
+      <button type="button" id="sound-yes" class="st-ask-yes">켜기</button>
+      <button type="button" id="sound-no" class="st-ask-no">괜찮아요</button>
+    </div>
+
+    <div id="continue-wrap" hidden>
+      <button type="button" id="continue-btn" class="st-continue">▶ 이어하기<small id="continue-info"></small></button>
+      <p class="st-note">새 게임을 시작하면 하던 게임은 사라져요</p>
+    </div>
+
+    <section class="st-pick" aria-labelledby="pick-label">
+      <h2 class="st-label" id="pick-label">난이도</h2>
+      <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
+      <p class="st-detail" id="pick-detail"></p>
+      <label class="formation-label" for="formation-select">내 포진 · 컴퓨터는 마상·상마 고정</label><select id="formation-select" class="formation-select"><option value="0">마상 · 상마 (기본)</option><option value="1">상마 · 마상</option><option value="2">마상 · 마상</option><option value="3">상마 · 상마</option></select>
+      <button type="button" id="start-btn" class="st-start">게임 시작</button>
+      <p class="st-best"><span id="pick-best"></span></p>
+    </section>
+
+    <div id="daily-done-slot"></div>
+
+    <div class="st-tools">
+      <button type="button" class="st-tool large-text-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 5h1.6l5 13M6 13.5h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 18v-5.2M14 12.8h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>큰 글씨</button>
+      <button type="button" class="st-tool dark-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>어두운 화면</button>
+      <button type="button" class="st-tool sound-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>소리</button>
+      <a class="st-tool" href="../guide/janggi.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.9" r="1.2" fill="currentColor"/></svg>도움말</a>
+    </div>
+
+    <!-- 광고 자리: 비어 있으면 화면에 보이지 않습니다. 게임 화면에는 두지 않습니다. -->
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+  <main id="game-screen" class="screen game-screen" hidden>
+    <header class="game-header">
+      <button type="button" id="home-btn" class="header-btn">처음</button>
+      <div class="header-stats">
+        <div class="stat-box"><small>나 · 초</small><b id="cho-points">72</b></div>
+        <div class="stat-box"><small>컴퓨터 · 한</small><b id="han-points">73.5</b></div>
+      </div>
+      <button type="button" id="pause-btn" class="header-btn">일시정지</button>
+    </header>
+    <p id="game-label" class="game-label"></p>
+    <p id="game-status" class="game-status" role="status" aria-live="polite" aria-atomic="true"></p>
+    <div id="play-area" class="play-area">
+      <div class="board-scroll" id="board-scroll" tabindex="0" role="region" aria-label="장기판 · 확대하면 스크롤 가능">
+        <div class="board-surface"><svg class="board-lines" viewBox="0 0 900 1000" preserveAspectRatio="none" aria-hidden="true"><line x1="50" y1="50" x2="50" y2="950"/><line x1="150" y1="50" x2="150" y2="950"/><line x1="250" y1="50" x2="250" y2="950"/><line x1="350" y1="50" x2="350" y2="950"/><line x1="450" y1="50" x2="450" y2="950"/><line x1="550" y1="50" x2="550" y2="950"/><line x1="650" y1="50" x2="650" y2="950"/><line x1="750" y1="50" x2="750" y2="950"/><line x1="850" y1="50" x2="850" y2="950"/><line x1="50" y1="50" x2="850" y2="50"/><line x1="50" y1="150" x2="850" y2="150"/><line x1="50" y1="250" x2="850" y2="250"/><line x1="50" y1="350" x2="850" y2="350"/><line x1="50" y1="450" x2="850" y2="450"/><line x1="50" y1="550" x2="850" y2="550"/><line x1="50" y1="650" x2="850" y2="650"/><line x1="50" y1="750" x2="850" y2="750"/><line x1="50" y1="850" x2="850" y2="850"/><line x1="50" y1="950" x2="850" y2="950"/><path d="M350 50 550 250 M550 50 350 250 M350 750 550 950 M550 750 350 950"/></svg>
+          <div id="board" class="intersection-grid" role="grid" aria-label="9줄 10행 장기판 · 말 선택 후 이동할 점 누르기"></div>
+        </div>
+      </div>
+      <p id="move-detail" class="move-detail"></p>
+      <div class="tools">
+        <button type="button" id="undo-btn" class="header-btn">무르기</button>
+        <button type="button" id="hint-btn" class="header-btn">수 추천</button>
+        <button type="button" id="pass-btn" class="header-btn">한 수 쉼</button>
+      </div>
+      <p id="board-help" class="board-help"></p>
+      <details class="game-options">
+        <summary>판 표시·설정·도움말</summary>
+        <div class="settings-row">
+          <button type="button" id="clear-pick-btn" class="header-btn">선택 취소</button>
+          <button type="button" id="zoom-btn" class="header-btn" aria-pressed="false">판 확대</button>
+          <button type="button" id="script-btn" class="header-btn" aria-pressed="false">한자 말</button>
+          <button type="button" class="option-btn large-text-toggle" aria-pressed="false">큰 글씨</button>
+          <button type="button" class="option-btn dark-toggle" aria-pressed="false">어두운 화면</button>
+          <button type="button" id="resign-btn" class="header-btn">기권</button>
+          <a href="../guide/janggi.html">장기 하는 법·적용 규칙</a>
+        </div>
+        <p>기본은 화면 폭에 판 전체를 맞춥니다. 작은 말이 누르기 어려우면 판 확대를 이용하세요.</p>
+        <p>친선 점수제: 한의 덤 1.5점 · 빅장 응수 뒤 유지 시 점수 판정 · 서로 한 수 쉼은 점수 판정 · 같은 판 네 번째 반복은 만든 쪽 패배 · 200수 점수 판정.</p>
+        <p>컴퓨터는 기물 가치와 응수를 탐색하는 연습 상대이며 전문 기사 수준을 보장하지 않습니다.</p>
+      </details>
+    </div>
+    <div id="pause-overlay" class="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
+      <p id="pause-title" class="pause-title">잠깐 쉬어 가세요</p>
+      <button type="button" id="resume-btn" class="primary-btn">계속하기</button>
+    </div>
+  </main>
+  <main id="result-screen" class="screen result-screen" hidden>
+    <h1 id="result-title" class="result-title"></h1><p id="result-sub" class="result-sub"></p>
+    <div class="result-card"><p class="result-label">남은 점수 · 초 : 한</p><p id="result-score" class="result-big"></p><p id="result-detail" class="result-detail"></p><p id="result-record" class="result-best"></p></div>
+    <p id="result-note" class="result-note"></p>
+    <button type="button" id="again-btn" class="primary-btn">한 판 더</button>
+    <div class="button-pair"><button type="button" id="share-btn" class="secondary-btn">결과 공유</button><button type="button" id="result-home-btn" class="secondary-btn">처음으로</button></div>
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+  <script src="../common/core.js"></script>
+  <script src="../common/thumbs.js"></script>
+  <script src="../common/start.js"></script>
+  <script src="../common/fx.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+.game-header,.play-area,.game-label,.game-status { width:min(100%,520px); }
+.game-header { gap:6px; }
+.header-stats { gap:6px; }
+.stat-box { min-width:62px;padding:3px 7px; }
+.stat-box small { font-size:14px; }
+.game-label { margin:0;text-align:center;font-size:14px; }
+.game-status { min-height:2.6em;margin:0;font-size:16px;line-height:1.3;font-weight:650;text-align:center; }
+.play-area { display:flex;flex-direction:column;gap:8px;min-width:0; }
+.board-scroll { width:100%;overflow:auto;overscroll-behavior:contain;border-radius:12px; }
+.board-surface { position:relative;width:100%;aspect-ratio:9/10;border:2px solid #6d795c;border-radius:10px;background:#e8d8b1; }
+.board-scroll.zoomed .board-surface { min-width:414px; }
+.board-lines { position:absolute;inset:0;width:100%;height:100%;pointer-events:none;stroke:#556147;stroke-width:2.8;fill:none; }
+.intersection-grid { position:absolute;inset:0;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));grid-template-rows:repeat(10,minmax(0,1fr)); }
+.jg-cell { position:relative;display:grid;place-items:center;min-width:0;min-height:0;width:100%;height:100%;border:0;padding:0;background:transparent;border-radius:4px;touch-action:manipulation; }
+.jg-cell:disabled { cursor:default; }
+.jg-cell:focus-visible { outline:3px solid #1a558d;outline-offset:-3px; }
+.piece { display:block;width:88%;height:88%;padding:2px;background:#8b826c;clip-path:polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%); }
+.piece-face { width:100%;height:100%;display:grid;place-items:center;clip-path:inherit;background:#fffdf5;color:#164884;font-size:clamp(20px,4.5vw,28px);font-weight:850;line-height:1; }
+.han .piece-face { color:#ac252a; }
+.selected .piece { background:#9b6500; }
+.selected .piece-face { background:#ffe080; }
+.legal.empty::after { content:'';width:38%;height:38%;border:3px solid #17603e;background:#c8edcaaa;border-radius:50%;pointer-events:none; }
+.legal.capture::after { content:'';position:absolute;inset:2px;border:3px solid #b1272e;border-radius:40%;pointer-events:none; }
+.last::before { content:'';position:absolute;inset:2px;border:2px solid #9b6300;border-radius:5px;pointer-events:none; }
+.hint-from .piece { background:#ad6500; }
+.hint-to { box-shadow:inset 0 0 0 3px #ad6500;background:#ffdf6aaa; }
+.check .piece { background:#bd192c; }
+.check .piece-face { background:#ffd4dc; }
+.move-detail,.board-help,.result-note { margin:0;text-align:center;font-size:14px;color:var(--muted);line-height:1.4; }
+.tools { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px; }
+.tools .header-btn { min-height:46px;padding:6px 3px; }
+.tools .hinted { outline:3px solid var(--gold); }
+.game-options { padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface); }
+.game-options summary { display:flex;align-items:center;min-height:44px;font-size:16px;font-weight:600;color:var(--primary);cursor:pointer; }
+.settings-row { display:flex;flex-wrap:wrap;gap:8px;margin:8px 0; }
+.settings-row a { display:inline-flex;align-items:center;min-height:44px;padding:6px;color:var(--primary);font-size:16px; }
+.settings-row [aria-pressed="true"] { background:var(--active);border-color:var(--primary); }
+.game-options p { font-size:15px;color:var(--muted); }
+.formation-label { display:block;margin:4px 0;font-size:14px;color:var(--muted); }
+.formation-select { min-height:46px;width:100%;padding:8px 32px 8px 12px;border:1px solid var(--button-border);border-radius:10px;background:var(--button);color:var(--text);font:inherit;font-size:17px;appearance:none;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 15px) 50%;background-size:5px 5px;background-repeat:no-repeat; }
+.pause-overlay { position:fixed;inset:0;z-index:20;border-radius:0;padding:24px; }
+:root.large-text .piece-face { font-size:clamp(24px,5vw,32px); }
+:root[data-theme="dark"] .board-surface { background:#cfc29e;border-color:#83947b; }
+:root[data-theme="dark"] .board-lines { stroke:#48563e; }
+@media (orientation:landscape) and (max-height:500px) {
+  .board-scroll { max-height:calc(100dvh - 110px); }
+}
