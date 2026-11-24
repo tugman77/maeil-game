@@ -1,5 +1,5 @@
 {
-  "version": 14,
+  "version": 15,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -74,15 +74,18 @@
       "commit": "96ba50fbc75d32d66e5f5c798efd2113adea6435",
       "url": "https://tugman77.github.io/maeil-game/initial-quiz/",
       "deployment_run": 45412740742
-    }
-  ],
-  "backlog": [
+    },
     {
       "id": "janggi",
       "name": "장기",
-      "status": "ready_to_publish",
-      "note": "처음에는 검증된 묘수풀이, 컴퓨터 대전은 여러 날에 걸쳐 완성해도 된다."
-    },
+      "completed_on": "2026-11-24",
+      "status": "published",
+      "commit": "22bec6fabb72166ffcb33021b4a2c42fde2bd82e",
+      "url": "https://tugman77.github.io/maeil-game/janggi/",
+      "deployment_run": 45419023103
+    }
+  ],
+  "backlog": [
     {
       "id": "go",
       "name": "바둑",
@@ -364,13 +367,17 @@
     },
     {
       "game": "janggi",
-      "status": "verified_pending_deploy",
+      "status": "published",
       "requested_on": "2026-11-24",
       "trigger": "user_requested",
       "base_commit": "9c5264015e0054a4c59dfa11ceacecfe99c9477d",
       "note": "사용자가 앞당긴 첫 게임 제작 요청. 컴퓨터 대전과 검증된 한 수 외통수 오늘의 도전, 간단한 터치 조작을 구현한다.",
       "tests": "장기 규칙·AI·UI 전용 30개와 전체 220개 검사 통과. 독립 행마 경로 비교·1,000일치 외통수 검증.",
-      "verification_limit": "브라우저 호스트 미연결로 실제 모바일·PC 화면 검수 미완료"
+      "verification_limit": "브라우저 호스트 미연결로 실제 모바일·PC 화면 검수 미완료",
+      "completed_on": "2026-11-24",
+      "commit": "22bec6fabb72166ffcb33021b4a2c42fde2bd82e",
+      "deployment_run": 45419023103,
+      "url": "https://tugman77.github.io/maeil-game/janggi/"
     }
   ],
   "queue_changes": [
