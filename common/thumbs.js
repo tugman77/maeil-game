@@ -191,7 +191,12 @@ const GameThumbs = (() => {
     return svg(body);
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell };
+  function klondike() {
+    let body='<rect x="13" y="8" width="134" height="105" rx="12" fill="#526d87"/><rect x="24" y="18" width="25" height="33" rx="4" fill="#294f78" stroke="#b8cee1"/>';
+    for(let i=0;i<5;i++){const x=24+i*23,y=62-i*3;body+=`<rect x="${x}" y="${y}" width="20" height="30" rx="3" fill="#fffef8" stroke="#d1d6cd"/><text x="${x+10}" y="${y+20}" text-anchor="middle" font-size="15" font-weight="700" fill="${i%2?'#b52733':'#20342a'}">${['K','Q','J','10','9'][i]}</text>`;}
+    return svg(body+'<rect x="96" y="18" width="25" height="33" rx="4" fill="#fffef8"/><text x="108" y="41" text-anchor="middle" font-size="20" fill="#b52733">A</text>');
+  }
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

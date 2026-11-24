@@ -9,6 +9,7 @@
 .card-pick-item b { font-size:24px; }
 .card-pick-item span { font-size:16px; }
 .card-pick-item:disabled { opacity:.5;cursor:default; }
+:root[data-theme="dark"] .card-pick-item .red-card { color:#ff979e; }
 .column-buttons { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px; }
 .column-button { min-height:44px;min-width:44px;border:1px solid var(--button-border);border-radius:8px;background:var(--button);font-size:15px;padding:4px 2px; }
 .column-button.destination { border:3px solid var(--primary); }

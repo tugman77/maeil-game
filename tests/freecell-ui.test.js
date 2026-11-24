@@ -152,7 +152,7 @@ test('저장소가 차단되어도 시작·추천·이동·일시정지 가능',
   b.click('hint-btn');assert.match(b.element('selection-info').textContent,/선택/);
   const target=b.element('free-cells').children.find((el)=>el.className.includes('hint-target'))
     || b.element('foundations').children.find((el)=>el.className.includes('hint-target'))
-    || b.element('tableau').children.flatMap((c)=>c.children).find((el)=>el.className.includes('hint-target'));
+    || b.element('column-buttons').children.find((el)=>el.className.includes('hint-target'));
   assert.ok(target);target.fire('click');assert.equal(b.element('moves').textContent,'1');
   b.click('pause-btn');assert.equal(b.element('pause-overlay').hidden,false);assert.equal(b.get(GAME),null);
 });

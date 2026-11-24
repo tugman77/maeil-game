@@ -10,6 +10,8 @@
 .thumb-sichuan { --tint: #dcece8; }
 .thumb-number-baseball { --tint: #dce9f3; }
 .thumb-freecell { --tint: #e1ebe2; }
+.thumb-klondike { --tint:#dce6ef; }
+:root[data-theme="dark"] .thumb-klondike { --tint:#273848; }
 .thumb-omok { --tint: #f1e4cc; }
 .thumb-bricks { --tint: #dde4f6; }
 .thumb-runner { --tint: #fbedc4; }

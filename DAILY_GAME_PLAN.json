@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -61,7 +61,7 @@
     {
       "id": "klondike",
       "name": "클론다이크 솔리테어",
-      "status": "pending",
+      "status": "ready_to_publish",
       "note": "한 장 뽑기부터 시작하며 오늘의 도전은 풀이가 검증된 판을 사용한다."
     },
     {
@@ -322,11 +322,22 @@
     {
       "game": "freecell",
       "type": "improvement",
-      "status": "verified_pending_deploy",
+      "status": "published",
       "requested_on": "2026-11-24",
       "trigger": "user_requested",
       "note": "모바일 전체보기·가로 화면·큰 줄 선택 창 개선. 이후 클론다이크 제작 요청.",
-      "verification_limit": "브라우저 연결 상태 변경 반복으로 화면 검수 미완료"
+      "verification_limit": "브라우저 연결 상태 변경 반복으로 화면 검수 미완료",
+      "commit": "618bcfed533dc7bd1f9b1bca3458e27d51e4417c",
+      "deployment_run": 45383065631
+    },
+    {
+      "game": "klondike",
+      "status": "verified_pending_deploy",
+      "trigger": "user_requested",
+      "requested_on": "2026-11-24",
+      "note": "프리셀 모바일 개선 배포 완료 후 새 게임 제작을 시작함.",
+      "tests": "클론다이크 19개·원본 48판 독립 수순 검증·변환 1,095판 검증. 전체 검사 통과.",
+      "verification_limit": "브라우저 창 전환 충돌로 실제 모바일 화면 검수 미완료"
     }
   ]
 }
