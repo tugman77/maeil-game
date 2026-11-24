@@ -143,6 +143,12 @@ const Game = (() => {
     return state.values.filter((v) => v === digit).length;
   }
 
+  // 중복 여부와 관계없이 사용자가 입력한 오답만 찾는다. 빈칸·고정 숫자는 제외.
+  function mistakes(state) {
+    return new Set(state.values.flatMap((value, i) =>
+      value !== 0 && !isLocked(state, i) && value !== state.solution[i] ? [i] : []));
+  }
+
   function isFull(state) {
     return state.values.every((v) => v !== 0);
   }
@@ -153,7 +159,7 @@ const Game = (() => {
 
   return {
     PEERS, HINTS_PER_GAME, create, isGiven, isLocked, setValue, useHint, toggleNote, erase, undo,
-    hasNote, conflicts, countDigit, isFull, isSolved,
+    hasNote, conflicts, mistakes, countDigit, isFull, isSolved,
   };
 })();
 

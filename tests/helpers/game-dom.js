@@ -17,7 +17,7 @@ module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash
         if (on === undefined) on = !classes.has(name);
         if (on) classes.add(name); else classes.delete(name);
         this.className = [...classes].join(' ');
-      } };
+      }, add:(...names)=>names.forEach(name=>this.classList.toggle(name,true)), remove:(...names)=>names.forEach(name=>this.classList.toggle(name,false)), contains:name=>this.className.split(' ').includes(name) };
       pool.push(this);
     }
     set textContent(value) { this._text = String(value); this.children = []; }
@@ -53,7 +53,8 @@ module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash
   document.getElementById = (key) => pool.find((element) => element.id === key) || null;
   document.createElement = (tag) => new Element(tag);
   document.createTextNode = (text) => { const element = new Element('text'); element.textContent = text; return element; };
-  document.querySelector = () => null;
+  const themeMeta={content:''};
+  document.querySelector = (selector) => selector==='meta[name="theme-color"]'?themeMeta:null;
   document.querySelectorAll = (selector) => pool.filter((element) => selector.startsWith('.') && element.className.split(' ').includes(selector.slice(1)));
   const store = new Map(Object.entries(saved).map(([key, value]) => [key, JSON.stringify(value)]));
   const timers = new Map(), instances = [];
@@ -84,7 +85,8 @@ module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash
     MaeilFx: { play() {}, pulse() {}, buzz() {}, countUp() {}, celebrate() {} },
   });
   vm.runInContext(`Date.now = () => ${Date.parse('2026-11-23T03:00:00Z')}`, context);
-  for (const file of ['common/core.js', 'common/start.js', ...scripts, `${id}/js/logic.js`, `${id}/js/ui.js`]) {
+  const engine=id==='sudoku'?['sudoku/js/generator.js','sudoku/js/game.js','sudoku/js/storage.js']:[`${id}/js/logic.js`];
+  for (const file of ['common/core.js', 'common/start.js', ...scripts, ...engine, `${id}/js/ui.js`]) {
     vm.runInContext(fs.readFileSync(path.join(ROOT,file),'utf8'),context,{ filename:file });
   }
   return {

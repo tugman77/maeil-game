@@ -356,7 +356,7 @@ function unitsOf(i) {
 function celebrateInput(i) {
   MaeilFx.pulse(cells[i], 'pop', 220);
   const value = game.values[i];
-  if (value && settings.showErrors && value !== game.solution[i] && Game.conflicts(game).has(i)) {
+  if (value && settings.showErrors && value !== game.solution[i]) {
     MaeilFx.play('error');
     MaeilFx.buzz(30);
     return;
@@ -424,12 +424,27 @@ function toggleMemo() {
   render();
 }
 
+function findMistake() {
+  if (!canPlay()) return;
+  if (!settings.showErrors) updateSettings({ showErrors: true });
+  const wrong = [...Game.mistakes(game)];
+  if (!wrong.length) {
+    showToast('입력한 숫자에 틀린 곳은 없어요');
+    return;
+  }
+  selected = wrong.find((i) => i > selected) ?? wrong[0];
+  render();
+  cells[selected].focus({ preventScroll: true });
+  showToast(`${Math.floor(selected / 9) + 1}행 ${selected % 9 + 1}열의 숫자를 다시 확인해 보세요`);
+}
+
 // ---------- 완성 ----------
 
 function checkFinished() {
   if (!Game.isFull(game)) return;
   if (!Game.isSolved(game)) {
-    showToast('틀린 숫자가 있어요. 다시 살펴보세요');
+    if (settings.showErrors) findMistake();
+    else showToast('틀린 숫자가 있어요. 틀린 칸 찾기를 눌러 보세요');
     return;
   }
   finished = true;
@@ -506,7 +521,7 @@ function hideToast() {
 
 function render() {
   if (!game) return;
-  const conflictCells = settings.showErrors ? Game.conflicts(game) : new Set();
+  const conflictCells = settings.showErrors ? Game.mistakes(game) : new Set();
   const selectedDigit = selected >= 0 ? game.values[selected] : 0;
   const peers = new Set(selected >= 0 ? Game.PEERS[selected] : []);
 
@@ -519,11 +534,13 @@ function render() {
     cell.classList.toggle('peer', peers.has(i));
     cell.classList.toggle('same', selectedDigit !== 0 && value === selectedDigit && i !== selected);
     cell.classList.toggle('conflict', conflictCells.has(i));
+    cell.setAttribute('aria-invalid', String(conflictCells.has(i)));
+    cell.setAttribute('aria-selected', String(i === selected));
 
     const position = `${Math.floor(i / 9) + 1}행 ${(i % 9) + 1}열`;
     if (value) {
       cell.textContent = value;
-      cell.setAttribute('aria-label', `${position}, ${value}${locked ? ', 고정' : ''}`);
+      cell.setAttribute('aria-label', `${position}, ${value}${locked ? ', 고정' : ''}${conflictCells.has(i) ? ', 오답' : ''}`);
     } else if (game.notes[i]) {
       const notes = document.createElement('span');
       notes.className = 'notes';
@@ -555,6 +572,10 @@ function render() {
   $('hint-btn').disabled = game.hintsLeft <= 0;
   $('error-toggle').setAttribute('aria-pressed', String(settings.showErrors));
   $('error-toggle').textContent = settings.showErrors ? '오류표시 켬' : '오류표시 끔';
+  $('mistake-status').textContent = settings.showErrors
+    ? conflictCells.size ? `오답 ${conflictCells.size}칸 · ! 표시를 확인하세요` : '입력한 숫자에 오답이 없어요'
+    : '오류표시가 꺼져 있어요';
+  $('find-mistake-btn').disabled = paused || finished;
 }
 
 // ---------- 키보드 ----------
@@ -631,6 +652,7 @@ function init() {
   $('pause-btn').addEventListener('click', pauseGame);
   $('resume-btn').addEventListener('click', resumeFromPause);
   $('error-toggle').addEventListener('click', () => updateSettings({ showErrors: !settings.showErrors }));
+  $('find-mistake-btn').addEventListener('click', findMistake);
   $('undo-btn').addEventListener('click', undoLast);
   $('erase-btn').addEventListener('click', eraseSelected);
   $('memo-btn').addEventListener('click', toggleMemo);

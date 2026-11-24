@@ -46,11 +46,12 @@ test('다른 그림은 제거하지 않고, 누르고 있는 확인 키는 중�
   const other = state.board.findIndex((value) => value !== state.board[0]);
   tile(b, 0).fire('click'); tile(b, other).fire('click');
   assert.deepEqual(b.get(GAME).board, state.board); assert.equal(b.get(GAME).mistakes, 1);
-  const p = G.findPair(state);
-  b.key('Enter', tile(b, p.a));
-  b.document.fire('keydown', { key: 'Enter', target: tile(b, p.b), repeat: true });
-  assert.equal(b.get(GAME).moves, 0);
-  b.key('Enter', tile(b, p.b)); assert.equal(b.get(GAME).moves, 1);
+  // 앞의 오답 선택이 우연히 정답 짝과 겹치지 않도록 새 판에서 키 반복을 검사한다.
+  const keyboard = browser(); keyboard.click('start-btn'); const p = G.findPair(keyboard.get(GAME));
+  keyboard.key('Enter', tile(keyboard, p.a));
+  keyboard.document.fire('keydown', { key: 'Enter', target: tile(keyboard, p.b), repeat: true });
+  assert.equal(keyboard.get(GAME).moves, 0);
+  keyboard.key('Enter', tile(keyboard, p.b)); assert.equal(keyboard.get(GAME).moves, 1);
 });
 
 test('제거 효과 중 중복 입력 차단·일시정지·재개·타이머', () => {
