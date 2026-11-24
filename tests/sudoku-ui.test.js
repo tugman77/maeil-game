@@ -56,3 +56,20 @@ test('일시정지 중 찾기는 비활성, 오답 없는 상태는 숫자를 �
   b.click('pause-btn');assert.equal(b.element('find-mistake-btn').disabled,true);b.click('find-mistake-btn');
   assert.equal(b.element('pause-overlay').hidden,false);b.click('resume-btn');assert.equal(b.element('find-mistake-btn').disabled,false);
 });
+
+test('같은 숫자와 숫자패드를 함께 강조하고 선택 변경·빈칸 선택 때 갱신',()=>{
+  const state=initial(),given=state.puzzle.findIndex(Boolean),digit=state.values[given],b=open(state);
+  cell(b,given).fire('click');
+  for(let i=0;i<81;i++) {
+    const same=i!==given&&state.values[i]===digit;
+    assert.equal(cell(b,i).classList.contains('same'),same);
+    if(same)assert.match(cell(b,i).attributes['aria-label'],/같은 숫자/);
+  }
+  assert.equal(b.element('numpad').children[digit-1].attributes['aria-pressed'],'true');
+  b.document.querySelectorAll('.dark-toggle')[0].fire('click');
+  assert.equal(b.element('numpad').children[digit-1].classList.contains('matching-number'),true);
+  cell(b,state.puzzle.indexOf(0)).fire('click');
+  assert.ok(b.element('board').children.every(c=>!c.classList.contains('same')));
+  assert.ok(b.element('numpad').children.every(c=>c.attributes['aria-pressed']==='false'));
+  assert.deepEqual(b.get(KEY),state);
+});

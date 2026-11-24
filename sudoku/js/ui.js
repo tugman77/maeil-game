@@ -540,7 +540,7 @@ function render() {
     const position = `${Math.floor(i / 9) + 1}행 ${(i % 9) + 1}열`;
     if (value) {
       cell.textContent = value;
-      cell.setAttribute('aria-label', `${position}, ${value}${locked ? ', 고정' : ''}${conflictCells.has(i) ? ', 오답' : ''}`);
+      cell.setAttribute('aria-label', `${position}, ${value}${locked ? ', 고정' : ''}${selectedDigit && value===selectedDigit && i!==selected ? ', 같은 숫자' : ''}${conflictCells.has(i) ? ', 오답' : ''}`);
     } else if (game.notes[i]) {
       const notes = document.createElement('span');
       notes.className = 'notes';
@@ -563,6 +563,8 @@ function render() {
 
   numButtons.forEach((button, index) => {
     button.classList.toggle('used-up', Game.countDigit(game, index + 1) >= 9);
+    button.classList.toggle('matching-number',selectedDigit===index+1);
+    button.setAttribute('aria-pressed',String(selectedDigit===index+1));
   });
 
   $('timer').textContent = formatTime(game.elapsed);

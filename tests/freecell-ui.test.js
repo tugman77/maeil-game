@@ -10,7 +10,7 @@ const browser = (options = {}) => dom('freecell', { scripts:['common/card-table.
 test('좁은 가로·세로 화면의 전체보기 계산과 큰 선택 창 분리', () => {
   for(const [w,h] of [[360,800],[390,844],[667,320],[740,360],[844,390]]) {
     const layout=Table.layout(w,h,8,7);
-    assert.equal(layout.columns,8);assert.equal(layout.landscape,w>h);assert.ok(layout.step>=44);
+    assert.equal(layout.columns,8);assert.equal(layout.landscape,w>h);assert.ok(layout.step>=22);assert.ok(layout.tableWidth<=w);
   }
   const b=browser();b.click('start-btn');const before=b.get(GAME);
   b.element('column-buttons').children[0].fire('click');

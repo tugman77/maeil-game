@@ -1,22 +1,29 @@
 // 카드 직접 선택이 기본이며, 큰 목록은 선택 가능한 보조 기능이다.
 const MaeilCardTable = (() => {
-  // 카드마다 드러나는 높이도 44px 이상 확보한다. 작은 화면은 판을 스크롤한다.
+  // 작은 화면에서는 모든 줄을 폭 안에 맞춘다. 큰 선택은 보조 확대 창에서 제공한다.
   function layout(width, height, columns, longest, large = false) {
-    const gap=6, padding=12;
-    const cardWidth=Math.max(large?64:56,Math.min(96,Math.floor((width-padding-(columns-1)*gap)/columns)));
-    return {landscape:width>height,cardWidth,cardHeight:cardWidth*7/5,step:large?56:48,columns,gap,
+    const gap=width<520?2:6,padding=4;
+    const available=Math.max(0,width-padding-(columns-1)*gap);
+    const cardWidth=Math.min(height<300?56:height<360?64:96,Math.floor(available/columns));
+    const cardHeight=cardWidth*7/5,compact=cardWidth<52;
+    const preferred=compact?(large?36:32):(large?48:44);
+    const step=Math.max(22,Math.min(preferred,Math.floor((height-2*cardHeight-150)/Math.max(1,longest-1))));
+    return {landscape:width>height,cardWidth,cardHeight,step,columns,gap,compact,
       tableWidth:cardWidth*columns+(columns-1)*gap+padding};
   }
   function fit(board, count, longest) {
     const surface=document.getElementById('card-layout'),viewport=document.getElementById('tableau-viewport');
-    const width=viewport?.clientWidth || Math.max(320,(window.innerWidth||390)-16);
-    const l=layout(width,window.innerHeight||800,count,longest,document.documentElement.classList.contains('large-text'));
+    const width=viewport?.clientWidth || Math.max(240,(window.innerWidth||390)-16);
+    const height=viewport?.clientHeight || Math.max(140,(window.innerHeight||800)-280);
+    const l=layout(width,height,count,longest,document.documentElement.classList.contains('large-text'));
     const target=surface||board;
     target.style.setProperty('--table-columns',count);
     target.style.setProperty('--card-width',`${l.cardWidth}px`);
     target.style.setProperty('--card-height',`${l.cardHeight}px`);
     target.style.setProperty('--card-step',`${l.step}px`);
     target.style.setProperty('--table-width',`${l.tableWidth}px`);
+    target.style.setProperty('--table-gap',`${l.gap}px`);
+    target.classList.toggle('compact-cards',l.compact);
   }
   // Unicode suits explicitly use text presentation, keeping red/black consistent on phones.
   function face(element, {rank,suit}) {

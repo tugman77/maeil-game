@@ -12,14 +12,16 @@ function assertFace(el,rank,suit) {
   assert.equal(child(el,'card-mark').textContent,suit+'\uFE0E');
   assert.equal(top.attributes['aria-hidden'],'true');assert.equal(bottom.attributes['aria-hidden'],'true');
 }
-test('7·8줄과 작은 가로·세로·큰 화면에서 5:7 비율과 최소 터치 크기 유지',()=>{
-  for(const columns of [7,8])for(const [width,height] of [[320,568],[374,844],[490,320],[678,390],[944,900]])for(const large of [false,true]) {
+test('7·8줄과 큰 글씨도 화면 폭 안에 들어가고 5:7 비율 유지',()=>{
+  for(const columns of [7,8])for(const [width,height] of [[300,240],[320,568],[334,520],[374,548],[414,560],[490,230],[678,336],[944,900]])for(const large of [false,true]) {
     const l=Table.layout(width,height,columns,20,large);
-    assert.ok(l.cardWidth>=(large?64:56));assert.ok(l.cardWidth<=96);assert.ok(l.step>=44);
+    assert.ok(l.cardWidth>0);assert.ok(l.cardWidth<=96);assert.ok(l.step>=22);
     assert.ok(Math.abs(l.cardHeight/l.cardWidth-1.4)<1e-9);
-    assert.equal(l.tableWidth,l.cardWidth*columns+(columns-1)*6+12);
-    if(width>=columns*(large?64:56)+(columns-1)*6+12)assert.ok(l.tableWidth<=width);
+    assert.equal(l.tableWidth,l.cardWidth*columns+(columns-1)*l.gap+4);
+    assert.ok(l.tableWidth<=width,`${columns}줄 / ${width}px / 큰 글씨 ${large}`);
   }
+  const phone=Table.layout(334,520,8,7),desktop=Table.layout(944,800,8,7);
+  assert.ok(phone.cardWidth<44);assert.ok(phone.compact);assert.ok(phone.step<desktop.step);
 });
 test('두 게임 카드와 채워진 완성 칸에 같은 양쪽 숫자·무늬 표시',()=>{
   for(const game of games) {
@@ -51,10 +53,27 @@ test('창 크기·큰 글씨·테마를 바꿔도 선택과 저장 판은 유지
     const b=browser(game),key=`maeil-game.${game}.game.v1`;b.click('start-btn');b.click('hint-btn');
     const before=b.get(key),selection=b.element('selection-info').textContent;
     b.element('tableau-viewport').clientWidth=540;b.window.fire('resize');
-    const layout=b.element('card-layout'),width=Number.parseInt(layout.style['--card-width']);assert.ok(width>=56);
-    b.document.querySelectorAll('.large-text-toggle')[0].fire('click');assert.ok(Number.parseInt(layout.style['--card-width'])>=64);
+    const layout=b.element('card-layout'),width=Number.parseInt(layout.style['--card-width']);assert.ok(width>0);assert.ok(Number.parseInt(layout.style['--table-width'])<=540);
+    b.document.querySelectorAll('.large-text-toggle')[0].fire('click');assert.ok(Number.parseInt(layout.style['--table-width'])<=540);
     b.document.querySelectorAll('.dark-toggle')[0].fire('click');
     assert.deepEqual(b.get(key),before);assert.equal(b.element('selection-info').textContent,selection);
     assert.equal(layout.style['--table-columns'],game==='freecell'?'8':'7');
+  }
+});
+
+test('휴대폰 세로·가로 회전과 큰 글씨 모두 좌우 이동 없이 모든 줄 유지',()=>{
+  for(const game of games) {
+    const b=browser(game),key=`maeil-game.${game}.game.v1`;b.click('start-btn');b.click('hint-btn');
+    const before=b.get(key),selection=b.element('selection-info').textContent;
+    for(const [width,height,viewWidth,viewHeight] of [[360,800,334,520],[390,844,364,564],[667,320,508,260],[844,390,685,330],[360,800,334,520]]) {
+      b.window.innerWidth=width;b.window.innerHeight=height;
+      b.element('tableau-viewport').clientWidth=viewWidth;b.element('tableau-viewport').clientHeight=viewHeight;
+      b.window.fire('resize');const surface=b.element('card-layout');
+      assert.ok(Number.parseInt(surface.style['--table-width'])<=viewWidth);
+      assert.equal(b.element('tableau').children.length,game==='freecell'?8:7);
+      b.document.querySelectorAll('.large-text-toggle')[0].fire('click');
+      assert.ok(Number.parseInt(surface.style['--table-width'])<=viewWidth);
+      assert.deepEqual(b.get(key),before);assert.equal(b.element('selection-info').textContent,selection);
+    }
   }
 });
