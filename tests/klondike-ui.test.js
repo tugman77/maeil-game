@@ -5,8 +5,7 @@ const browser=(options={})=>dom('klondike',{scripts:['common/card-table.js','klo
 function point(b,p){
  if(p.type==='waste')return b.element('waste-slot').children[0];
  if(p.type==='foundation')return b.element('foundations').children[p.index];
- const button=b.element('column-buttons').children[p.index];if(p.start===undefined)return button;
- button.fire('click');return b.element('card-picker-list').children[p.start];
+ const column=b.element('tableau').children[p.index];return p.start===undefined?column.children.at(-1):column.children[p.start+1];
 }
 function play(b,a){if(a.type==='draw')b.click('draw-btn');else{point(b,a.from).fire('click');point(b,a.to).fire('click');}}
 function almostDone(daily=null){const s=G.create('medium',{daily,dealNumber:88});for(const a of s.solution.slice(0,-1)){if(a.type==='draw')G.draw(s);else G.move(s,a.from,a.to);}return s;}
@@ -56,4 +55,21 @@ test('같은 판 재시작 확인·자동 정리와 전체 되돌리기',()=>{
 test('손상된 저장 무시·저장소 차단 상태에서도 진행',()=>{
  const bad=browser({saved:{[GAME]:{columns:[]},[STATS]:'손상'}});assert.equal(bad.element('continue-wrap').hidden,true);bad.click('start-btn');assert.ok(G.isValid(bad.get(GAME)));
  const b=browser({blockedStorage:true});b.click('start-btn');b.click('draw-btn');assert.equal(b.element('moves').textContent,'1');b.click('undo-btn');assert.equal(b.element('moves').textContent,'0');b.click('pause-btn');assert.equal(b.element('pause-overlay').hidden,false);
+});
+
+test('앞면 카드는 바로 선택·놓기, 다른 줄 카드로 선택 변경, 뒷면은 비조작',()=>{
+ const state=G.create('medium',{dealNumber:88});let a;
+ for(const move of state.solution){if(move.type==='draw')G.draw(state);else{a=move;break;}}
+ const b=browser({saved:{[GAME]:state}});b.click('continue-btn');
+ const source=point(b,a.from);assert.equal(source.tagName,'BUTTON');source.fire('click');assert.equal(b.element('card-picker').hidden,true);
+ if(a.to.type==='column') {
+  const place=b.element('tableau').children[a.to.index].children[0];assert.equal(place.tagName,'BUTTON');assert.equal(place.textContent,'놓기');place.fire('click');
+ }else point(b,a.to).fire('click');
+ assert.equal(b.get(GAME).moves,state.moves+1);b.click('undo-btn');
+ const from={type:'column',index:0,start:0};
+ const i=state.columns.findIndex((c,i)=>i!==0&&!G.canMove(state,from,{type:'column',index:i}));assert.ok(i>=0);
+ point(b,from).fire('click');const other={type:'column',index:i,start:state.columns[i].length-1};point(b,other).fire('click');
+ assert.equal(point(b,other).attributes['aria-pressed'],'true');assert.deepEqual(G.snapshot(b.get(GAME)),G.snapshot(state));
+ assert.equal(b.element('tableau').children[6].children[1].tagName,'DIV');
+ point(b,other).fire('click');assert.equal(b.element('cancel-btn').disabled,true);
 });

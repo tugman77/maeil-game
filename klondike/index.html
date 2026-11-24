@@ -86,7 +86,7 @@
     </header>
 
     <div id="play-area" class="play-area">
-      <div class="selection-bar" id="selection-bar" hidden>
+      <div class="selection-bar" id="selection-bar">
         <p id="selection-info">카드 선택 후 목적지 누르기</p>
         <button type="button" id="cancel-btn" class="header-btn" disabled>취소</button>
       </div>
@@ -102,8 +102,14 @@
           <div id="foundations" class="cell-row" role="group" aria-labelledby="foundation-title"></div>
         </section>
       </div>
-      <div id="tableau" class="tableau" role="group" aria-label="전체 카드 배치"></div>
-      <div id="column-buttons" class="column-buttons" role="group" aria-label="크게 볼 카드 줄 선택"></div>
+      <p class="table-instruction">카드를 누르고 <strong>‘놓기’로 표시된 곳</strong>을 누르세요.<span>좁으면 판을 좌우로 밀어 보세요. 가로 화면에서는 더 넓게 볼 수 있어요.</span></p>
+      <div class="tableau-viewport" id="tableau-viewport" tabindex="0" role="region" aria-label="카드판 · 좌우와 위아래로 스크롤 가능">
+        <div id="tableau" class="tableau" role="group" aria-label="직접 누르는 카드판"></div>
+      </div>
+      <details class="column-zoom">
+        <summary>카드가 잘 안 보이나요? 줄 확대</summary>
+        <div id="column-buttons" class="column-buttons" role="group" aria-label="크게 볼 카드 줄 선택"></div>
+      </details>
       <div class="tools">
         <button type="button" id="undo-btn" class="header-btn" disabled>되돌리기</button>
         <button type="button" id="hint-btn" class="header-btn">추천 이동</button>

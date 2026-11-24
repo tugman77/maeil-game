@@ -1,20 +1,10 @@
-// 좁은 화면에서는 전체 배치를 살피고, 카드 선택은 큰 목록에서 한다.
+// 카드 직접 선택이 기본이며, 큰 목록은 선택 가능한 보조 기능이다.
 const MaeilCardTable = (() => {
+  // 카드마다 드러나는 높이도 44px 이상 확보한다. 작은 화면은 판을 스크롤한다.
   function layout(width, height, columns, longest) {
-    const landscape = width > height;
-    const cardHeight = landscape ? 32 : 42;
-    const reserved = landscape ? 204 : 320;
-    const available = Math.max(90, height - reserved);
-    const step = Math.max(14, Math.min(26, (available-cardHeight) / Math.max(1,longest-1)));
-    return { landscape, cardHeight, step, columns };
+    return {landscape:width>height, cardHeight:96, step:44, columns};
   }
   function fit(board, count, longest) {
-    const width = window.innerWidth || 390, height = window.innerHeight || 800;
-    const l = layout(width,height,count,longest);
-    const actual = board.clientHeight || Math.max(90,height-(l.landscape?204:320));
-    const step = Math.max(14,Math.min(26,(actual-l.cardHeight-22)/Math.max(1,longest-1)));
-    board.style.setProperty('--card-height',`${l.cardHeight}px`);
-    board.style.setProperty('--card-step',`${step}px`);
     board.style.setProperty('--table-columns',count);
   }
   function createPicker({ onPick, onOpen = () => {}, onClose = () => {} }) {

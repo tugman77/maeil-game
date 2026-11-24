@@ -47,14 +47,14 @@
     const day = M.todayKey(), saved = loadGame();
     start(saved?.daily === day ? saved : G.create(G.DAILY_DIFFICULTY, { daily: day, random: M.dailyRandom(ID, day) }));
   }
-  function cardButton(card, location, isSelected = false, miniature = false) {
-    const el = document.createElement(miniature ? 'div' : 'button'); if (!miniature) el.type = 'button'; el.className = 'playing-card';
+  function cardButton(card, location, isSelected = false) {
+    const el = document.createElement('button'); el.type = 'button'; el.className = 'playing-card';
     el.classList.toggle('red-card', G.red(card)); el.classList.toggle('selected', isSelected); el.disabled = paused;
     const corner = document.createElement('span'); corner.className = 'card-corner'; corner.textContent = G.cardText(card);
     const mark = document.createElement('span'); mark.className = 'card-mark'; mark.textContent = G.SUITS[G.suit(card)]; mark.setAttribute('aria-hidden', 'true');
     el.append(corner, mark); el.setAttribute('aria-label', `${location.type === 'free' ? `프리셀 ${location.index+1}` : `${location.index+1}번 줄 ${location.start+1}번째`}, ${G.cardName(card)}${isSelected ? ', 선택됨' : ''}`);
     el.setAttribute('aria-pressed', String(isSelected)); el.dataset.point = pointKey(location);
-    if (!miniature) { el.addEventListener('click', () => choose(location)); buttons.set(pointKey(location), el); }
+    el.addEventListener('click', () => choose(location)); buttons.set(pointKey(location), el);
     return el;
   }
   function emptyButton(text, location) {
@@ -86,30 +86,37 @@
     const columns = game.columns.map((column, index) => {
       const wrap = document.createElement('section'); wrap.className = 'tableau-column';
       const can = Boolean(destination({ type: 'column', index })); wrap.classList.toggle('destination-column', can);
-      const label = document.createElement('h3'); label.className = 'column-label'; label.textContent = `${index+1}번 줄${can ? ' · 이동 가능' : ''}`;
+      const label = document.createElement('button'); label.type='button'; label.className = 'column-label'; label.textContent = can ? '놓기' : `${index+1}줄`; label.disabled=paused;
+      label.setAttribute('aria-label',`${index+1}번 줄${can?', 이동 가능':', 확대'}`);
+      label.addEventListener('click',()=>openColumn(index));
       wrap.append(label);
-      if (!column.length) { const empty=document.createElement('div');empty.className='empty-card';empty.textContent='빈 줄';wrap.append(empty); }
+      if (!column.length) wrap.append(emptyButton('빈 줄', {type:'column',index}));
       else column.forEach((card, start) => {
         const chosen = selected?.type === 'column' && selected.index === index && start >= selected.start;
-        wrap.append(cardButton(card, { type: 'column', index, start }, chosen, true));
+        wrap.append(cardButton(card, { type: 'column', index, start }, chosen));
       });
+      if(can) {
+        const target=wrap.children[wrap.children.length-1];
+        target.classList.toggle('destination',true);
+        target.setAttribute('aria-label',`${index+1}번 줄, 이동 가능`);
+      }
       return wrap;
     });
     $('tableau').replaceChildren(...columns);
     columnSelectors = game.columns.map((column,index)=>{
       const b=document.createElement('button');b.type='button';b.className='column-button';b.disabled=paused;
-      b.textContent=`${index+1}줄 · ${column.length}장`;b.setAttribute('aria-label',`${index+1}번 줄 확대${destination({type:'column',index})?', 이동 가능':''}`);
+      b.textContent=`${index+1}줄 확대`;b.setAttribute('aria-label',`${index+1}번 줄 확대${destination({type:'column',index})?', 이동 가능':''}`);
       b.classList.toggle('destination',Boolean(destination({type:'column',index})));b.setAttribute('aria-pressed',String(selected?.type==='column'&&selected.index===index));
       b.addEventListener('click',()=>openColumn(index));return b;
     });
     $('column-buttons').replaceChildren(...columnSelectors);
-    $('selection-bar').hidden=!selected;
+    $('selection-bar').hidden=false;
     MaeilCardTable.fit($('tableau'),8,Math.max(...game.columns.map(c=>c.length)));
     $('moves').textContent = game.moves; $('timer').textContent = M.formatTime(game.elapsed);
     $('game-label').textContent = label(game); $('deal-info').textContent = `판 번호 ${dealLabel(game)}`;
     $('foundation-count').textContent = `${G.foundationCount(game)}/52장 정리`;
     const cards = selected && G.sourceCards(game, selected);
-    $('selection-info').textContent = cards ? `${G.cardText(cards[0])}${cards.length > 1 ? `부터 ${cards.length}장` : ''} 선택 · 목적지를 누르세요` : '카드 선택 후 목적지 누르기';
+    $('selection-info').textContent = cards ? `${G.cardText(cards[0])}${cards.length > 1 ? `부터 ${cards.length}장` : ''} 선택 · 목적지를 누르세요` : '옮길 카드를 바로 누르세요';
     $('cancel-btn').disabled = paused || !selected;
     $('undo-btn').disabled = paused || !game.history.length;
     $('hint-btn').disabled = paused || !G.legalMoves(game).length;
@@ -131,7 +138,7 @@
     const possible = targets.some((to) => G.canMove(game, selected, to));
     message(`${G.cardText(cards[0])}${cards.length > 1 ? `부터 ${cards.length}장` : ''}을 선택했어요. ${possible
       ? '테두리로 표시된 목적지로 옮길 수 있어요.' : '지금 옮길 곳이 없어요. 더 짧은 묶음을 고르거나 빈칸을 만드세요.'}`);
-    render(); (location.type==='column'?columnSelectors[location.index]:buttons.get(pointKey(location)))?.focus({ preventScroll: true });
+    render(); buttons.get(pointKey(location))?.focus({ preventScroll: true });
   }
   function openColumn(index) {
     if(paused||finished)return;
@@ -158,7 +165,7 @@
       }
       // 다른 카드나 같은 줄의 다른 묶음은 새로 선택할 수 있다.
       if (location.type === 'free' && game.free[location.index] !== null) { select(location); return; }
-      if (location.type === 'column' && selected.type === 'column' && selected.index === location.index && G.sourceCards(game, location)) { select(location); return; }
+      if (location.type === 'column' && G.sourceCards(game, location)) { select(location); return; }
       message(location.type === 'foundation' ? '같은 무늬의 A부터 K까지 순서대로 한 장씩 정리하세요.'
         : location.type === 'free' ? '빈 프리셀에는 한 장만 둘 수 있어요.'
           : `다른 색의 한 단계 큰 카드 아래에 놓으세요. 묶음 이동은 빈 프리셀·빈 줄 수에 따라 제한돼요.`);

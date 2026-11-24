@@ -10,7 +10,7 @@ const browser = (options = {}) => dom('freecell', { scripts:['common/card-table.
 test('좁은 가로·세로 화면의 전체보기 계산과 큰 선택 창 분리', () => {
   for(const [w,h] of [[360,800],[390,844],[667,320],[740,360],[844,390]]) {
     const layout=Table.layout(w,h,8,7);
-    assert.equal(layout.columns,8);assert.equal(layout.landscape,w>h);assert.ok(layout.step>=14);
+    assert.equal(layout.columns,8);assert.equal(layout.landscape,w>h);assert.ok(layout.step>=44);
   }
   const b=browser();b.click('start-btn');const before=b.get(GAME);
   b.element('column-buttons').children[0].fire('click');
@@ -26,10 +26,8 @@ test('화면 회전은 카드·선택·이어하기 상태를 바꾸지 않음',
 function point(b, p) {
   if (p.type === 'foundation') return b.element('foundations').children[p.index];
   if (p.type === 'free') return b.element('free-cells').children[p.index];
-  const button=b.element('column-buttons').children[p.index];
-  if(p.start===undefined)return button;
-  button.fire('click');
-  return b.element('card-picker-list').children[p.start];
+  const column=b.element('tableau').children[p.index];
+  return p.start===undefined?column.children.at(-1):column.children[p.start+1];
 }
 function play(b, move) { point(b,move.from).fire('click'); point(b,move.to).fire('click'); }
 function almostDone(daily = null) {
@@ -152,7 +150,25 @@ test('저장소가 차단되어도 시작·추천·이동·일시정지 가능',
   b.click('hint-btn');assert.match(b.element('selection-info').textContent,/선택/);
   const target=b.element('free-cells').children.find((el)=>el.className.includes('hint-target'))
     || b.element('foundations').children.find((el)=>el.className.includes('hint-target'))
-    || b.element('column-buttons').children.find((el)=>el.className.includes('hint-target'));
+    || b.element('tableau').children.flatMap(c=>c.children).find(el=>el.className.includes('hint-target'));
   assert.ok(target);target.fire('click');assert.equal(b.element('moves').textContent,'1');
   b.click('pause-btn');assert.equal(b.element('pause-overlay').hidden,false);assert.equal(b.get(GAME),null);
+});
+
+test('카드를 바로 선택하고 다른 카드로 바꾸거나 놓기 버튼으로 이동',()=>{
+  const b=browser();b.click('start-btn');const state=b.get(GAME),first=state.solution[0];
+  const source=point(b,first.from);assert.equal(source.tagName,'BUTTON');source.fire('click');
+  assert.equal(b.element('card-picker').hidden,true);
+  assert.equal(b.element('selection-bar').hidden,false);
+  assert.equal(point(b,first.from).attributes['aria-pressed'],'true');
+  if(first.to.type==='column') {
+    const place=b.element('tableau').children[first.to.index].children[0];
+    assert.equal(place.textContent,'놓기');assert.equal(place.tagName,'BUTTON');place.fire('click');
+  } else point(b,first.to).fire('click');
+  assert.equal(b.get(GAME).moves,1);b.click('undo-btn');
+  const a={type:'column',index:0,start:state.columns[0].length-1};
+  const i=state.columns.findIndex((c,i)=>i!==0&&!G.canMove(state,a,{type:'column',index:i}));assert.ok(i>=0);
+  point(b,a).fire('click');const other={type:'column',index:i,start:state.columns[i].length-1};point(b,other).fire('click');
+  assert.equal(point(b,other).attributes['aria-pressed'],'true');assert.deepEqual(G.snapshot(b.get(GAME)),G.snapshot(state));
+  point(b,other).fire('click');assert.equal(b.element('cancel-btn').disabled,true);
 });
