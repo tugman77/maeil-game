@@ -318,6 +318,15 @@
       "commit": "ac4e5b7a2dea53f56659382e38dee003c4926e8b",
       "url": "https://tugman77.github.io/maeil-game/freecell/",
       "deployment_run": 45271394320
+    },
+    {
+      "game": "freecell",
+      "type": "improvement",
+      "status": "verified_pending_deploy",
+      "requested_on": "2026-11-24",
+      "trigger": "user_requested",
+      "note": "모바일 전체보기·가로 화면·큰 줄 선택 창 개선. 이후 클론다이크 제작 요청.",
+      "verification_limit": "브라우저 연결 상태 변경 반복으로 화면 검수 미완료"
     }
   ]
 }

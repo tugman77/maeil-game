@@ -4,13 +4,32 @@ const assert = require('node:assert/strict');
 const G = require('../freecell/js/logic.js');
 const M = require('../common/core.js');
 const dom = require('./helpers/game-dom.js');
+const Table = require('../common/card-table.js');
 const GAME = 'maeil-game.freecell.game.v1', STATS = 'maeil-game.freecell.stats.v1', DAILY = 'maeil-game.freecell.daily.v1';
-const browser = (options = {}) => dom('freecell', { scripts:['freecell/js/deals.js'], ...options });
+const browser = (options = {}) => dom('freecell', { scripts:['common/card-table.js','freecell/js/deals.js'], ...options });
+test('좁은 가로·세로 화면의 전체보기 계산과 큰 선택 창 분리', () => {
+  for(const [w,h] of [[360,800],[390,844],[667,320],[740,360],[844,390]]) {
+    const layout=Table.layout(w,h,8,7);
+    assert.equal(layout.columns,8);assert.equal(layout.landscape,w>h);assert.ok(layout.step>=14);
+  }
+  const b=browser();b.click('start-btn');const before=b.get(GAME);
+  b.element('column-buttons').children[0].fire('click');
+  assert.equal(b.element('card-picker').hidden,false);assert.equal(b.element('game-screen').inert,true);
+  assert.equal(b.element('card-picker-list').children.length,before.columns[0].length);
+  b.click('card-picker-close');assert.equal(b.element('game-screen').inert,false);assert.deepEqual(b.get(GAME),before);
+});
+test('화면 회전은 카드·선택·이어하기 상태를 바꾸지 않음',()=>{
+  const b=browser();b.click('start-btn');b.click('hint-btn');const before=b.get(GAME),selection=b.element('selection-info').textContent;
+  b.window.fire('resize');assert.deepEqual(b.get(GAME),before);assert.equal(b.element('selection-info').textContent,selection);
+  assert.equal(b.element('column-buttons').children.length,8);
+});
 function point(b, p) {
   if (p.type === 'foundation') return b.element('foundations').children[p.index];
   if (p.type === 'free') return b.element('free-cells').children[p.index];
-  const column = b.element('tableau').children[p.index];
-  return p.start === undefined ? column.children.at(-1) : column.children[p.start+1];
+  const button=b.element('column-buttons').children[p.index];
+  if(p.start===undefined)return button;
+  button.fire('click');
+  return b.element('card-picker-list').children[p.start];
 }
 function play(b, move) { point(b,move.from).fire('click'); point(b,move.to).fire('click'); }
 function almostDone(daily = null) {

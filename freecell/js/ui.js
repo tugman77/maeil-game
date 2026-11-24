@@ -4,8 +4,8 @@
   const $ = (id) => document.getElementById(id);
   let game = null, picker, selected = null, suggested = null, solution = new Map();
   let paused = false, finished = false, restartArmed = false, armTimer = 0;
-  let timer = 0, lastTick = 0, ticks = 0;
-  let buttons = new Map();
+  let timer = 0, lastTick = 0, ticks = 0, statusTimer = 0;
+  let buttons = new Map(), columnSelectors = [], cardPicker;
   const pointKey = (p) => `${p.type}:${p.index}:${p.start ?? ''}`;
   const dealLabel = (s) => `FC-${s.dealNumber.toString(36).toUpperCase()}`;
   const label = (s) => s.daily ? `${M.dateLabel(s.daily)} 오늘의 도전` : G.DIFFICULTIES[s.difficulty].label;
@@ -24,10 +24,10 @@
     ['start-screen', 'game-screen', 'result-screen'].forEach((key) => { $(key).hidden = key !== id; });
     window.scrollTo(0, 0);
   }
-  const message = (text) => { $('game-status').textContent = text; };
+  const message = (text) => { clearTimeout(statusTimer); $('game-status').textContent = text; statusTimer=setTimeout(()=>{$('game-status').textContent='';},5000); };
   function disarm() { restartArmed = false; clearTimeout(armTimer); $('restart-btn').textContent = '처음 배치'; $('restart-btn').classList.toggle('armed', false); }
   function renderStart() {
-    stopTimer(); disarm();
+    stopTimer(); disarm(); cardPicker?.close();
     const day = M.todayKey(), result = M.read(KEY.daily), done = M.dailyDone(ID, day);
     picker.setDaily(done && result?.date === day && recordOK(result)
       ? `${M.dateLabel(day)} · 완료 ${result.moves}수` : `${M.dateLabel(day)} · 모두 같은 풀이 검증 판`, done);
@@ -37,7 +37,7 @@
     picker.refresh(); screen('start-screen');
   }
   function start(state) {
-    stopTimer(); disarm(); game = state; paused = false; finished = false; selected = null; suggested = null;
+    stopTimer(); disarm(); cardPicker?.close(); game = state; paused = false; finished = false; selected = null; suggested = null;
     solution = G.solutionMap(game); M.markPlayed(ID); save();
     $('pause-overlay').hidden = true; screen('game-screen');
     message(G.legalMoves(game).length ? '옮길 카드를 누른 다음 목적지를 누르세요.' : '지금 가능한 이동이 없어요. 되돌리거나 처음 배치에서 다시 도전하세요.'); render();
@@ -47,14 +47,14 @@
     const day = M.todayKey(), saved = loadGame();
     start(saved?.daily === day ? saved : G.create(G.DAILY_DIFFICULTY, { daily: day, random: M.dailyRandom(ID, day) }));
   }
-  function cardButton(card, location, isSelected = false) {
-    const el = document.createElement('button'); el.type = 'button'; el.className = 'playing-card';
+  function cardButton(card, location, isSelected = false, miniature = false) {
+    const el = document.createElement(miniature ? 'div' : 'button'); if (!miniature) el.type = 'button'; el.className = 'playing-card';
     el.classList.toggle('red-card', G.red(card)); el.classList.toggle('selected', isSelected); el.disabled = paused;
     const corner = document.createElement('span'); corner.className = 'card-corner'; corner.textContent = G.cardText(card);
     const mark = document.createElement('span'); mark.className = 'card-mark'; mark.textContent = G.SUITS[G.suit(card)]; mark.setAttribute('aria-hidden', 'true');
     el.append(corner, mark); el.setAttribute('aria-label', `${location.type === 'free' ? `프리셀 ${location.index+1}` : `${location.index+1}번 줄 ${location.start+1}번째`}, ${G.cardName(card)}${isSelected ? ', 선택됨' : ''}`);
     el.setAttribute('aria-pressed', String(isSelected)); el.dataset.point = pointKey(location);
-    el.addEventListener('click', () => choose(location)); buttons.set(pointKey(location), el);
+    if (!miniature) { el.addEventListener('click', () => choose(location)); buttons.set(pointKey(location), el); }
     return el;
   }
   function emptyButton(text, location) {
@@ -88,14 +88,23 @@
       const can = Boolean(destination({ type: 'column', index })); wrap.classList.toggle('destination-column', can);
       const label = document.createElement('h3'); label.className = 'column-label'; label.textContent = `${index+1}번 줄${can ? ' · 이동 가능' : ''}`;
       wrap.append(label);
-      if (!column.length) wrap.append(emptyButton('빈 줄', { type: 'column', index }));
+      if (!column.length) { const empty=document.createElement('div');empty.className='empty-card';empty.textContent='빈 줄';wrap.append(empty); }
       else column.forEach((card, start) => {
         const chosen = selected?.type === 'column' && selected.index === index && start >= selected.start;
-        wrap.append(cardButton(card, { type: 'column', index, start }, chosen));
+        wrap.append(cardButton(card, { type: 'column', index, start }, chosen, true));
       });
       return wrap;
     });
     $('tableau').replaceChildren(...columns);
+    columnSelectors = game.columns.map((column,index)=>{
+      const b=document.createElement('button');b.type='button';b.className='column-button';b.disabled=paused;
+      b.textContent=`${index+1}줄 · ${column.length}장`;b.setAttribute('aria-label',`${index+1}번 줄 확대${destination({type:'column',index})?', 이동 가능':''}`);
+      b.classList.toggle('destination',Boolean(destination({type:'column',index})));b.setAttribute('aria-pressed',String(selected?.type==='column'&&selected.index===index));
+      b.addEventListener('click',()=>openColumn(index));return b;
+    });
+    $('column-buttons').replaceChildren(...columnSelectors);
+    $('selection-bar').hidden=!selected;
+    MaeilCardTable.fit($('tableau'),8,Math.max(...game.columns.map(c=>c.length)));
     $('moves').textContent = game.moves; $('timer').textContent = M.formatTime(game.elapsed);
     $('game-label').textContent = label(game); $('deal-info').textContent = `판 번호 ${dealLabel(game)}`;
     $('foundation-count').textContent = `${G.foundationCount(game)}/52장 정리`;
@@ -122,7 +131,17 @@
     const possible = targets.some((to) => G.canMove(game, selected, to));
     message(`${G.cardText(cards[0])}${cards.length > 1 ? `부터 ${cards.length}장` : ''}을 선택했어요. ${possible
       ? '테두리로 표시된 목적지로 옮길 수 있어요.' : '지금 옮길 곳이 없어요. 더 짧은 묶음을 고르거나 빈칸을 만드세요.'}`);
-    render(); buttons.get(pointKey(location))?.focus({ preventScroll: true });
+    render(); (location.type==='column'?columnSelectors[location.index]:buttons.get(pointKey(location)))?.focus({ preventScroll: true });
+  }
+  function openColumn(index) {
+    if(paused||finished)return;
+    if(selected && G.canMove(game,selected,{type:'column',index})) { choose({type:'column',index});return; }
+    const cards=game.columns[index];
+    if(!cards.length){message('먼저 옮길 카드를 선택하세요.');return;}
+    cardPicker.open(`${index+1}번 줄 · ${cards.length}장`,cards.map((card,start)=>{
+      const location={type:'column',index,start},run=G.sourceCards(game,location);
+      return {location,label:G.cardText(card),red:G.red(card),enabled:Boolean(run),detail:run?`${run.length}장 선택`:'순서가 맞지 않음'};
+    }));
   }
   function choose(location) {
     if (!game || paused || finished) return;
@@ -193,7 +212,7 @@
   function startIfNeeded() { if (game.started && !timer && !paused) startTimer(); }
   function pause() {
     if (!game || paused || finished || $('game-screen').hidden) return;
-    stopTimer(); disarm(); paused = true; $('pause-overlay').hidden = false; render(); save(); $('resume-btn').focus();
+    stopTimer(); disarm(); cardPicker.close(); paused = true; $('pause-overlay').hidden = false; render(); save(); $('resume-btn').focus();
   }
   function resume() {
     if (!game || !paused || finished) return;
@@ -224,6 +243,9 @@
     M.share({ title: '프리셀 — 매일게임', text: `[매일게임 프리셀] ${label(game)} · ${dealLabel(game)}\n52장 완료 · ${game.moves}수 · ${M.formatTimeKorean(game.elapsed)}\n추천 ${game.hintsUsed}회 · 되돌리기 ${game.undoUsed}회\n같이 한 판 즐겨요!`,
       url: M.pageUrl('freecell/') + (game.daily ? '#daily' : '') });
   }
+  cardPicker = MaeilCardTable.createPicker({ onPick:select, onOpen:()=>{$('game-screen').inert=true;}, onClose:()=>{$('game-screen').inert=false;} });
+  window.addEventListener('resize',()=>{if(game&&!finished)MaeilCardTable.fit($('tableau'),8,Math.max(...game.columns.map(c=>c.length)));});
+  if(typeof ResizeObserver==='function')new ResizeObserver(()=>{if(game&&!finished)MaeilCardTable.fit($('tableau'),8,Math.max(...game.columns.map(c=>c.length)));}).observe($('tableau'));
   M.bindSettingButtons();
   picker = MaeilStart.setup({ id: ID,
     difficulties: Object.entries(G.DIFFICULTIES).map(([key,c]) => ({ key, label: c.label, detail: c.detail })),
