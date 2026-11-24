@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -65,15 +65,18 @@
       "commit": "777e3dfa3b7c0c845ce724aefc56c91f820f6062",
       "url": "https://tugman77.github.io/maeil-game/klondike/",
       "deployment_run": 45385381633
-    }
-  ],
-  "backlog": [
+    },
     {
       "id": "initial-quiz",
       "name": "초성 퀴즈",
-      "status": "ready_to_publish",
-      "note": "검수한 문제은행과 힌트, 복수 정답 처리를 마련한다."
-    },
+      "completed_on": "2026-11-24",
+      "status": "published",
+      "commit": "96ba50fbc75d32d66e5f5c798efd2113adea6435",
+      "url": "https://tugman77.github.io/maeil-game/initial-quiz/",
+      "deployment_run": 45412740742
+    }
+  ],
+  "backlog": [
     {
       "id": "proverb-quiz",
       "name": "속담 완성",
@@ -347,13 +350,17 @@
     },
     {
       "game": "initial-quiz",
-      "status": "verified_pending_deploy",
+      "status": "published",
       "requested_on": "2026-11-24",
       "trigger": "user_requested",
       "base_commit": "593b6e7b2f6ee818bc91182bfb5a5cb5e3b34d72",
       "note": "40대 이상이 두루 즐길 내용·큰 글씨·간단한 터치 조작을 이후 모든 게임에도 적용하라는 사용자 요청 포함.",
       "tests": "초성 퀴즈 21개, 전체 190개 검사 통과. 문제 90개와 모든 복수 정답을 버튼으로 완성·365일 날짜별 재현 검사.",
-      "verification_limit": "브라우저 호스트 미연결로 실제 모바일·PC 화면 검수 미완료"
+      "verification_limit": "브라우저 호스트 미연결로 실제 모바일·PC 화면 검수 미완료",
+      "completed_on": "2026-11-24",
+      "commit": "96ba50fbc75d32d66e5f5c798efd2113adea6435",
+      "deployment_run": 45412740742,
+      "url": "https://tugman77.github.io/maeil-game/initial-quiz/"
     }
   ]
 }
