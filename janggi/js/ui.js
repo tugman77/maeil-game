@@ -3,7 +3,8 @@
   const KEY={game:'maeil-game.janggi.game.v1',stats:'maeil-game.janggi.stats.v1',daily:'maeil-game.janggi.daily.v1',display:'maeil-game.janggi.display.v1'};
   let game=null,picker,selected=-1,hinted=null,cursor=76,points=[],paused=false,finished=false,thinking=false,worker=null,requestId=0,computeTimer=0,watchdog=0;
   let clock=0,lastTick=0,ticks=0,armed='',armTimer=0;
-  let hanja=Boolean(M.read(KEY.display)?.hanja),zoomed=false;
+  const display=M.read(KEY.display);
+  let hanja=typeof display?.hanja==='boolean'?display.hanja:true,zoomed=false;
   const label=s=>s.daily?`${M.dateLabel(s.daily)} 한 수 외통수`:G.DIFFICULTIES[s.difficulty].label;
   const loadStats=()=>{const s=M.read(KEY.stats);return s&&typeof s==='object'&&!Array.isArray(s)?s:{};};
   const loadGame=()=>{const s=M.read(KEY.game);return G.isValid(s)&&!s.over?s:null;};
@@ -43,7 +44,7 @@
       b.className=classes.join(' ');b.disabled=Boolean(paused||thinking||game.over||game.turn!==G.CHO||game.puzzleAttempted);
       b.tabIndex=i===cursor?0:-1;b.setAttribute('aria-selected',String(i===selected));
       b.setAttribute('aria-label',`${Math.floor(i/9)+1}행 ${i%9+1}열, ${v?pieceName(v):'빈 점'}${targets.has(i)?', 이동 가능':''}${i===selected?', 선택됨':''}${checked&&i===king?', 장군':''}`);
-      if(v){const outer=document.createElement('span');outer.className='piece';outer.setAttribute('aria-hidden','true');const face=document.createElement('span');face.className='piece-face';face.textContent=pieceText(v);outer.append(face);b.replaceChildren(outer);}else b.replaceChildren();
+      if(v){const outer=document.createElement('span');outer.className='piece '+(G.type(v)===G.K?'piece-king':[G.A,G.P].includes(G.type(v))?'piece-small':'piece-major');outer.setAttribute('aria-hidden','true');const face=document.createElement('span');face.className='piece-face';face.textContent=pieceText(v);outer.append(face);b.replaceChildren(outer);}else b.replaceChildren();
     });
     $('play-area').inert=paused;$('home-btn').disabled=paused;$('pause-btn').disabled=paused;
     $('cho-points').textContent=scores.cho;$('han-points').textContent=scores.han;
@@ -51,7 +52,7 @@
     $('pass-btn').disabled=Boolean(paused||thinking||game.kind==='puzzle'||game.turn!==G.CHO||!G.canPass(game));
     $('pass-btn').classList.toggle('hinted',Boolean(hinted?.pass));$('clear-pick-btn').disabled=Boolean(paused||thinking||selected<0);
     $('resign-btn').disabled=paused||game.kind==='puzzle'||game.over;
-    $('script-btn').setAttribute('aria-pressed',String(hanja));$('zoom-btn').setAttribute('aria-pressed',String(zoomed));$('board-scroll').classList.toggle('zoomed',zoomed);
+    $('board').classList.toggle('hanja',hanja);$('script-btn').setAttribute('aria-pressed',String(hanja));$('zoom-btn').setAttribute('aria-pressed',String(zoomed));$('board-scroll').classList.toggle('zoomed',zoomed);
     $('game-label').textContent=`${label(game)} · 나는 아래 초로 둡니다`;
     $('game-status').textContent=paused?'일시정지 중':thinking?(thinking==='hint'?'추천할 수를 찾고 있어요…':'컴퓨터가 생각하고 있어요…')
       :game.over?`${game.winner===G.CHO?'초 승리':'한 승리'} · ${G.reasonText[game.reason]}`

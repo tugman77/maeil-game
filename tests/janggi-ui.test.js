@@ -5,9 +5,9 @@ const GAME='maeil-game.janggi.game.v1',STATS='maeil-game.janggi.stats.v1',DAILY=
 const browser=options=>dom('janggi',options),point=(b,i)=>b.element('board').children[i];
 function play(b,a){point(b,a.from).fire('click');point(b,a.to).fire('click');}
 function reply(worker){worker.reply(AI.chooseMove(worker.data.state,{depth:1,nodes:200}));}
-test('기본 90점·한글 말·초 선공·포진 선택',()=>{
+test('기본 90점·한자 말·초 선공·포진 선택',()=>{
  const b=browser();b.element('formation-select').value='1';b.click('start-btn');const s=b.get(GAME);
- assert.ok(G.isValid(s));assert.equal(s.formation,1);assert.equal(b.element('board').children.length,90);assert.equal(point(b,76).textContent,'초');
+ assert.ok(G.isValid(s));assert.equal(s.formation,1);assert.equal(b.element('board').children.length,90);assert.equal(point(b,76).textContent,'楚');
  assert.equal(b.element('cho-points').textContent,'72');assert.equal(b.element('han-points').textContent,'73.5');assert.equal(b.element('undo-btn').disabled,true);
 });
 test('말 선택·이동 후보·바로 이동·컴퓨터 응수·한 차례 무르기',()=>{
@@ -61,7 +61,8 @@ test('두 번 한 수 쉼은 점수로 종료하고 기권은 재확인',()=>{
 });
 test('한자·판 확대·큰 글씨·화면 회전은 대국·선택을 바꾸지 않음',()=>{
  const b=browser();b.click('start-btn');point(b,54).fire('click');const before=b.get(GAME);
- b.click('script-btn');assert.equal(point(b,76).textContent,'楚');b.click('zoom-btn');assert.equal(b.element('board-scroll').classList.contains('zoomed'),true);
+ b.click('script-btn');assert.equal(point(b,76).textContent,'초');
+ const c=browser({saved:{'maeil-game.janggi.display.v1':b.get('maeil-game.janggi.display.v1')}});c.click('start-btn');assert.equal(point(c,76).textContent,'초');b.click('zoom-btn');assert.equal(b.element('board-scroll').classList.contains('zoomed'),true);
  b.document.querySelectorAll('.large-text-toggle')[0].fire('click');b.document.querySelectorAll('.dark-toggle')[0].fire('click');b.window.fire('resize');
  assert.deepEqual(b.get(GAME),before);assert.equal(point(b,54).attributes['aria-selected'],'true');
 });

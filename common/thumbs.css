@@ -174,3 +174,11 @@
 .th-jg-text { text-anchor:middle;font-size:14px;font-family:inherit;font-weight:800;fill:#164884; }
 .th-jg-red { fill:#ac252a; }
 :root[data-theme="dark"] .thumb-janggi { background:#263a30; }
+
+/* 바둑 */
+.thumb-go { background:#e7e1d3; }
+.th-go-board { fill:#e6c78f;stroke:#89704b;stroke-width:2; }
+.th-go-line { fill:none;stroke:#74603f;stroke-width:1; }
+.th-go-black { fill:#1e242d;stroke:#090d14;stroke-width:1; }
+.th-go-white { fill:#fff;stroke:#555b61;stroke-width:1; }
+:root[data-theme="dark"] .thumb-go { background:#35392c; }

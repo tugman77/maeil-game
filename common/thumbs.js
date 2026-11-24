@@ -204,10 +204,16 @@ const GameThumbs = (() => {
     for(let i=0;i<9;i++)body+=`<line x1="${44+i*9}" y1="15" x2="${44+i*9}" y2="105" class="th-jg-line"/>`;
     for(let i=0;i<10;i++)body+=`<line x1="44" y1="${15+i*10}" x2="116" y2="${15+i*10}" class="th-jg-line"/>`;
     body+='<path d="M71 15 89 35 M89 15 71 35 M71 85 89 105 M89 85 71 105" class="th-jg-line"/>';
-    for(const [x,y,c,red] of [[80,25,'한',true],[80,95,'초',false],[62,55,'차',false],[98,35,'포',true],[80,75,'졸',false]])body+=`<circle cx="${x}" cy="${y}" r="10" class="th-jg-piece"/><text x="${x}" y="${y+5}" class="th-jg-text${red?' th-jg-red':''}">${c}</text>`;
+    for(const [x,y,c,red] of [[80,25,'漢',true],[80,95,'楚',false],[62,55,'車',false],[98,35,'包',true],[80,75,'卒',false]])body+=`<circle cx="${x}" cy="${y}" r="10" class="th-jg-piece"/><text x="${x}" y="${y+5}" class="th-jg-text${red?' th-jg-red':''}">${c}</text>`;
     return svg(body);
   }
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, janggi };
+  function go() {
+    let b='<rect x="28" y="8" width="104" height="104" rx="8" class="th-go-board"/>';
+    for(let i=0;i<9;i++)b+=`<path d="M${36+i*11} 16V104 M36 ${16+i*11}H124" class="th-go-line"/>`;
+    for(const [x,y,white] of [[69,49,false],[80,49,true],[80,60,false],[91,49,false],[69,60,true],[91,60,true],[80,71,true]])b+=`<circle cx="${x}" cy="${y}" r="5.2" class="${white?'th-go-white':'th-go-black'}"/>`;
+    return svg(b);
+  }
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, janggi, go };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

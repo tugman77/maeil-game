@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="9줄 컴퓨터 바둑. 무르기·수 추천·이어하기와 오늘의 한 수 돌 잡기를 즐겨 보세요.">
+  <meta name="theme-color" content="#f5f3ee">
+  <meta property="og:title" content="바둑 — 매일게임">
+  <meta property="og:description" content="9줄 컴퓨터 바둑과 오늘의 돌 잡기.">
+  <meta property="og:type" content="website">
+  <title>바둑 — 매일게임</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e6b48'/%3E%3Ctext x='32' y='45' text-anchor='middle' fill='white' font-size='40'%3E●%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../common/base.css">
+  <link rel="stylesheet" href="../common/game.css">
+  <link rel="stylesheet" href="../common/thumbs.css">
+  <link rel="stylesheet" href="../common/start.css">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || localStorage.getItem('maeil-sudoku.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- 시작 화면 (공통 구조: common/start.css · start.js, tools/start_screen.py로 생성) -->
+  <main id="start-screen" class="st">
+    <a href="../" class="st-back">← 게임 목록</a>
+    <header>
+      <h1 class="st-title">바둑</h1>
+      <p class="st-desc">9줄 바둑판에서 컴퓨터와 번갈아 돌을 놓아 내 영역을 넓혀 보세요.</p>
+    </header>
+    <!-- 대표 카드: 큰 그림 + 오늘의 도전 띠. 오늘의 도전을 끝낸 날엔 띠가 '게임 시작' 아래(#daily-done-slot)로 작게 내려간다 -->
+    <div class="st-hero thumb-go" id="hero">
+      <div class="st-preview" id="preview" aria-hidden="true"></div>
+      <button type="button" id="daily-btn" class="st-daily">
+        <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
+        <span class="st-daily-go" id="daily-go">도전하기 →</span>
+      </button>
+    </div>
+
+    <div class="st-ask" id="sound-ask" hidden>
+      <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>효과음을 켤까요?</span>
+      <button type="button" id="sound-yes" class="st-ask-yes">켜기</button>
+      <button type="button" id="sound-no" class="st-ask-no">괜찮아요</button>
+    </div>
+
+    <div id="continue-wrap" hidden>
+      <button type="button" id="continue-btn" class="st-continue">▶ 이어하기<small id="continue-info"></small></button>
+      <p class="st-note">새 게임을 시작하면 하던 게임은 사라져요</p>
+    </div>
+
+    <section class="st-pick" aria-labelledby="pick-label">
+      <h2 class="st-label" id="pick-label">난이도</h2>
+      <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
+      <p class="st-detail" id="pick-detail"></p>
+      <button type="button" id="start-btn" class="st-start">게임 시작</button>
+      <p class="st-best"><span id="pick-best"></span></p>
+    </section>
+
+    <div id="daily-done-slot"></div>
+
+    <div class="st-tools">
+      <button type="button" class="st-tool large-text-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 5h1.6l5 13M6 13.5h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 18v-5.2M14 12.8h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>큰 글씨</button>
+      <button type="button" class="st-tool dark-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>어두운 화면</button>
+      <button type="button" class="st-tool sound-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>소리</button>
+      <a class="st-tool" href="../guide/go.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.9" r="1.2" fill="currentColor"/></svg>도움말</a>
+    </div>
+
+    <!-- 광고 자리: 비어 있으면 화면에 보이지 않습니다. 게임 화면에는 두지 않습니다. -->
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+
+<main id="game-screen" class="screen game-screen" hidden>
+<header class="game-header"><button type="button" id="home-btn" class="header-btn">처음</button><div class="header-stats"><div class="stat-box"><small>흑 · 잡은 돌</small><b id="black-captures">0</b></div><div class="stat-box"><small>백 · 잡은 돌</small><b id="white-captures">0</b></div></div><button type="button" id="pause-btn" class="header-btn">일시정지</button></header>
+<p id="game-label" class="game-label"></p><p id="game-status" class="game-status" role="status" aria-live="polite" aria-atomic="true"></p>
+<div id="play-area" class="play-area"><div id="board-scroll" class="board-scroll" tabindex="0" role="region" aria-label="바둑판 · 판 확대 시 스크롤 가능"><div class="board-surface"><svg class="board-lines" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"><line x1="50" y1="50" x2="50" y2="850"/><line x1="50" y1="50" x2="850" y2="50"/><line x1="150" y1="50" x2="150" y2="850"/><line x1="50" y1="150" x2="850" y2="150"/><line x1="250" y1="50" x2="250" y2="850"/><line x1="50" y1="250" x2="850" y2="250"/><line x1="350" y1="50" x2="350" y2="850"/><line x1="50" y1="350" x2="850" y2="350"/><line x1="450" y1="50" x2="450" y2="850"/><line x1="50" y1="450" x2="850" y2="450"/><line x1="550" y1="50" x2="550" y2="850"/><line x1="50" y1="550" x2="850" y2="550"/><line x1="650" y1="50" x2="650" y2="850"/><line x1="50" y1="650" x2="850" y2="650"/><line x1="750" y1="50" x2="750" y2="850"/><line x1="50" y1="750" x2="850" y2="750"/><line x1="850" y1="50" x2="850" y2="850"/><line x1="50" y1="850" x2="850" y2="850"/><g class="stars"><circle cx="250" cy="250" r="6"/><circle cx="650" cy="250" r="6"/><circle cx="450" cy="450" r="6"/><circle cx="250" cy="650" r="6"/><circle cx="650" cy="650" r="6"/></g></svg><div id="board" class="intersection-grid" role="grid" aria-label="9줄 바둑판 · 점을 고른 다음 여기에 두기"></div></div></div>
+<p id="move-detail" class="move-detail"></p><button type="button" id="place-btn" class="primary-btn place-btn" disabled>점을 골라 주세요</button>
+<div class="tools"><button type="button" id="undo-btn" class="header-btn">무르기</button><button type="button" id="hint-btn" class="header-btn">수 추천</button><button type="button" id="pass-btn" class="header-btn">한 수 쉼</button></div>
+<section id="scoring-panel" class="scoring-panel" aria-labelledby="scoring-title" hidden><h2 id="scoring-title">계가 · 죽은 돌 확인</h2><p>죽은 돌 무리를 누르면 ×로 표시해 제외합니다. 다시 누르면 취소합니다. 컴퓨터가 사활을 판정하지 않으므로 불확실하면 계속 두어 잡아 주세요.</p><p id="score-preview" class="score-preview" role="status" aria-live="polite"></p><div class="scoring-actions"><button type="button" id="confirm-score-btn" class="primary-btn">이 점수로 끝내기</button><button type="button" id="resume-play-btn" class="secondary-btn">계속 두기</button><button type="button" id="reset-dead-btn" class="header-btn">제외 표시 지우기</button></div></section>
+<p id="board-help" class="board-help"></p>
+<details class="game-options"><summary>판 표시·설정·도움말</summary><div class="settings-row"><button type="button" id="clear-pick-btn" class="header-btn">선택 취소</button><button type="button" id="zoom-btn" class="header-btn" aria-pressed="false">판 확대</button><button type="button" class="option-btn large-text-toggle" aria-pressed="false">큰 글씨</button><button type="button" class="option-btn dark-toggle" aria-pressed="false">어두운 화면</button><button type="button" id="resign-btn" class="header-btn">기권</button><a href="../guide/go.html">바둑 하는 법·적용 규칙</a></div>
+<p>나는 흑으로 먼저 둡니다. 시간 제한과 무르기 횟수 제한이 없습니다. 좁은 화면은 전체 판을 먼저 보여 주며 판 확대를 켜면 점 간격이 44px 이상 됩니다.</p><p>영역 계가: 살아 있는 돌 + 둘러싼 빈 점. 백 덤 6.5점, 잡은 돌 수는 점수에 따로 더하지 않습니다. 두 번 연속 쉼 후 죽은 돌을 직접 확인합니다. 동일 배치를 되풀이하는 착수는 금지합니다.</p><p>컴퓨터는 잡기·연결과 짧은 응수를 살피는 연습 상대입니다. 전문 바둑 엔진의 사활 판단이나 단급 수준을 보장하지 않습니다.</p></details></div>
+<div id="pause-overlay" class="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden><p id="pause-title" class="pause-title">잠깐 쉬어 가세요</p><button type="button" id="resume-btn" class="primary-btn">계속하기</button></div></main>
+<main id="result-screen" class="screen result-screen" hidden><h1 id="result-title" class="result-title"></h1><p id="result-sub" class="result-sub"></p><div class="result-card"><p id="result-label" class="result-label"></p><p id="result-score" class="result-big"></p><p id="result-detail" class="result-detail"></p><p id="result-record" class="result-best"></p></div><p id="result-note" class="result-note"></p><button type="button" id="again-btn" class="primary-btn">한 판 더</button><div class="button-pair"><button type="button" id="share-btn" class="secondary-btn">결과 공유</button><button type="button" id="result-home-btn" class="secondary-btn">처음으로</button></div><aside class="ad-slot" aria-label="광고"></aside></main>
+<script src="../common/core.js"></script><script src="../common/thumbs.js"></script><script src="../common/start.js"></script><script src="../common/fx.js"></script><script src="js/logic.js"></script><script src="js/ai.js"></script><script src="js/ui.js"></script></body></html>
