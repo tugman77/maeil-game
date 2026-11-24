@@ -50,15 +50,14 @@
   function cardButton(card, location, isSelected = false) {
     const el = document.createElement('button'); el.type = 'button'; el.className = 'playing-card';
     el.classList.toggle('red-card', G.red(card)); el.classList.toggle('selected', isSelected); el.disabled = paused;
-    const corner = document.createElement('span'); corner.className = 'card-corner'; corner.textContent = G.cardText(card);
-    const mark = document.createElement('span'); mark.className = 'card-mark'; mark.textContent = G.SUITS[G.suit(card)]; mark.setAttribute('aria-hidden', 'true');
-    el.append(corner, mark); el.setAttribute('aria-label', `${location.type === 'free' ? `프리셀 ${location.index+1}` : `${location.index+1}번 줄 ${location.start+1}번째`}, ${G.cardName(card)}${isSelected ? ', 선택됨' : ''}`);
+    MaeilCardTable.face(el, {rank:G.rankText(card),suit:G.SUITS[G.suit(card)]});
+    el.setAttribute('aria-label', `${location.type === 'free' ? `프리셀 ${location.index+1}` : `${location.index+1}번 줄 ${location.start+1}번째`}, ${G.cardName(card)}${isSelected ? ', 선택됨' : ''}`);
     el.setAttribute('aria-pressed', String(isSelected)); el.dataset.point = pointKey(location);
     el.addEventListener('click', () => choose(location)); buttons.set(pointKey(location), el);
     return el;
   }
   function emptyButton(text, location) {
-    const el = document.createElement('button'); el.type = 'button'; el.className = 'empty-card'; el.textContent = text; el.disabled = paused;
+    const el = document.createElement('button'); el.type = 'button'; el.className = 'empty-card'; MaeilCardTable.slot(el, location.type==='column' ? '빈 줄' : '보관'); el.disabled = paused;
     el.setAttribute('aria-label', `${location.type === 'free' ? '빈 프리셀' : '빈 줄'} ${location.index+1}`);
     el.addEventListener('click', () => choose(location)); buttons.set(pointKey(location), el); return el;
   }
@@ -77,7 +76,8 @@
     const foundations = game.foundations.map((value, index) => {
       const el = document.createElement('button'); el.type = 'button'; el.className = 'foundation'; el.disabled = paused;
       el.classList.toggle('red-card', index % 2 === 1); el.classList.toggle('destination', Boolean(destination({ type:'foundation', index })));
-      el.textContent = value ? G.cardText(index * 13 + value - 1) : `${G.SUITS[index]} A`;
+      if(value) { el.classList.toggle('playing-card',true); MaeilCardTable.face(el,{rank:G.rankText(index*13+value-1),suit:G.SUITS[index]}); }
+      else { el.classList.toggle('empty-card',true); MaeilCardTable.slot(el,'A부터',G.SUITS[index]); }
       el.setAttribute('aria-label', `${G.SUIT_NAMES[index]} 완성 칸, ${value ? `${value}장 정리` : 'A부터 시작'}${destination({ type:'foundation', index }) ? ', 이동 가능' : ''}`);
       el.addEventListener('click', () => choose({ type: 'foundation', index }));
       buttons.set(`foundation:${index}:`, el); return el;
@@ -252,8 +252,8 @@
   }
   cardPicker = MaeilCardTable.createPicker({ onPick:select, onOpen:()=>{$('game-screen').inert=true;}, onClose:()=>{$('game-screen').inert=false;} });
   window.addEventListener('resize',()=>{if(game&&!finished)MaeilCardTable.fit($('tableau'),8,Math.max(...game.columns.map(c=>c.length)));});
-  if(typeof ResizeObserver==='function')new ResizeObserver(()=>{if(game&&!finished)MaeilCardTable.fit($('tableau'),8,Math.max(...game.columns.map(c=>c.length)));}).observe($('tableau'));
-  M.bindSettingButtons();
+  if(typeof ResizeObserver==='function')new ResizeObserver(()=>{if(game&&!finished)MaeilCardTable.fit($('tableau'),8,Math.max(...game.columns.map(c=>c.length)));}).observe($('tableau-viewport'));
+  M.bindSettingButtons(()=>{if(game&&!finished)render();});
   picker = MaeilStart.setup({ id: ID,
     difficulties: Object.entries(G.DIFFICULTIES).map(([key,c]) => ({ key, label: c.label, detail: c.detail })),
     bestText: (key) => recordOK(loadStats()[key]?.best) ? `내 최고 ${loadStats()[key].best.moves}수` : '',

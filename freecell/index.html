@@ -92,19 +92,21 @@
       </div>
       <p id="game-status" class="game-status" role="status" aria-live="polite" aria-atomic="true"></p>
 
-      <div class="top-area">
+      <p class="table-instruction">카드를 누르고 <strong>‘놓기’로 표시된 곳</strong>을 누르세요.<span>좁으면 판을 좌우로 밀어 보세요. 가로 화면에서는 더 넓게 볼 수 있어요.</span></p>
+      <div class="tableau-viewport" id="tableau-viewport" tabindex="0" role="region" aria-label="카드판 · 좌우와 위아래로 스크롤 가능">
+        <div id="card-layout" class="card-layout">
+          <div class="top-area">
         <section class="top-group" aria-labelledby="free-title">
           <h2 id="free-title">프리셀 · 한 칸에 한 장</h2>
           <div id="free-cells" class="cell-row" role="group" aria-labelledby="free-title"></div>
         </section>
         <section class="top-group" aria-labelledby="foundation-title">
-          <h2 id="foundation-title">완성 칸 · 같은 무늬 A부터 K까지</h2>
+          <h2 id="foundation-title">완성 칸 · 같은 무늬 A부터 K</h2>
           <div id="foundations" class="cell-row" role="group" aria-labelledby="foundation-title"></div>
         </section>
       </div>
-      <p class="table-instruction">카드를 누르고 <strong>‘놓기’로 표시된 곳</strong>을 누르세요.<span>좁으면 판을 좌우로 밀어 보세요. 가로 화면에서는 더 넓게 볼 수 있어요.</span></p>
-      <div class="tableau-viewport" id="tableau-viewport" tabindex="0" role="region" aria-label="카드판 · 좌우와 위아래로 스크롤 가능">
-        <div id="tableau" class="tableau" role="group" aria-label="직접 누르는 카드판"></div>
+          <div id="tableau" class="tableau" role="group" aria-label="직접 누르는 카드판"></div>
+        </div>
       </div>
       <details class="column-zoom">
         <summary>카드가 잘 안 보이나요? 줄 확대</summary>
@@ -117,7 +119,7 @@
               <details class="table-settings"><summary>설정·도움말</summary>
           <p id="game-label" class="game-label"></p><p id="deal-info" class="deal-info"></p>
           <p id="foundation-count"></p><p id="help-counts" class="help-counts"></p>
-          <p>전체 배치를 살핀 뒤 줄 버튼을 눌러 크게 선택하세요. 가로 화면을 권장해요.</p>
+          <p>카드를 누른 뒤 목적지 카드나 놓기를 누르세요. 위쪽 보관 칸에는 한 장씩 놓을 수 있어요.</p>
           <div class="bottom-tools">
         <button type="button" id="restart-btn" class="header-btn">처음 배치</button>
         <button type="button" class="option-btn large-text-toggle" aria-pressed="false">큰 글씨</button>

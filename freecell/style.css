@@ -1,4 +1,1 @@
-/* 공통 카드판은 ../common/card-table.css를 사용한다. */
-.top-area { grid-template-columns: repeat(2,minmax(0,1fr)); }
-@media (max-width:480px) { .top-area { grid-template-columns:1fr; } }
-@media (orientation:landscape) { .top-area { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+/* 8열: 보관 칸 4개와 완성 칸 4개를 아래 카드 줄에 맞춘다. */

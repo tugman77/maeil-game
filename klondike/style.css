@@ -1,9 +1,7 @@
-/* 공통 카드판은 ../common/card-table.css를 사용한다. */
-.top-area { grid-template-columns:minmax(100px,2fr) minmax(192px,4fr);gap:8px; }
-.stock-row { grid-template-columns:repeat(2,minmax(44px,1fr)); }
-.stock-button { white-space:pre-line;font-size:14px;line-height:1.2; }
-.card-back { background:repeating-linear-gradient(45deg,#385b81,#385b81 4px,#466b94 4px,#466b94 8px);border-color:#28486e; }
+/* 7열: 덱·뽑은 카드·빈 간격·완성 칸 4개. 모든 칸은 공통 카드 규격. */
+.stock-row { grid-template-columns:repeat(2,var(--card-width)); }
+.top-group:first-child { grid-column:1 / span 2; }
+.foundation-group { grid-column:4 / span 4; }
+.stock-button { font-size:32px; }
 .tableau .card-back + .playing-card { margin-top:calc(16px - var(--card-height)); }
 @media (min-width:600px) { .column-buttons { grid-template-columns:repeat(7,minmax(44px,1fr)); } }
-
-:root.large-text .stock-row .card-corner { font-size:20px; }
