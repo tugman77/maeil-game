@@ -1,0 +1,47 @@
+.game-header,.play-area,.game-label { width:min(100%,440px); }
+.game-header { gap:6px; }
+.header-stats { gap:5px; }
+.stat-box { min-width:58px;padding:3px 6px; }
+.stat-box small { font-size:14px; }
+.game-label { margin:0;text-align:center; }
+.play-area { display:flex;flex-direction:column;gap:10px; }
+.question-card { background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px; }
+.category { margin:0 0 8px;color:var(--primary);font-size:15px;font-weight:700;text-align:center; }
+.initials { display:flex;justify-content:center;gap:8px; }
+.initials span { display:grid;place-items:center;width:52px;min-height:52px;border-radius:12px;background:var(--active);color:var(--text);font-size:34px;font-weight:800;line-height:1; }
+.question-text { margin:12px 0 6px;font-size:18px;font-weight:650;line-height:1.5;text-align:center;word-break:keep-all;overflow-wrap:anywhere; }
+.hint-info { margin:0 0 10px;font-size:15px;color:var(--muted);line-height:1.5;text-align:center; }
+.answer-slots { display:flex;justify-content:center;gap:8px; }
+.answer-slot { width:52px;min-height:52px;padding:4px;background:var(--bg);border:2px solid var(--primary);border-radius:10px;font-size:27px;font-weight:750;line-height:1; }
+.answer-slot:disabled { cursor:default; }
+.game-status { min-height:2.7em;margin:8px 0;font-size:16px;line-height:1.35;text-align:center;color:var(--text); }
+.tile-bank { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px; }
+.letter-tile { min-height:50px;min-width:0;padding:5px;border:1px solid var(--button-border);border-radius:10px;background:var(--button);color:var(--text);font-size:26px;font-weight:750;touch-action:manipulation; }
+.letter-tile:active:not(:disabled) { background:var(--active);border-color:var(--primary); }
+.letter-tile:disabled { opacity:.35;cursor:default; }
+.letter-tile[aria-pressed="true"] { background:var(--active);border-style:dashed; }
+.helper-row { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:10px; }
+.helper-row .header-btn { min-width:0;min-height:46px;padding:5px 2px;font-size:15px; }
+.submit-btn { width:100%;margin-top:10px; }
+.submit-btn:disabled { opacity:.45;cursor:default; }
+.answer-panel { margin-top:12px;padding:12px;border:2px solid var(--primary);border-radius:12px;text-align:center; }
+.answer-panel h2 { margin:0;font-size:20px; }
+.shown-answer { margin:8px 0;font-size:27px;font-weight:800; }
+.answer-panel p:not(.shown-answer) { font-size:16px; }
+.answer-panel .primary-btn { width:100%; }
+.question-counts { margin:10px 0 0;text-align:center;color:var(--muted);font-size:14px; }
+.keyboard-mode { padding:0 12px;background:var(--surface);border:1px solid var(--line);border-radius:12px; }
+.keyboard-mode summary { min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--primary);font-size:16px;font-weight:600; }
+.keyboard-mode label,.keyboard-mode p { display:block;font-size:14px;color:var(--muted);margin:8px 0; }
+.keyboard-mode input { width:100%;min-height:52px;padding:8px 10px;border:2px solid var(--primary);border-radius:9px;background:var(--button);color:var(--text);font:inherit;font-size:22px; }
+.relax-note,.record-note { margin:0;color:var(--muted);font-size:14px;text-align:center; }
+.in-game-settings { display:flex;justify-content:center;flex-wrap:wrap;gap:8px; }
+.in-game-settings a { display:inline-flex;align-items:center;min-height:44px;padding:6px 12px;color:var(--primary);font-size:16px; }
+.pause-overlay { position:fixed;inset:0;z-index:20;border-radius:0;padding:24px; }
+.review-list { padding:14px 14px 14px 36px;background:var(--surface);border:1px solid var(--line);border-radius:14px;font-size:16px;list-style:none; }
+.review-list li { padding:6px 0; }
+:root.large-text .letter-tile { min-height:56px;font-size:30px; }
+:root.large-text .question-text { font-size:21px; }
+:root.large-text .answer-slot { font-size:30px; }
+:root.large-text .initials span { font-size:38px; }
+:root.large-text .game-status,:root.large-text .hint-info { font-size:18px; }

@@ -156,3 +156,12 @@
 :root[data-theme="dark"] .th-run-grass { fill: #3d5a34; }
 :root[data-theme="dark"] .th-run-dash { stroke: #5d4a35; }
 :root[data-theme="dark"] .th-run-fence { fill: #d9c39a; }
+
+/* 초성 퀴즈 */
+.thumb-initial-quiz { background:#ddebf6; }
+.th-iq-base { fill:#35648d; }
+.th-iq-tile { fill:#fff; }
+.th-iq-text,.th-iq-small { text-anchor:middle;fill:#15344d;font-family:inherit;font-weight:800;font-size:30px; }
+.th-iq-small { font-size:18px; }
+:root[data-theme="dark"] .thumb-initial-quiz { background:#22354a; }
+:root[data-theme="dark"] .th-iq-base { fill:#406e95; }

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="초성을 보고 친숙한 생활 낱말을 맞히는 무료 퀴즈. 글자 버튼·힌트·이어하기와 오늘의 5문제를 즐겨 보세요.">
+  <meta name="theme-color" content="#f5f3ee">
+  <meta property="og:title" content="초성 퀴즈 — 매일게임">
+  <meta property="og:description" content="초성과 뜻을 보고 글자 버튼으로 낱말을 맞혀 보세요. 매일 같은 5문제로 도전!">
+  <meta property="og:type" content="website">
+  <title>초성 퀴즈 — 매일게임</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e6b48'/%3E%3Ctext x='32' y='45' text-anchor='middle' fill='white' font-size='40'%3Eㄱ%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../common/base.css">
+  <link rel="stylesheet" href="../common/game.css">
+  <link rel="stylesheet" href="../common/thumbs.css">
+  <link rel="stylesheet" href="../common/start.css">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || localStorage.getItem('maeil-sudoku.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- 시작 화면 (공통 구조: common/start.css · start.js, tools/start_screen.py로 생성) -->
+  <main id="start-screen" class="st">
+    <a href="../" class="st-back">← 게임 목록</a>
+    <header>
+      <h1 class="st-title">초성 퀴즈</h1>
+      <p class="st-desc">초성과 뜻을 보고 글자 버튼을 눌러 생활 낱말을 맞혀 보세요.</p>
+    </header>
+    <!-- 대표 카드: 큰 그림 + 오늘의 도전 띠. 오늘의 도전을 끝낸 날엔 띠가 '게임 시작' 아래(#daily-done-slot)로 작게 내려간다 -->
+    <div class="st-hero thumb-initial-quiz" id="hero">
+      <div class="st-preview" id="preview" aria-hidden="true"></div>
+      <button type="button" id="daily-btn" class="st-daily">
+        <span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span>
+        <span class="st-daily-go" id="daily-go">도전하기 →</span>
+      </button>
+    </div>
+
+    <div class="st-ask" id="sound-ask" hidden>
+      <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>효과음을 켤까요?</span>
+      <button type="button" id="sound-yes" class="st-ask-yes">켜기</button>
+      <button type="button" id="sound-no" class="st-ask-no">괜찮아요</button>
+    </div>
+
+    <div id="continue-wrap" hidden>
+      <button type="button" id="continue-btn" class="st-continue">▶ 이어하기<small id="continue-info"></small></button>
+      <p class="st-note">새 게임을 시작하면 하던 게임은 사라져요</p>
+    </div>
+
+    <section class="st-pick" aria-labelledby="pick-label">
+      <h2 class="st-label" id="pick-label">난이도</h2>
+      <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
+      <p class="st-detail" id="pick-detail"></p>
+      <button type="button" id="start-btn" class="st-start">게임 시작</button>
+      <p class="st-best"><span id="pick-best"></span></p>
+    </section>
+
+    <div id="daily-done-slot"></div>
+
+    <div class="st-tools">
+      <button type="button" class="st-tool large-text-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 5h1.6l5 13M6 13.5h7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 18v-5.2M14 12.8h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>큰 글씨</button>
+      <button type="button" class="st-tool dark-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>어두운 화면</button>
+      <button type="button" class="st-tool sound-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>소리</button>
+      <a class="st-tool" href="../guide/initial-quiz.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16.9" r="1.2" fill="currentColor"/></svg>도움말</a>
+    </div>
+
+    <!-- 광고 자리: 비어 있으면 화면에 보이지 않습니다. 게임 화면에는 두지 않습니다. -->
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+  <main id="game-screen" class="screen game-screen" hidden>
+    <header class="game-header">
+      <button type="button" id="home-btn" class="header-btn">처음</button>
+      <div class="header-stats">
+        <div class="stat-box"><small>문제</small><b id="question-number">1/5</b></div>
+        <div class="stat-box"><small>직접 맞힘</small><b id="correct-count">0</b></div>
+      </div>
+      <button type="button" id="pause-btn" class="header-btn">일시정지</button>
+    </header>
+    <p id="game-label" class="game-label"></p>
+    <div id="play-area" class="play-area">
+      <section class="question-card" aria-label="초성 문제">
+        <p id="category" class="category"></p>
+        <div id="initials" class="initials" role="group" aria-label="초성"></div>
+        <p id="question-text" class="question-text" tabindex="-1"></p>
+        <p id="hint-info" class="hint-info" role="status" aria-live="polite"></p>
+        <div id="answer-slots" class="answer-slots" role="group" aria-label="만든 답 · 누르면 글자 지우기"></div>
+        <p id="game-status" class="game-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div id="tile-bank" class="tile-bank" role="group" aria-label="글자 고르기"></div>
+        <div class="helper-row">
+          <button type="button" id="erase-btn" class="header-btn">지우기</button>
+          <button type="button" id="undo-btn" class="header-btn">되돌리기</button>
+          <button type="button" id="hint-btn" class="header-btn">힌트</button>
+          <button type="button" id="reveal-btn" class="header-btn">정답 보기</button>
+        </div>
+        <button type="button" id="submit-btn" class="primary-btn submit-btn">정답 확인</button>
+        <section id="answer-panel" class="answer-panel" hidden aria-label="이번 문제 정답">
+          <h2 id="answer-title"></h2><p id="shown-answer" class="shown-answer"></p><p id="answer-note"></p>
+          <button type="button" id="next-btn" class="primary-btn">다음 문제</button>
+        </section>
+        <p id="question-counts" class="question-counts"></p>
+      </section>
+      <details id="keyboard-mode" class="keyboard-mode">
+        <summary>키보드로 직접 입력하기</summary>
+        <label for="keyboard-answer">정답 입력 · 띄어쓰기는 무시해요</label>
+        <input id="keyboard-answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="정답을 입력하세요">
+        <p>입력 후 위의 정답 확인을 누르세요.</p>
+      </details>
+      <p class="relax-note">시간 제한이 없어요. 막히면 힌트나 정답 보기를 눌러도 좋아요.</p>
+      <div class="in-game-settings">
+        <button type="button" class="option-btn large-text-toggle" aria-pressed="false">큰 글씨</button>
+        <button type="button" class="option-btn dark-toggle" aria-pressed="false">어두운 화면</button>
+        <a href="../guide/initial-quiz.html">하는 법</a>
+      </div>
+    </div>
+    <div id="pause-overlay" class="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
+      <p id="pause-title" class="pause-title">잠깐 쉬어 가세요</p>
+      <button type="button" id="resume-btn" class="primary-btn">계속하기</button>
+    </div>
+  </main>
+  <main id="result-screen" class="screen result-screen" hidden>
+    <h1 id="result-title" class="result-title"></h1><p id="result-sub" class="result-sub"></p>
+    <section class="result-card"><p class="result-label">직접 맞힌 문제</p><p id="result-score" class="result-big"></p><p id="result-detail" class="result-detail"></p><p id="result-best" class="result-best"></p></section>
+    <ol id="review-list" class="review-list" aria-label="이번 문제 돌아보기"></ol>
+    <button type="button" id="again-btn" class="primary-btn">새 문제 5개</button>
+    <div class="button-pair"><button type="button" id="share-btn" class="secondary-btn">결과 공유</button><button type="button" id="result-home-btn" class="secondary-btn">처음으로</button></div>
+    <p class="record-note">최고 기록은 직접 맞힌 수, 힌트, 다른 답 확인 횟수 순이에요. 시간으로 순위를 가르지 않아요.</p>
+    <aside class="ad-slot" aria-label="광고"></aside>
+  </main>
+  <script src="../common/core.js"></script>
+  <script src="../common/thumbs.js"></script>
+  <script src="../common/start.js"></script>
+  <script src="../common/fx.js"></script>
+  <script src="js/words.js"></script>
+  <script src="js/logic.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

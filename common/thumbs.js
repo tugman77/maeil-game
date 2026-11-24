@@ -196,7 +196,10 @@ const GameThumbs = (() => {
     for(let i=0;i<5;i++){const x=24+i*23,y=62-i*3;body+=`<rect x="${x}" y="${y}" width="20" height="30" rx="3" fill="#fffef8" stroke="#d1d6cd"/><text x="${x+10}" y="${y+20}" text-anchor="middle" font-size="15" font-weight="700" fill="${i%2?'#b52733':'#20342a'}">${['K','Q','J','10','9'][i]}</text>`;}
     return svg(body+'<rect x="96" y="18" width="25" height="33" rx="4" fill="#fffef8"/><text x="108" y="41" text-anchor="middle" font-size="20" fill="#b52733">A</text>');
   }
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike };
+  function initialQuiz() {
+    return svg('<rect x="15" y="9" width="130" height="102" rx="14" class="th-iq-base"/>'+['ㄱ','ㅂ'].map((c,i)=>`<rect x="${34+i*48}" y="22" width="42" height="44" rx="9" class="th-iq-tile"/><text x="${55+i*48}" y="54" class="th-iq-text">${c}</text>`).join('')+['김','밥','꽃','산'].map((c,i)=>`<rect x="${24+i*29}" y="77" width="25" height="24" rx="5" class="th-iq-tile"/><text x="${36.5+i*29}" y="95" class="th-iq-small">${c}</text>`).join(''));
+  }
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

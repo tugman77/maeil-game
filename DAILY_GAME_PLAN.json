@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -11,7 +11,7 @@
     "schedule_registration_status": "not_requested",
     "schedule_id": null,
     "schedule_note": "자동 예약 없이 사용자가 직접 제작 지시를 할 때만 진행한다.",
-    "audience": "40대 이상이 간편하게 조작하면서 전략 보드게임도 즐기는 이용자",
+    "audience": "40대 이상이 두루 즐길 수 있는 친숙한 내용과 간단한 조작, 큰 글씨·선명한 대비를 갖춘 게임",
     "quality_rule": "완성·검사가 끝난 게임만 공개. 어려운 게임은 여러 날에 걸쳐 완성할 수 있으며 미완성 게임으로 일일 목표를 채우지 않는다.",
     "selection_priority": [
       "한국 40~60대에게 익숙한 게임 스타일",
@@ -20,7 +20,8 @@
     ],
     "parallel_new_game_limit": 1,
     "feedback_rule": "매 게임 완성 후 플레이 주소와 검사 결과를 보고한다. 사용자가 주는 피드백은 다음 작업 시작 시 확인해 기존 게임 수정과 다음 게임 제작에 반영한다. 사용자에게 게임별 별도 승인을 반복 요구하지 않는다.",
-    "execution_mode": "user_requested"
+    "execution_mode": "user_requested",
+    "handling_rule": "이후 모든 게임은 휴대폰에서 적은 단계로 시작·진행하고, 큰 터치 버튼·명확한 선택 표시·도움말·가능한 되돌리기와 이어하기를 제공한다. 복잡한 메뉴·정밀 드래그·반복 입력을 줄인다."
   },
   "completed": [
     {
@@ -70,7 +71,7 @@
     {
       "id": "initial-quiz",
       "name": "초성 퀴즈",
-      "status": "pending",
+      "status": "ready_to_publish",
       "note": "검수한 문제은행과 힌트, 복수 정답 처리를 마련한다."
     },
     {
@@ -343,6 +344,16 @@
       "verification_limit": "브라우저 창 전환 충돌로 실제 모바일 화면 검수 미완료",
       "commit": "777e3dfa3b7c0c845ce724aefc56c91f820f6062",
       "deployment_run": 45385381633
+    },
+    {
+      "game": "initial-quiz",
+      "status": "verified_pending_deploy",
+      "requested_on": "2026-11-24",
+      "trigger": "user_requested",
+      "base_commit": "593b6e7b2f6ee818bc91182bfb5a5cb5e3b34d72",
+      "note": "40대 이상이 두루 즐길 내용·큰 글씨·간단한 터치 조작을 이후 모든 게임에도 적용하라는 사용자 요청 포함.",
+      "tests": "초성 퀴즈 21개, 전체 190개 검사 통과. 문제 90개와 모든 복수 정답을 버튼으로 완성·365일 날짜별 재현 검사.",
+      "verification_limit": "브라우저 호스트 미연결로 실제 모바일·PC 화면 검수 미완료"
     }
   ]
 }
