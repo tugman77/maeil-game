@@ -85,7 +85,7 @@ module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash
     MaeilFx: { play() {}, pulse() {}, buzz() {}, countUp() {}, celebrate() {} },
   });
   vm.runInContext(`Date.now = () => ${Date.parse('2026-11-23T03:00:00Z')}`, context);
-  const engine=id==='sudoku'?['sudoku/js/generator.js','sudoku/js/game.js','sudoku/js/storage.js']:['janggi','go'].includes(id)?[`${id}/js/logic.js`,`${id}/js/ai.js`]:[`${id}/js/logic.js`];
+  const engine=id==='sudoku'?['sudoku/js/generator.js','sudoku/js/game.js','sudoku/js/storage.js']:id==='gostop'?[`${id}/js/logic.js`,`${id}/js/ai.js`,`${id}/js/art.js`]:['janggi','go'].includes(id)?[`${id}/js/logic.js`,`${id}/js/ai.js`]:[`${id}/js/logic.js`];
   for (const file of ['common/core.js', 'common/start.js', ...scripts, ...engine, `${id}/js/ui.js`]) {
     vm.runInContext(fs.readFileSync(path.join(ROOT,file),'utf8'),context,{ filename:file });
   }

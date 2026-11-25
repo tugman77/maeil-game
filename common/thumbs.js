@@ -213,7 +213,10 @@ const GameThumbs = (() => {
     for(const [x,y,white] of [[69,49,false],[80,49,true],[80,60,false],[91,49,false],[69,60,true],[91,60,true],[80,71,true]])b+=`<circle cx="${x}" cy="${y}" r="5.2" class="${white?'th-go-white':'th-go-black'}"/>`;
     return svg(b);
   }
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, janggi, go };
+  function gostop() {
+    return svg('<rect x="12" y="10" width="136" height="100" rx="16" fill="#275a43"/>'+[[28,25,1],[64,16,8],[100,27,3]].map(([x,y,m],i)=>`<g transform="translate(${x} ${y})"><rect width="33" height="63" rx="4" fill="#fffaf0" stroke="#243a30" stroke-width="2"/><text x="5" y="16" style="text-anchor:start" font-size="13" font-weight="800" fill="#243a30">${m}월</text>${i===1?'<circle cx="17" cy="31" r="10" fill="#e6b74c"/>':'<path d="M5 45 17 25 28 46" fill="none" stroke="#39714f" stroke-width="4"/>'}<rect x="3" y="48" width="27" height="12" rx="2" fill="#a13442"/><text x="16" y="58" text-anchor="middle" font-size="10" fill="white">광</text></g>`).join(''));
+  }
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, janggi, go, gostop };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

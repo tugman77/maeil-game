@@ -182,3 +182,6 @@
 .th-go-black { fill:#1e242d;stroke:#090d14;stroke-width:1; }
 .th-go-white { fill:#fff;stroke:#555b61;stroke-width:1; }
 :root[data-theme="dark"] .thumb-go { background:#35392c; }
+
+.thumb-gostop { background: #dcebe1; }
+[data-theme="dark"] .thumb-gostop { background: #233f32; }
