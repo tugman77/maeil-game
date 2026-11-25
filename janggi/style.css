@@ -83,3 +83,32 @@
 .outcome-card { width: min(100%, 440px); max-height: 90dvh; overflow: auto; padding: 24px; border-radius: 16px; background: var(--bg); color: var(--text); text-align: center; }
 .outcome-card h2 { font-size: 1.4rem; line-height: 1.5; }
 .outcome-card button { display: block; width: 100%; min-height: 54px; margin-top: 16px; font-size: 1.15rem; }
+
+/* Same yellow attack / blue blocked-square language as the omok result board. */
+.attack-lines { position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;overflow:visible; }
+.attack-lines polyline { fill:none;stroke:#ffe34d;stroke-width:14;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 1px #342900); }
+.attack-lines polygon { fill:#ffe34d;stroke:#342900;stroke-width:3; }
+.intersection-grid { z-index:3; }
+.explain-attacker { box-shadow:inset 0 0 0 4px #ffe34d;outline:2px solid #342900;outline-offset:-2px; }
+.explain-attacker .piece { background:#342900;filter:drop-shadow(0 0 2px #342900); }
+.explain-attacker .piece-face { background:#ffe34d; }
+.explain-king { outline:4px solid #bd1034;outline-offset:-4px;background:#ffd4dc80; }
+.point-mark { position:absolute;right:0;bottom:0;z-index:4;display:grid;place-items:center;min-width:20px;min-height:20px;padding:1px;border:2px solid #003e91;border-radius:4px;background:#f1f8ff;color:#003e91;font:850 18px/1 sans-serif;pointer-events:none; }
+.escape-own { box-shadow:inset 0 0 0 3px #003e91; }
+.escape-attack,.escape-facing { box-shadow:inset 0 0 0 3px #003e91;background:#d9ecff70; }
+.move-number { background:#fff9b0;color:#342900;border-color:#342900; }
+.board-legend,.replay-controls,.result-reason { margin:0;text-align:center;font-size:1.1rem;line-height:1.65; }
+.result-action,.replay-controls,.outcome-overlay { width:min(100%,520px); }
+.replay-controls > button { width:100%;margin-top:10px; }
+.replay-controls p { margin:0 0 10px;font-weight:700; }
+.replay-controls button,.result-action { min-height:54px;font-size:1.15rem; }
+.score-explanation { padding-bottom:12px;margin-bottom:12px;border-bottom:2px solid var(--line);font-size:1.05rem;line-height:1.6; }
+.score-explanation p { margin:8px 0; }
+.score-explanation h2 { font-size:1.15rem; }
+.outcome-overlay { position:static;display:block;padding:0;background:none; }
+.outcome-card { width:100%;max-height:none;padding:16px;border:2px solid var(--primary);background:var(--surface);line-height:1.6; }
+.outcome-notice { max-width:520px;font-size:1.15rem;line-height:1.6; }
+.outcome-notice,.outcome-card,.result-reason,.replay-controls,.score-explanation { word-break:keep-all;overflow-wrap:break-word; }
+/* All explanation marks are static, including with prefers-reduced-motion. */
+
+.explaining .tools,.explaining #move-detail,.explaining #board-help { display:none; }

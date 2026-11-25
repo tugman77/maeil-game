@@ -44,20 +44,20 @@ test('추천은 실행하지 않고 출발·도착을 표시, 잘못된 응답�
  const b=browser({hash:'#daily'}),before=b.get(GAME);b.click('hint-btn');b.advance(30);b.workers[0].reply({from:0,to:0});
  const after=b.get(GAME),move=G.matingMoves(after)[0];assert.deepEqual(after.board,before.board);assert.equal(after.hintsUsed,1);
  assert.ok(point(b,move.to).classList.contains('hint-to'));assert.equal(point(b,move.from).attributes['aria-selected'],'true');assert.equal(b.document.activeElement,point(b,move.from));
- point(b,move.to).fire('click');assert.equal(b.element('result-screen').hidden,false);
+ point(b,move.to).fire('click');b.click('view-result');assert.equal(b.element('result-screen').hidden,false);
 });
 test('한 수 외통 실패·무르기·정답·출석·통계는 한 번 기록',()=>{
  const b=browser({hash:'#daily'}),initial=b.get(GAME),correct=G.matingMoves(initial),wrong=G.legalMoves(initial).find(a=>!correct.some(m=>G.sameAction(a,m)));
  assert.ok(wrong);play(b,wrong);assert.equal(b.get(GAME).puzzleAttempted,true);assert.equal(b.workers.length,0);assert.match(b.element('game-status').textContent,/외통이 아니/);
- b.click('undo-btn');play(b,G.matingMoves(b.get(GAME))[0]);assert.equal(b.element('result-screen').hidden,false);assert.equal(b.get(GAME),null);assert.equal(b.get(STATS).daily.wins,1);
+ b.click('undo-btn');play(b,G.matingMoves(b.get(GAME))[0]);b.click('view-result');assert.equal(b.element('result-screen').hidden,false);assert.equal(b.get(GAME),null);assert.equal(b.get(STATS).daily.wins,1);
  assert.equal(b.get(DAILY).attempts,2);assert.ok(b.get('maeil-game.daily.v1').done['2026-11-23'].includes('janggi'));
  b.window.fire('pagehide');b.click('undo-btn');assert.equal(b.get(STATS).daily.played,1);b.click('again-btn');assert.deepEqual(b.get(GAME).board,initial.board);
 });
 test('두 번 한 수 쉼은 점수로 종료하고 기권은 재확인',()=>{
  const b=browser();b.click('start-btn');b.click('pass-btn');b.advance(260);b.workers[0].reply({pass:true});
- assert.equal(b.element('result-screen').hidden,false);assert.match(b.element('result-sub').textContent,/서로 한 수 쉼/);assert.equal(b.get(STATS).medium.wins,0);
+ b.click('view-result');assert.equal(b.element('result-screen').hidden,false);assert.match(b.element('result-sub').textContent,/서로 한 수 쉼/);assert.equal(b.get(STATS).medium.wins,0);
  const c=browser();c.click('start-btn');c.click('resign-btn');assert.equal(c.element('result-screen').hidden,true);c.advance(5100);assert.equal(c.element('resign-btn').textContent,'기권');
- c.click('resign-btn');c.click('resign-btn');assert.equal(c.element('result-screen').hidden,false);assert.equal(c.get(STATS).medium.played,1);
+ c.click('resign-btn');c.click('resign-btn');c.click('view-result');assert.equal(c.element('result-screen').hidden,false);assert.equal(c.get(STATS).medium.played,1);
 });
 test('한자·판 확대·큰 글씨·화면 회전은 대국·선택을 바꾸지 않음',()=>{
  const b=browser();b.click('start-btn');point(b,54).fire('click');const before=b.get(GAME);
@@ -76,7 +76,7 @@ test('이전 날짜 완료는 최신 오늘 기록을 보존, 손상 저장 무�
  const old=G.create('medium',{daily:'2026-11-22'}),latest={date:'2026-11-23',hints:0,attempts:1,seconds:10};
  const b=browser({saved:{[GAME]:old,[DAILY]:latest}});b.click('continue-btn');play(b,G.matingMoves(old)[0]);assert.deepEqual(b.get(DAILY),latest);
  const bad=browser({saved:{[GAME]:{board:[]},[STATS]:'손상'}});assert.equal(bad.element('continue-wrap').hidden,true);bad.click('start-btn');assert.ok(G.isValid(bad.get(GAME)));
- const c=browser({blockedStorage:true,hash:'#daily'});play(c,G.matingMoves(G.create('medium',{daily:'2026-11-23'}))[0]);assert.equal(c.element('result-screen').hidden,false);
+ const c=browser({blockedStorage:true,hash:'#daily'});play(c,G.matingMoves(G.create('medium',{daily:'2026-11-23'}))[0]);c.click('view-result');assert.equal(c.element('result-screen').hidden,false);
 });
 test('잡힌 말: 한·초 분리, 한글 전환·저장 이어하기·무르기와 일치',()=>{
  const p=G.create();[{from:54,to:45},{from:27,to:36},{from:45,to:36}].forEach(a=>assert.ok(G.move(p,a)));

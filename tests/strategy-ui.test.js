@@ -13,12 +13,12 @@ function savedOmok(pairs,turn=2){
 const four=[3,4,5,6].map(x=>[x,6,1]);
 test('장기 Worker의 확정 보고: 컴퓨터 기권·승리 기록은 한 번',()=>{
  const b=dom('janggi');b.click('start-btn');const w=jplay(b);respond(w,jreport(w,1));
- assert.equal(b.element('result-screen').hidden,false);assert.match(b.element('result-sub').textContent,/컴퓨터 기권.*2수 안에 외통/);
+ assert.equal(b.element('result-screen').hidden,true);b.click('view-result');assert.equal(b.element('result-screen').hidden,false);assert.match(b.element('result-sub').textContent,/컴퓨터 기권.*2수 안에 외통/);
  assert.equal(b.get(JS).medium.wins,1);assert.equal(b.get(JK),null);respond(w,jreport(w,1));assert.equal(b.get(JS).medium.played,1);
 });
 test('장기 패배 확정은 선택을 기다림·계속은 한 번만·저장/복원/무르기 보존',()=>{
  const b=dom('janggi');b.click('start-btn');let w=jplay(b);respond(w,jreport(w,-1));
- assert.equal(b.element('outcome-overlay').hidden,false);assert.equal(b.element('play-area').inert,true);assert.equal(b.get(JS),null);
+ assert.equal(b.element('outcome-overlay').hidden,false);assert.equal(b.element('play-area').inert,false);assert.equal(point(b,76).disabled,true);assert.equal(b.get(JS),null);
  b.click('outcome-continue');assert.equal(b.get(JK).continueDecided,true);b.advance(140);w=b.workers.at(-1);respond(w,jreport(w,-1));
  assert.equal(b.element('outcome-overlay').hidden,true);assert.equal(b.get(JK).actions.length,2);
  const saved=b.get(JK),c=dom('janggi',{saved:{[JK]:saved}});c.click('continue-btn');c.advance(30);w=c.workers.at(-1);respond(w,jreport(w,-1));assert.equal(c.element('outcome-overlay').hidden,true);
@@ -31,7 +31,7 @@ test('장기 기권하고 새 판: 패배 기록·초기 포진·늦은 응답 �
 });
 test('장기 옛 저장본의 누락 외통은 이어하기 직후 종료·오늘의 문제는 확인창 없음',()=>{
  const s=J.create('medium',{daily:'2026-11-25'});J.move(s,J.matingMoves(s)[0]);s.over=false;s.winner=0;s.reason='';
- const b=dom('janggi',{saved:{[JK]:s}});b.click('continue-btn');assert.equal(b.element('result-screen').hidden,false);assert.equal(b.workers.length,0);assert.equal(b.element('outcome-overlay').hidden,true);
+ const b=dom('janggi',{saved:{[JK]:s}});b.click('continue-btn');assert.equal(b.element('result-screen').hidden,true);b.click('view-result');assert.equal(b.element('result-screen').hidden,false);assert.equal(b.workers.length,0);assert.equal(b.element('outcome-overlay').hidden,true);
 });
 test('오목 실제 열린4 증명으로 컴퓨터가 기권·오늘 도전 출석·기록 한 번',()=>{
  const s=savedOmok(four);s.daily='2026-11-23';const b=dom('omok',{saved:{[OK]:s}});b.click('continue-btn');b.advance(140);
@@ -69,6 +69,6 @@ test('장기 실제 대국의 20점 차이 6차례 저장을 재생해 컴퓨터
  const actions=[{from:62,to:61},{from:0,to:18},{from:89,to:35},{from:7,to:24},{from:35,to:8},{from:25,to:22},{from:8,to:6},{from:29,to:28},{from:6,to:24},{from:13,to:21},{from:24,to:22},{from:21,to:12},{from:22,to:19},{from:31,to:32}];
  const s=J.create();for(const a of actions)assert.ok(J.move(s,a));assert.ok(J.isValid(s));assert.ok(s.leadCount>=6);
  const b=dom('janggi',{saved:{[JK]:s}});b.click('continue-btn');b.advance(30);respond(b.workers[0],{move:null,forced:null});
- assert.equal(b.element('result-screen').hidden,false);assert.match(b.element('result-sub').textContent,/컴퓨터 기권.*크게 유리/);assert.equal(b.get(JS).medium.wins,1);
+ assert.equal(b.element('result-screen').hidden,true);b.click('view-result');assert.equal(b.element('result-screen').hidden,false);assert.match(b.element('result-sub').textContent,/컴퓨터 기권.*크게 유리/);assert.equal(b.get(JS).medium.wins,1);
  const undone=J.restore(s);J.undo(undone);assert.ok(undone.leadCount<6);assert.equal(J.decision(undone,null),null);
 });

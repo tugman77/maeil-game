@@ -37,9 +37,9 @@ const JanggiAI = (() => {
       const value=a=>G.sameAction(a,preferred)?1e9:a.pass?-1e6:(G.VALUES[G.type(p.board[a.to])]||0)*10000-(G.VALUES[G.type(p.board[a.from])]||0)*10+(killers[ply]?.some(k=>G.sameAction(k,a))?5000:0);
       return actions.slice().sort((a,b)=>value(b)-value(a)||(a.from??99)-(b.from??99)||(a.to??99)-(b.to??99));
     }
-    let best=order(state,root,null,0)[0];
+    let best=order(state,root,null,0)[0],bestLine=[];
     function visit(){if(++nodes>budget||Date.now()>=deadline)throw STOP;}
-    function search(p,depth,alpha,beta,ply,qleft=state.difficulty==='easy'?0:4){
+    function search(p,depth,alpha,beta,ply,qleft=state.difficulty==='easy'?0:4,line={}){
       visit();
       if(p.over){const v=p.reason==='mate'?MATE:MATE-10000;return p.winner===p.turn?v-ply:-v+ply;}
       const checked=G.inCheck(p.board,p.turn);
@@ -48,35 +48,36 @@ const JanggiAI = (() => {
       // Full history in the key prevents repetition/bikjang/200-move aliasing.
       const key=depth>0?`${ply}/${p.passes}/${p.capturedAny}/${p.bikjang}/${p.ply}/${p.keys.join(';')}`:null;
       const cached=key&&table.get(key);
-      if(cached&&cached.depth>=depth){if(cached.flag==='exact')return cached.score;if(cached.flag==='lower')alpha=Math.max(alpha,cached.score);else beta=Math.min(beta,cached.score);if(alpha>=beta)return cached.score;}
+      if(cached&&cached.depth>=depth){if(cached.flag==='exact'){line.steps=cached.steps;return cached.score;}if(cached.flag==='lower')alpha=Math.max(alpha,cached.score);else beta=Math.min(beta,cached.score);if(alpha>=beta){line.steps=cached.steps;return cached.score;}}
       const originalAlpha=alpha;
       let value=-Infinity;
       if(depth<=0){
         if(qleft<=0)return evaluate(p)-(checked?90:0);
         if(!checked){value=evaluate(p);if(value>=beta)return value;alpha=Math.max(alpha,value);actions=actions.filter(a=>!a.pass&&p.board[a.to]);if(!actions.length)return value;}
       }
-      let choice=null;
+      let choice=null,steps=[];
       for(const action of order(p,actions,cached?.move,ply)){
-        const v=-search(G.advance(p,action),depth-1,-beta,-alpha,ply+1,depth<=0?qleft-1:qleft);
-        if(v>value){value=v;choice=action;}alpha=Math.max(alpha,v);
+        const child={};const v=-search(G.advance(p,action),depth-1,-beta,-alpha,ply+1,depth<=0?qleft-1:qleft,child);
+        if(v>value){value=v;choice=action;steps=[action,...(child.steps||[])];}alpha=Math.max(alpha,v);
         if(alpha>=beta){if(!action.pass&&!p.board[action.to])killers[ply]=[action,...(killers[ply]||[])].slice(0,2);break;}
       }
-      if(key&&table.size<40000)table.set(key,{depth,score:value,move:choice,flag:value<=originalAlpha?'upper':value>=beta?'lower':'exact'});
-      return value;
+      if(key&&table.size<40000)table.set(key,{depth,score:value,move:choice,steps,flag:value<=originalAlpha?'upper':value>=beta?'lower':'exact'});
+      line.steps=steps;return value;
     }
     for(let depth=1;depth<=maxDepth;depth++){
-      let choice=best,value=-Infinity,alpha=-Infinity;
+      let choice=best,value=-Infinity,alpha=-Infinity,line=[];
       try{
         for(const action of order(state,root,best,0)){
-          const v=-search(G.advance(state,action),depth-1,-Infinity,-alpha,1);
-          if(v>value){value=v;choice=action;}alpha=Math.max(alpha,v);
+          const child={};const v=-search(G.advance(state,action),depth-1,-Infinity,-alpha,1,undefined,child);
+          if(v>value){value=v;choice=action;line=[action,...(child.steps||[])];}alpha=Math.max(alpha,v);
         }
-        best=choice;score=value;completedDepth=depth;
+        best=choice;bestLine=line;score=value;completedDepth=depth;
         // Only completed iterations and mate terminals can produce a proof.
         if(Math.abs(score)>MATE-1000){forced={winner:score>0?state.turn:-state.turn,plies:MATE-Math.abs(score)};break;}
       }catch(e){if(e!==STOP)throw e;break;}
     }
-    const result={move:best,score,forced,nodes:Math.min(nodes,budget),depth:completedDepth,elapsedMs:Date.now()-started};
+    const proof=forced&&G.proofPositions(state,bestLine,forced.winner)?{steps:bestLine}:null;
+    const result={move:best,score,forced,proof,nodes:Math.min(nodes,budget),depth:completedDepth,elapsedMs:Date.now()-started};
     if(options.diagnostics)Object.assign(options.diagnostics,result);
     return result;
   }

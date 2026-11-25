@@ -170,6 +170,54 @@ const Janggi = (() => {
   }
   const reasonText={mate:'외통수',bikjang:'빅장 점수 판정',passes:'서로 한 수 쉼 · 점수 판정',repetition:'같은 판 네 번째 반복',limit:'200수 · 점수 판정',resign:'기권'};
   function matingMoves(p){return legalMoves(p).filter(a=>{const n=advance(p,a);return n.over&&n.reason==='mate'&&n.winner===p.turn;});}
-  return {COLS,ROWS,CELLS,CHO,HAN,K,A,R,C,H,E,P,VALUES,NAMES,DIFFICULTIES,FORMATIONS,PALACE_LINES,coord,side,type,palace,initialBoard,pseudoMoves,inCheck,facing,points,position,legalMoves,legalActions,canPass,isLegal,advance,adjudicate,restore,decision,create,move,canUndo,undo,resign,isValid,validBoard,sameAction,matingMoves,reasonText};
+  const sideName=s=>s===CHO?'초':'한';
+  const pieceTitle=v=>type(v)===P?(v>0?'졸':'병'):NAMES[type(v)];
+  function attackers(board,target,s){
+    return board.flatMap((v,i)=>side(v)===s&&pseudoMoves(board,i).includes(target)?[i]:[]);
+  }
+  // Follow the actual movement path: cannon screens and horse/elephant legs stay visible.
+  function attackPath(board,from,to){
+    const x=from%9,y=Math.floor(from/9),dx=to%9-x,dy=Math.floor(to/9)-y,sx=Math.sign(dx),sy=Math.sign(dy),t=type(board[from]);
+    if(t===H||t===E){
+      const horizontal=Math.abs(dx)>Math.abs(dy),leg=horizontal?at(x+sx,y):at(x,y+sy);
+      return t===H?[from,leg,to]:[from,leg,horizontal?at(x+2*sx,y+sy):at(x+sx,y+2*sy),to];
+    }
+    const n=Math.max(Math.abs(dx),Math.abs(dy));
+    return Array.from({length:n+1},(_,i)=>at(x+sx*i,y+sy*i));
+  }
+  function mateExplanation(p,s=p.turn){
+    const king=p.board.indexOf(s*K);if(king<0)return null;
+    const sources=attackers(p.board,king,-s);
+    const empty=Array(90).fill(0);empty[king]=s*K;
+    const escapes=pseudoMoves(empty,king).map(to=>{
+      if(side(p.board[to])===s)return {to,reason:'own',piece:p.board[to],attackers:[]};
+      const b=p.board.slice();b[king]=0;b[to]=s*K;
+      const guards=attackers(b,to,-s);
+      return {to,reason:guards.length?'attack':(!p.capturedAny&&facing(b)?'facing':'safe'),attackers:guards};
+    });
+    const mate=Boolean(sources.length&&!legalMoves({...p,turn:s,over:false}).length);
+    const names=[...new Set(sources.map(i=>pieceTitle(p.board[i])))].join('·');
+    return {king,side:s,attackers:sources,paths:sources.map(from=>attackPath(p.board,from,king)),escapes,mate,
+      text:mate?`${sideName(-s)}의 ${names}가 궁을 장군했고, 궁이 피할 곳이 없어요 — 외통으로 ${sideName(-s)} 승리`:'',
+      detail:mate?'장군을 막거나 공격한 말을 잡아 궁을 지킬 수도 없어요.':''};
+  }
+  function historyAt(s,count){
+    if(!Number.isInteger(count)||count<0||count>s.actions.length)return null;
+    return replay(s.initial,s.actions.slice(0,count),s.kind==='puzzle')?.p||null;
+  }
+  function proofPositions(p,steps,winner){
+    if(!Array.isArray(steps)||!steps.length||steps.length>32)return null;
+    const positions=[p];let n=p;
+    for(const a of steps){if(!isLegal(n,a))return null;n=advance(n,a);positions.push(n);}
+    return n.over&&n.reason==='mate'&&n.winner===winner?positions:null;
+  }
+  function resultExplanation(s){
+    const scores=points(s.board),difference=Math.abs(scores.cho-scores.han);
+    const scoreText=`남은 점수 · 초 ${scores.cho}점 / 한 ${scores.han}점 · ${difference}점 차이 (한 덤 1.5점 포함)`;
+    const mate=s.reason==='mate'?mateExplanation(s):null;
+    const reasons={bikjang:'두 궁이 마주본 빅장을 응수 뒤에도 풀지 않아 점수로 판정했어요.',passes:'양쪽이 연속으로 한 수씩 쉬어 남은 말 점수로 판정했어요.',limit:'기물 이동 200수가 되어 남은 말 점수로 판정했어요.',repetition:`차례까지 같은 판을 네 번째 만든 ${sideName(-s.winner)}의 반복 패배예요.`,resign:s.outcomeText||`${sideName(-s.winner)}가 기권했어요.`};
+    return {mate,text:mate?.text||reasons[s.reason]||'',detail:mate?.detail||'',scores,scoreText};
+  }
+  return {sideName,pieceTitle,attackers,attackPath,mateExplanation,historyAt,proofPositions,resultExplanation,COLS,ROWS,CELLS,CHO,HAN,K,A,R,C,H,E,P,VALUES,NAMES,DIFFICULTIES,FORMATIONS,PALACE_LINES,coord,side,type,palace,initialBoard,pseudoMoves,inCheck,facing,points,position,legalMoves,legalActions,canPass,isLegal,advance,adjudicate,restore,decision,create,move,canUndo,undo,resign,isValid,validBoard,sameAction,matingMoves,reasonText};
 })();
 if(typeof module!=='undefined')module.exports=Janggi;

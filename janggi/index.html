@@ -88,7 +88,23 @@
     <div id="play-area" class="play-area">
       <div class="board-scroll" id="board-scroll" tabindex="0" role="region" aria-label="장기판 · 확대하면 스크롤 가능">
         <div class="board-surface"><svg class="board-lines" viewBox="0 0 900 1000" preserveAspectRatio="none" aria-hidden="true"><line x1="50" y1="50" x2="50" y2="950"/><line x1="150" y1="50" x2="150" y2="950"/><line x1="250" y1="50" x2="250" y2="950"/><line x1="350" y1="50" x2="350" y2="950"/><line x1="450" y1="50" x2="450" y2="950"/><line x1="550" y1="50" x2="550" y2="950"/><line x1="650" y1="50" x2="650" y2="950"/><line x1="750" y1="50" x2="750" y2="950"/><line x1="850" y1="50" x2="850" y2="950"/><line x1="50" y1="50" x2="850" y2="50"/><line x1="50" y1="150" x2="850" y2="150"/><line x1="50" y1="250" x2="850" y2="250"/><line x1="50" y1="350" x2="850" y2="350"/><line x1="50" y1="450" x2="850" y2="450"/><line x1="50" y1="550" x2="850" y2="550"/><line x1="50" y1="650" x2="850" y2="650"/><line x1="50" y1="750" x2="850" y2="750"/><line x1="50" y1="850" x2="850" y2="850"/><line x1="50" y1="950" x2="850" y2="950"/><path d="M350 50 550 250 M550 50 350 250 M350 750 550 950 M550 750 350 950"/></svg>
+          <svg id="attack-lines" class="attack-lines" viewBox="0 0 900 1000" aria-hidden="true"></svg>
           <div id="board" class="intersection-grid" role="grid" aria-label="9줄 10행 장기판 · 말 선택 후 이동할 점 누르기"></div>
+        </div>
+      </div>
+      <p id="board-legend" class="board-legend" hidden>노랑 테두리·화살표: 공격 말과 길 · 붉은 테두리: 위험한 궁<br>파란 ×: 상대 말이 지켜요 · 파란 ■: 자기 말이 막아요</p>
+      <button type="button" id="view-result" class="primary-btn result-action" hidden>결과 보기</button>
+      <button type="button" id="view-proof" class="secondary-btn result-action" hidden>수순 보기</button>
+      <section id="replay-controls" class="replay-controls" aria-label="수순 재생" hidden>
+        <p id="replay-status" role="status" aria-live="polite"></p>
+        <div class="button-pair"><button type="button" id="replay-prev" class="secondary-btn">◀ 이전 수</button><button type="button" id="replay-next" class="primary-btn">다음 수 ▶</button></div>
+        <button type="button" id="replay-close" class="secondary-btn">판으로 돌아가기</button>
+      </section>
+      <div id="outcome-overlay" class="outcome-overlay" role="region" aria-labelledby="outcome-title" aria-describedby="outcome-detail" hidden>
+        <div class="outcome-card"><h2 id="outcome-title"></h2>
+          <p id="outcome-detail">계속 두기를 고르면 이번 판에서는 다시 묻지 않아요.</p>
+          <button type="button" id="outcome-new" class="primary-btn">기권하고 새 판</button>
+          <button type="button" id="outcome-continue" class="secondary-btn">계속 두기</button>
         </div>
       </div>
       <p id="move-detail" class="move-detail"></p>
@@ -99,6 +115,7 @@
       </div>
       <p id="board-help" class="board-help"></p>
       <aside id="captured-panel" class="captured-panel" aria-labelledby="captured-title">
+        <section id="score-explanation" class="score-explanation" hidden><h2>남은 말 점수</h2><p id="score-values"></p><p id="score-reason"></p><p id="escape-reasons"></p></section>
         <h2 id="captured-title">잡힌 말</h2>
         <div class="captured-groups">
           <section class="captured-group" aria-labelledby="captured-han-title">
@@ -131,17 +148,13 @@
       <p id="pause-title" class="pause-title">잠깐 쉬어 가세요</p>
       <button type="button" id="resume-btn" class="primary-btn">계속하기</button>
     </div>
-    <div id="outcome-overlay" class="outcome-overlay" role="dialog" aria-modal="true" aria-labelledby="outcome-title" aria-describedby="outcome-detail" hidden>
-      <div class="outcome-card"><h2 id="outcome-title"></h2>
-        <p id="outcome-detail">계속 두기를 고르면 이번 판에서는 다시 묻지 않아요.</p>
-        <button type="button" id="outcome-new" class="primary-btn">기권하고 새 판</button>
-        <button type="button" id="outcome-continue" class="secondary-btn">계속 두기</button>
-      </div>
-    </div>
+
   </main>
   <main id="result-screen" class="screen result-screen" hidden>
     <h1 id="result-title" class="result-title"></h1><p id="result-sub" class="result-sub"></p>
     <div class="result-card"><p class="result-label">남은 점수 · 초 : 한</p><p id="result-score" class="result-big"></p><p id="result-detail" class="result-detail"></p><p id="result-record" class="result-best"></p></div>
+    <p id="result-reason" class="result-reason"></p>
+    <div class="button-pair"><button type="button" id="review-board" class="secondary-btn">판 다시 보기</button><button type="button" id="review-game" class="secondary-btn">수순 다시 보기</button></div>
     <p id="result-note" class="result-note"></p>
     <button type="button" id="again-btn" class="primary-btn">한 판 더</button>
     <div class="button-pair"><button type="button" id="share-btn" class="secondary-btn">결과 공유</button><button type="button" id="result-home-btn" class="secondary-btn">처음으로</button></div>

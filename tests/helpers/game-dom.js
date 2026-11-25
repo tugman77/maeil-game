@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const ROOT = path.join(__dirname, '../..');
 
-module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash = '', search, workers = true, scripts = [] } = {}) {
+module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash = '', search, workers = true, scripts = [], beforeUI = '' } = {}) {
   const pool = [];
   class Element {
     constructor(tag = 'div') {
@@ -88,6 +88,7 @@ module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash
   vm.runInContext(`Date.now = () => ${Date.parse('2026-11-23T03:00:00Z')}`, context);
   const engine=id==='sudoku'?['sudoku/js/generator.js','sudoku/js/game.js','sudoku/js/storage.js']:id==='gostop'?[`${id}/js/logic.js`,`${id}/js/ai.js`,`${id}/js/art.js`]:['janggi','go'].includes(id)?[`${id}/js/logic.js`,`${id}/js/ai.js`]:[`${id}/js/logic.js`];
   for (const file of ['common/core.js', 'common/start.js', ...scripts, ...engine, `${id}/js/ui.js`]) {
+    if(file===`${id}/js/ui.js`&&beforeUI)vm.runInContext(beforeUI,context,{filename:'test-setup.js'});
     vm.runInContext(fs.readFileSync(path.join(ROOT,file),'utf8'),context,{ filename:file });
   }
   return {
