@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 19,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -92,15 +92,18 @@
       "commit": "a4f1f157b13a19850f7e6f3b8200e8dbc4682281",
       "url": "https://tugman77.github.io/maeil-game/go/",
       "deployment_run": 45492500525
-    }
-  ],
-  "backlog": [
+    },
     {
       "id": "gostop",
       "name": "맞고",
-      "status": "in_progress",
-      "note": "점수·특수 규칙과 컴퓨터 공정성을 검증하는 여러 날의 개발을 허용한다."
-    },
+      "completed_on": "2026-11-25",
+      "status": "published",
+      "commit": "f3bb233926bca2bc0ce49ece94b0f925c5176e31",
+      "url": "https://tugman77.github.io/maeil-game/gostop/",
+      "deployment_run": 45587243204
+    }
+  ],
+  "backlog": [
     {
       "id": "proverb-quiz",
       "name": "속담 완성",
@@ -399,16 +402,22 @@
     },
     {
       "game": "gostop",
-      "status": "verified_pending_deployment",
+      "status": "published",
       "requested_on": "2026-11-25",
       "trigger": "user_requested_via_claude_control_tower",
       "base_commit": "8177c72ab1fe2989ced801f1c5d39f3b2d05aa65",
       "note": "대표님 직접 지시. 전통 화투 48장·점수만·직접 그린 SVG. 완성 검증 전 공개 금지. 규칙/공정성 검사와 공통 연결 진행.",
-      "resume": "공개 직전 원격 재확인 후 최신 main을 부모로 커밋하고 Pages 배포 성공을 확인한다. 배포 전 completed 추가 금지. gostop/VERIFICATION.md 참조.",
+      "resume": "맞고 공개 완료. 다음 미완성 항목은 속담 완성. 사용자의 다음 제작 지시가 있을 때만 시작한다.",
       "verified_on": "2026-11-25",
       "tests": "맞고 전용 28개·전체 273개, 독립 짝 맞추기 256,272건·무작위/AI 3,000판 매 행동 48장 보존·1,095일 재현. 공통·기존 게임·스도쿠 별도 검사 통과.",
       "verification_limit": "Chrome PC·360px 큰 글씨/밝음·다크·가로 회전 선택 유지·이어하기 실제 UI 검수 완료. 실제 휴대폰·Safari·Edge·삼성 인터넷은 미검수.",
-      "upstream_commit": "daf53488e786466f496f9d211e455dcbe9c801c3"
+      "upstream_commit": "daf53488e786466f496f9d211e455dcbe9c801c3",
+      "completed_on": "2026-11-25",
+      "commit": "f3bb233926bca2bc0ce49ece94b0f925c5176e31",
+      "url": "https://tugman77.github.io/maeil-game/gostop/",
+      "deployment_run": 45587243204,
+      "deployment_verification": "Pages build/report/deploy 모두 success. 공개된 게임/JS/CSS/그림/도움말/목록/sw 11파일 HTTP 200 및 검사 소스와 바이트 일치.",
+      "local_git_note": "원 작업 폴더 .git 쓰기는 환경에서 차단되어 연결된 GitHub 도구로 최신 main을 부모로 커밋·비강제 반영함. 로컬 소스는 보존되어 있으므로 다음 작업은 원격 커밋과 비교 후 동기화한다."
     }
   ],
   "queue_changes": [
