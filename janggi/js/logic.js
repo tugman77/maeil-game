@@ -3,7 +3,7 @@ const Janggi = (() => {
   const M=typeof MaeilGame!=='undefined'?MaeilGame:require('../../common/core.js');
   const COLS=9,ROWS=10,CELLS=90,CHO=1,HAN=-1,K=1,A=2,R=3,C=4,H=5,E=6,P=7;
   const VALUES={1:0,2:3,3:13,4:7,5:5,6:3,7:2},NAMES={1:'궁',2:'사',3:'차',4:'포',5:'마',6:'상',7:'졸'};
-  const DIFFICULTIES={easy:{label:'쉬움',depth:1,nodes:500,note:'한 수를 살펴요 · 무르기 제한 없음'},medium:{label:'보통',depth:3,nodes:2200,note:'응수를 함께 살펴요 · 무르기 제한 없음'},hard:{label:'어려움',depth:4,nodes:8000,note:'여러 수를 탐색해요 · 전문 기사 수준은 아니에요'}};
+  const DIFFICULTIES={easy:{label:'쉬움',depth:1,nodes:500,note:'한 수를 살펴요 · 무르기 제한 없음'},medium:{label:'보통',depth:5,nodes:50000,timeMs:850,note:'응수를 함께 살펴요 · 무르기 제한 없음'},hard:{label:'어려움',depth:7,nodes:160000,timeMs:2200,note:'여러 수를 탐색해요 · 전문 기사 수준은 아니에요'}};
   const FORMATIONS=[[H,E,E,H],[E,H,H,E],[H,E,H,E],[E,H,E,H]];
   const PALACE_LINES=[[3,13,23],[5,13,21],[66,76,86],[68,76,84]];
   const inside=(x,y)=>x>=0&&x<9&&y>=0&&y<10;
@@ -62,7 +62,7 @@ const Janggi = (() => {
   function facing(board){const a=board.indexOf(K),b=board.indexOf(-K);if(a<0||b<0||a%9!==b%9)return false;for(let i=Math.min(a,b)+9;i<Math.max(a,b);i+=9)if(board[i])return false;return true;}
   function points(board){const result={cho:0,han:1.5};for(const v of board)if(v)result[v>0?'cho':'han']+=VALUES[type(v)];return result;}
   const key=p=>`${p.turn}:${p.board.join(',')}`;
-  function position(board,capturedAny=false){const p={board:board.slice(),turn:CHO,ply:0,passes:0,bikjang:facing(board),capturedAny,over:false,winner:0,reason:'',last:null,keys:[]};p.keys=[key(p)];return p;}
+  function position(board,capturedAny=false){const p={board:board.slice(),turn:CHO,ply:0,passes:0,bikjang:facing(board),capturedAny,over:false,winner:0,reason:'',last:null,keys:[],leadSide:0,leadCount:0};p.keys=[key(p)];return adjudicate(p);}
   function legalMoves(p){
     if(p.over)return [];const result=[];
     for(let from=0;from<90;from++)if(side(p.board[from])===p.turn)for(const to of pseudoMoves(p.board,from)){
@@ -75,13 +75,20 @@ const Janggi = (() => {
   const legalActions=p=>{const moves=legalMoves(p);if(canPass(p))moves.push({pass:true});return moves;};
   const isLegal=(p,a)=>Boolean(a&&!p.over&&(a.pass?canPass(p):legalMoves(p).some(m=>sameAction(m,a))));
   function decidePoints(p,reason){const v=points(p.board);p.over=true;p.winner=v.cho>v.han?CHO:HAN;p.reason=reason;}
-  function advance(p,action,mate=true){
+  // Every entry point uses the same mate-first adjudication, including replay/undo.
+  function adjudicate(p){
+    if(!p.over&&inCheck(p.board,p.turn)&&!legalMoves(p).length){p.over=true;p.winner=-p.turn;p.reason='mate';}
+    return p;
+  }
+  function advance(p,action){
     const n={...p,board:p.board.slice(),keys:p.keys.slice(),last:action.pass?{pass:true}:{from:action.from,to:action.to}},mover=p.turn;
     if(action.pass)n.passes++;else{n.capturedAny=p.capturedAny||Boolean(n.board[action.to]);n.board[action.to]=n.board[action.from];n.board[action.from]=0;n.ply++;n.passes=0;}
     n.turn=-mover;n.bikjang=facing(n.board);n.keys.push(key(n));
-    if(n.passes>=2)decidePoints(n,'passes');
-    else if(n.keys.filter(k=>k===n.keys.at(-1)).length>=4){n.over=true;n.winner=-mover;n.reason='repetition';}
-    else if((mate||(p.bikjang&&n.bikjang)||n.ply>=200)&&inCheck(n.board,n.turn)&&!legalMoves(n).length){n.over=true;n.winner=mover;n.reason='mate';}
+    const score=points(n.board),lead=score.cho-score.han,leader=Math.abs(lead)>=20?Math.sign(lead):0;
+    n.leadSide=leader;n.leadCount=leader?(p.leadSide===leader?(p.leadCount||0)+1:1):0;
+    adjudicate(n);
+    if(!n.over&&n.passes>=2)decidePoints(n,'passes');
+    else if(!n.over&&n.keys.filter(k=>k===n.keys.at(-1)).length>=4){n.over=true;n.winner=-mover;n.reason='repetition';}
     if(!n.over&&p.bikjang&&n.bikjang)decidePoints(n,'bikjang');
     if(!n.over&&n.ply>=200)decidePoints(n,'limit');
     return n;
@@ -101,12 +108,13 @@ const Janggi = (() => {
     const initial=daily?puzzleBoard(daily):initialBoard(formation),p=position(initial,Boolean(daily));
     return {...p,version:1,kind:daily?'puzzle':'match',difficulty,daily,formation,initial,actions:[],undoMarks:[],elapsed:0,hintsUsed:0,undoUsed:0,puzzleAttempts:0,puzzleAttempted:false};
   }
-  function assignPosition(s,p){for(const k of ['board','turn','ply','passes','bikjang','capturedAny','over','winner','reason','last','keys'])s[k]=p[k];}
+  function assignPosition(s,p){for(const k of ['board','turn','ply','passes','bikjang','capturedAny','over','winner','reason','last','keys','leadSide','leadCount'])s[k]=p[k];}
   function move(s,action){
     if(s.kind==='puzzle'&&s.puzzleAttempted)return false;
     if(!isLegal(s,action))return false;
     const a=action.pass?{pass:true}:{from:action.from,to:action.to};
     if(s.turn===CHO){s.undoMarks.push(s.actions.length);if(s.undoMarks.length>100)s.undoMarks.shift();}
+    delete s.outcomeText;
     s.actions.push(a);assignPosition(s,advance(s,a));
     if(s.kind==='puzzle'){s.puzzleAttempts++;s.puzzleAttempted=true;}
     return true;
@@ -115,7 +123,7 @@ const Janggi = (() => {
     let p=position(initial,puzzle);const marks=[];
     for(let i=0;i<actions.length;i++){
       const a=actions[i];if(p.over||!a)return null;
-      if(a.resign){if(i!==actions.length-1||puzzle)return null;p={...p,over:true,winner:HAN,reason:'resign'};continue;}
+      if(a.resign){if(i!==actions.length-1||puzzle||![CHO,HAN].includes(a.side??CHO))return null;p={...p,over:true,winner:-(a.side??CHO),reason:'resign'};continue;}
       if(validate&&!isLegal(p,a))return null;if(p.turn===CHO)marks.push(i);p=advance(p,a,validate);
     }
     return {p,marks:marks.slice(-100)};
@@ -123,16 +131,33 @@ const Janggi = (() => {
   const canUndo=s=>Boolean(s.undoMarks.length);
   function undo(s){
     if(!canUndo(s))return false;const target=s.undoMarks.at(-1),actions=s.actions.slice(0,target),r=replay(s.initial,actions,s.kind==='puzzle',false);
-    if(!r)return false;assignPosition(s,r.p);s.actions=actions;s.undoMarks=r.marks;s.puzzleAttempted=false;s.undoUsed++;return true;
+    if(!r)return false;delete s.outcomeText;assignPosition(s,r.p);s.actions=actions;s.undoMarks=r.marks;s.puzzleAttempted=false;s.undoUsed++;return true;
   }
-  function resign(s){if(s.over||s.kind!=='match')return false;s.actions.push({resign:true});s.over=true;s.winner=HAN;s.reason='resign';return true;}
+  function resign(s,loser=CHO){if(s.over||s.kind!=='match'||![CHO,HAN].includes(loser))return false;s.actions.push({resign:true,side:loser});s.over=true;s.winner=-loser;s.reason='resign';return true;}
+  function decision(s,report){
+    if(s.over||s.kind!=='match')return null;
+    if(report?.forced&&[CHO,HAN].includes(report.forced.winner)&&report.forced.plies>0)return {winner:report.forced.winner,text:`${Math.ceil(report.forced.plies/2)}수 안에 외통이 확정됐어요`,reason:'mate'};
+    if(s.leadCount>=6)return {winner:s.leadSide,text:`${s.leadSide===CHO?'초':'한'}가 크게 유리해요 · 기물 20점 이상 차이가 6차례 이어졌어요`,reason:'material'};
+    return null;
+  }
+  function restore(s){
+    try{
+      const n=JSON.parse(JSON.stringify(s));
+      // Old undo saves could miss a terminal mate. Only repair adjudication fields;
+      // the board and complete action history still have to pass validation.
+      adjudicate(n);
+      if(!isValid(n))return null;
+      const r=replay(n.initial,n.actions,n.kind==='puzzle');n.leadSide=r.p.leadSide;n.leadCount=r.p.leadCount;
+      return n;
+    }catch{return null;}
+  }
   function validBoard(b){
     return Array.isArray(b)&&b.length===90&&b.every((v,i)=>Number.isInteger(v)&&Math.abs(v)<=7&&(!(type(v)===K||type(v)===A)||palace(i,side(v))))
       &&b.filter(v=>v===K).length===1&&b.filter(v=>v===-K).length===1;
   }
   function isValid(s){
     try{
-      if(!s||s.version!==1||!Object.hasOwn(DIFFICULTIES,s.difficulty)||!['match','puzzle'].includes(s.kind)||!validBoard(s.board)||!validBoard(s.initial)
+      if(!s||(s.continueDecided!==undefined&&typeof s.continueDecided!=='boolean')||s.version!==1||!Object.hasOwn(DIFFICULTIES,s.difficulty)||!['match','puzzle'].includes(s.kind)||!validBoard(s.board)||!validBoard(s.initial)
         ||(s.daily!==null&&!validDate(s.daily))||Boolean(s.daily)!==(s.kind==='puzzle')||(s.daily&&s.difficulty!=='medium')
         ||!Number.isInteger(s.formation)||s.formation<0||s.formation>3||!Array.isArray(s.actions)||s.actions.length>402||!Array.isArray(s.undoMarks)
         ||!['elapsed','hintsUsed','undoUsed','puzzleAttempts'].every(k=>Number.isFinite(s[k])&&s[k]>=0)||!['hintsUsed','undoUsed','puzzleAttempts'].every(k=>Number.isSafeInteger(s[k]))||typeof s.puzzleAttempted!=='boolean')return false;
@@ -145,6 +170,6 @@ const Janggi = (() => {
   }
   const reasonText={mate:'외통수',bikjang:'빅장 점수 판정',passes:'서로 한 수 쉼 · 점수 판정',repetition:'같은 판 네 번째 반복',limit:'200수 · 점수 판정',resign:'기권'};
   function matingMoves(p){return legalMoves(p).filter(a=>{const n=advance(p,a);return n.over&&n.reason==='mate'&&n.winner===p.turn;});}
-  return {COLS,ROWS,CELLS,CHO,HAN,K,A,R,C,H,E,P,VALUES,NAMES,DIFFICULTIES,FORMATIONS,PALACE_LINES,coord,side,type,palace,initialBoard,pseudoMoves,inCheck,facing,points,position,legalMoves,legalActions,canPass,isLegal,advance,create,move,canUndo,undo,resign,isValid,validBoard,sameAction,matingMoves,reasonText};
+  return {COLS,ROWS,CELLS,CHO,HAN,K,A,R,C,H,E,P,VALUES,NAMES,DIFFICULTIES,FORMATIONS,PALACE_LINES,coord,side,type,palace,initialBoard,pseudoMoves,inCheck,facing,points,position,legalMoves,legalActions,canPass,isLegal,advance,adjudicate,restore,decision,create,move,canUndo,undo,resign,isValid,validBoard,sameAction,matingMoves,reasonText};
 })();
 if(typeof module!=='undefined')module.exports=Janggi;

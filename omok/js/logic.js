@@ -1,5 +1,5 @@
 // 오목 규칙과 컴퓨터. 13×13 판, 나는 흑(먼저), 컴퓨터는 백. 가로·세로·대각선으로 5개 이상 이으면 승리(금수 없음).
-// 컴퓨터는 빈칸마다 '내가 두면 몇 개가 이어지나(공격)·상대가 두면 몇 개가 이어지나(막기)'를 점수로 매겨 고른다.
+// 보통·어려움은 위협 기반 탐색과 연속 4 강제 승리 증명을 사용한다.
 // 같은 점수끼리는 저장 가능한 난수(state.rng)로 고르므로, 오늘의 도전은 같은 수를 두면 같은 결과가 나온다.
 const Omok = (() => {
   const Common = typeof MaeilGame !== 'undefined' ? MaeilGame : require('../../common/core.js');
@@ -10,7 +10,7 @@ const Omok = (() => {
   const DIFFICULTIES = {
     easy: { label: '쉬움', undo: 3, note: '컴퓨터가 가끔 실수해요 · 무르기 3번' },
     medium: { label: '보통', undo: 1, note: '막을 곳은 잘 막아요 · 무르기 1번' },
-    hard: { label: '어려움', undo: 0, note: '한 수 앞을 내다봐요 · 무르기 없음' },
+    hard: { label: '어려움', undo: 0, note: '연속 공격과 응수를 살펴요 · 무르기 없음' },
   };
   const DAILY_DIFFICULTY = 'medium';
   const DIRS = [[1, 0], [0, 1], [1, 1], [1, -1]];
@@ -75,6 +75,7 @@ const Omok = (() => {
   }
 
   function place(state, idx, color) {
+    delete state.outcomeText;
     state.board[idx] = color;
     state.moves.push(idx);
     const line = winLine(state.board, idx);
@@ -82,9 +83,9 @@ const Omok = (() => {
       state.over = true;
       state.winner = color;
       state.line = line;
-    } else if (state.board.every((v) => v !== 0)) {
+    } else if (!canMakeFive(state.board)) {
       state.over = true;
-      state.winner = 0; // 무승부(판이 다 참)
+      state.winner = 0; state.reason='draw'; // 빈 점이 남아도 누구도 다섯을 만들 수 없음
     }
   }
 
@@ -171,34 +172,145 @@ const Omok = (() => {
       const pool = list.slice(0, 4);
       return pool[Math.floor(Common.nextRandom(state) * pool.length)].idx;
     }
-    if (mustBlock) return mustBlock.idx;
-    if (level === 'medium') return pickTop(state, list, 0.04);
-
-    // 어려움: 상위 8수를 두어 보고, 그때 상대의 가장 좋은 응수가 약한 수를 고른다
-    const top = list.slice(0, 8);
-    let bestScore = -Infinity;
-    let pool = [];
-    for (const c of top) {
-      board[c.idx] = WHITE;
-      const replies = ranked(board, BLACK, 1);
-      const reply = replies[0];
-      // 이 수 다음 내가 만들 수 있는 가장 센 공격(상대가 하나를 막아도 남는 위협이면 이득)
-      const mine = replies.reduce((m, r) => Math.max(m, r.defense), 0);
-      board[c.idx] = 0;
-      // 상대에게 막기 어려운 수(열린 4·쌍삼 이상)를 남기면 크게 감점, 아니면 내 다음 위협을 조금 더한다
-      const danger = reply && reply.attack >= 9000 ? reply.attack : 0;
-      const value = c.score + mine * 0.15 - danger;
-      if (value > bestScore + 1e-9) { bestScore = value; pool = [c.idx]; } else if (Math.abs(value - bestScore) <= 1e-9) pool.push(c.idx);
+    return analyze(state).move;
+  }
+  // Every length-five window, including broken fours and edge patterns.
+  const WINDOWS=[];
+  for(let y=0;y<SIZE;y++)for(let x=0;x<SIZE;x++)for(const [dx,dy] of DIRS){
+    if(inside(x+dx*4,y+dy*4))WINDOWS.push(Array.from({length:5},(_,k)=>at(x+dx*k,y+dy*k)));
+  }
+  function winningMoves(board,color){
+    const out=new Set();
+    for(const line of WINDOWS){let own=0,empty=-1,blocked=false;
+      for(const i of line){if(board[i]===color)own++;else if(board[i]){blocked=true;break;}else empty=i;}
+      if(!blocked&&own===4)out.add(empty);
     }
-    return pool[Math.floor(Common.nextRandom(state) * pool.length)];
+    return [...out];
+  }
+  function canMakeFive(board){
+    return WINDOWS.some(line=>!line.some(i=>board[i]===BLACK)||!line.some(i=>board[i]===WHITE));
+  }
+  // Proof by forcing fours. At a defending node all legal escapes are covered:
+  // a counter-win, the unique required block, or two distinct winning endpoints.
+  // With no forcing four we return unknown, never a heuristic claim of victory.
+  function prove(board,attacker,turn,depth,context){
+    context.visit();
+    const defender=3-attacker,own=winningMoves(board,turn);
+    if(own.length)return turn===attacker?{move:own[0],plies:1}:null;
+    const threats=winningMoves(board,3-turn);
+    if(turn!==attacker){
+      if(threats.length>=2)return {plies:2};
+      if(threats.length!==1||depth<1)return null;
+      const i=threats[0];board[i]=defender;
+      try{const r=prove(board,attacker,attacker,depth-1,context);return r?{plies:r.plies+1}:null;}finally{board[i]=0;}
+    }
+    if(depth<1||threats.length>=2)return null;
+    const forcing=new Set();
+    if(threats.length)forcing.add(threats[0]);
+    else for(const line of WINDOWS){let own=0,blocked=false;const empty=[];
+      for(const i of line){if(board[i]===attacker)own++;else if(board[i]){blocked=true;break;}else empty.push(i);}
+      if(!blocked&&own===3)empty.forEach(i=>forcing.add(i));
+    }
+    const moves=[...forcing].sort((a,b)=>cellScore(board,b,attacker)-cellScore(board,a,attacker)||a-b);
+    for(const i of moves){board[i]=attacker;
+      try{
+        if(!winningMoves(board,attacker).length)continue;
+        const r=prove(board,attacker,defender,depth-1,context);if(r)return {move:i,plies:r.plies+1};
+      }finally{board[i]=0;}
+    }
+    return null;
+  }
+  function analyze(state,options={}){
+    if(state.over)return {move:-1,forced:null};
+    const board=state.board.slice(),turn=state.moves.length%2?WHITE:BLACK;
+    const started=Date.now(),deadline=started+(options.timeMs??(state.difficulty==='hard'?1550:1000));
+    const STOP=Symbol('budget');let nodes=0;
+    const budget=options.nodes??12000;
+    const context={visit(){if(++nodes>budget||Date.now()>=deadline)throw STOP;}};
+    const report={move:-1,forced:null,depth:0};
+    const ownWins=winningMoves(board,turn),foeWins=winningMoves(board,3-turn);
+    let list=ranked(board,turn,1.15);
+    report.move=ownWins[0]??foeWins[0]??list[0]?.idx??-1;
+    try{
+      // Reserve most of the budget for regular search; VCF itself is bounded.
+      const proofContext={visit(){context.visit();if(nodes>Math.min(2200,budget/3))throw STOP;}};
+      for(const color of [turn,3-turn]){
+        const proof=prove(board,color,turn,options.proofDepth??12,proofContext);
+        if(proof){report.forced={winner:color,plies:proof.plies};if(color===turn)report.move=proof.move;break;}
+      }
+    }catch(e){if(e!==STOP)throw e;}
+    if(ownWins.length||foeWins.length||report.forced?.winner===turn)return {...report,nodes,elapsedMs:Date.now()-started};
+    if(options.assessOnly)return {...report,move:-1,nodes,elapsedMs:Date.now()-started};
+    function ordered(color,width){
+      const wins=winningMoves(board,color);if(wins.length)return wins;
+      const blocks=winningMoves(board,3-color);if(blocks.length)return blocks;
+      return ranked(board,color,1.15).slice(0,width).map(c=>c.idx);
+    }
+    function evaluate(color){
+      const a=ranked(board,color,0).slice(0,2),b=ranked(board,3-color,0).slice(0,2);
+      return (a[0]?.attack||0)+(a[1]?.attack||0)*.25-(b[0]?.attack||0)*1.15-(b[1]?.attack||0)*.3;
+    }
+    function search(color,depth,alpha,beta,ply){
+      context.visit();const wins=winningMoves(board,color);if(wins.length)return 1000000-ply;
+      const threats=winningMoves(board,3-color);if(threats.length>=2)return -1000000+ply+1;
+      if(depth<=0)return evaluate(color);
+      let value=-Infinity;
+      for(const i of ordered(color,depth>=2?8:6)){
+        board[i]=color;let score;
+        try{score=-search(3-color,depth-1,-beta,-alpha,ply+1);}finally{board[i]=0;}
+        value=Math.max(value,score);alpha=Math.max(alpha,score);if(alpha>=beta)break;
+      }
+      return value===-Infinity?0:value;
+    }
+    const maxDepth=options.depth??(state.difficulty==='hard'?4:2);
+    // Include both ends of open threes and fork-making moves through threat ranking.
+    const roots=list.slice(0,state.difficulty==='hard'?12:10).map(c=>c.idx);
+    for(let depth=1;depth<=maxDepth;depth++){
+      let best=report.move,bestValue=-Infinity,alpha=-Infinity;
+      try{
+        roots.sort((a,b)=>(b===report.move)-(a===report.move));
+        for(const i of roots){
+          context.visit();board[i]=turn;let value;
+          try{
+            // Explicitly reject moves that allow an opponent forcing-four proof.
+            const r=depth>=2?prove(board,3-turn,3-turn,8,context):null;
+            value=r?-1000000+r.plies:-search(3-turn,depth-1,-Infinity,-alpha,1);
+          }finally{board[i]=0;}
+          if(value>bestValue){bestValue=value;best=i;}alpha=Math.max(alpha,value);
+        }
+        report.move=best;report.depth=depth;
+      }catch(e){if(e!==STOP)throw e;break;}
+    }
+    return {...report,nodes:Math.min(nodes,budget),elapsedMs:Date.now()-started};
+  }
+  function resign(state,loser){
+    if(state.over||![BLACK,WHITE].includes(loser))return false;
+    state.over=true;state.winner=3-loser;state.reason='resign';state.resigned=loser;state.line=null;return true;
+  }
+  function decision(state,report){
+    if(state.over||!report?.forced)return null;
+    return {winner:report.forced.winner,text:`${report.forced.winner===BLACK?'흑':'백'} 승리가 확정됐어요`};
+  }
+  function restore(state){
+    if(!isValid(state))return null;
+    const s=JSON.parse(JSON.stringify(state));
+    if(!s.over){
+      const i=s.moves.at(-1),line=i===undefined?null:winLine(s.board,i);
+      if(line){s.over=true;s.winner=s.board[i];s.line=line;}
+      else if(!canMakeFive(s.board)){s.over=true;s.winner=0;s.reason='draw';}
+    }
+    return s;
   }
 
   // 컴퓨터 차례: 백을 두고 둔 칸을 돌려준다
   function aiMove(state) {
     if (state.over || state.moves.length % 2 !== 1) return -1;
-    const idx = chooseMove(state);
-    place(state, idx, WHITE);
-    return idx;
+    return commitAI(state,chooseMove(state));
+  }
+
+  function commitAI(state,idx){
+    if(state.over||state.moves.length%2!==1||!Number.isInteger(idx)||idx<0||idx>=CELLS||state.board[idx])return -1;
+    place(state,idx,WHITE);return idx;
   }
 
   // 무르기: 컴퓨터 수와 내 마지막 수를 함께 되돌린다
@@ -208,6 +320,7 @@ const Omok = (() => {
   function undo(state) {
     if (!canUndo(state)) return false;
     for (let k = 0; k < 2; k++) state.board[state.moves.pop()] = 0;
+    delete state.outcomeText;
     state.undoLeft--;
     return true;
   }
@@ -216,6 +329,8 @@ const Omok = (() => {
   const playerMoves = (state) => Math.ceil(state.moves.length / 2);
 
   function isValid(state) {
+    try {
+    if (state?.continueDecided!==undefined&&typeof state.continueDecided!=='boolean')return false;
     if (!state || typeof state !== 'object' || state.version !== 1 || !has(DIFFICULTIES, state.difficulty)) return false;
     if (!Array.isArray(state.board) || state.board.length !== CELLS || !state.board.every((v) => v === 0 || v === 1 || v === 2)) return false;
     if (!Array.isArray(state.moves) || !Array.isArray(state.opening) || !Number.isInteger(state.rng)) return false;
@@ -231,10 +346,12 @@ const Omok = (() => {
       if (!Number.isInteger(idx) || idx < 0 || idx >= CELLS || board[idx]) return false;
       board[idx] = i % 2 === 0 ? BLACK : WHITE;
     }
+    if(state.resigned!==undefined&&(![BLACK,WHITE].includes(state.resigned)||!state.over||state.winner!==3-state.resigned||state.reason!=='resign'))return false;
     return board.every((v, i) => v === state.board[i]);
+    } catch { return false; }
   }
 
-  return { SIZE, CELLS, BLACK, WHITE, DIFFICULTIES, DAILY_DIFFICULTY, create, play, aiMove, chooseMove, winLine, canUndo, undo, lastMove, playerMoves, isValid, cellScore };
+  return { SIZE, CELLS, BLACK, WHITE, DIFFICULTIES, DAILY_DIFFICULTY, create, play, aiMove, commitAI, analyze, winningMoves, canMakeFive, prove, resign, decision, restore, chooseMove, winLine, canUndo, undo, lastMove, playerMoves, isValid, cellScore };
 })();
 
 if (typeof module !== 'undefined') module.exports = Omok;

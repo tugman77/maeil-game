@@ -5,9 +5,9 @@
   const G = Omok;
   const ID = 'omok';
   const KEYS = { game: 'maeil-game.omok.game.v1', stats: 'maeil-game.omok.stats.v1' };
-  const AI_DELAY = 450;
+  const AI_DELAY = 120;
   const $ = (id) => document.getElementById(id);
-  let game = null;
+  let game = null,worker=null,requestId=0,watchdog=0,offered=null,suspended=false;
   let picker;
   let points = [];
   let ghost = -1;
@@ -19,7 +19,7 @@
   let finished = false;
 
   const loadStats = () => { const s = M.read(KEYS.stats); return s && typeof s === 'object' && !Array.isArray(s) ? s : {}; };
-  const loadGame = () => { const s = M.read(KEYS.game); return G.isValid(s) && !s.over ? s : null; };
+  const loadGame = () => { const s = M.read(KEYS.game); return s&&!s.over?G.restore(s):null; };
   const saveGame = () => { if (game && !game.over) M.write(KEYS.game, game); };
   const clearGame = () => { try { localStorage.removeItem(KEYS.game); } catch {} };
   const label = (s) => (s.daily ? `${M.dateLabel(s.daily)} 오늘의 도전` : `${G.DIFFICULTIES[s.difficulty].label} 난이도`);
@@ -27,7 +27,7 @@
 
   function bestText(key) {
     const s = loadStats()[key];
-    return s?.bestMoves ? `내 최고 ${s.bestMoves}수 만에 승리 · ${s.wins}승` : (s?.played ? `${s.wins || 0}승 ${s.played - (s.wins || 0)}패` : '');
+    return s?.bestMoves ? `내 최고 ${s.bestMoves}수 만에 승리 · ${s.wins}승` : (s?.played ? `${s.wins || 0}승 ${s.played - (s.wins || 0) - (s.draws || 0)}패${s.draws?' '+s.draws+'무':''}` : '');
   }
 
   function updateSummary() {
@@ -42,7 +42,7 @@
 
   function renderStart() {
     stopClock();
-    clearTimeout(aiTimer);
+    cancelSearch();
     clearTimeout(finishTimer);
     thinking = false;
     const today = M.todayKey();
@@ -90,11 +90,16 @@
     $('move-count').textContent = G.playerMoves(game);
     $('undo-count').textContent = game.undoLeft;
     $('undo-btn').disabled = thinking || !G.canUndo(game);
-    $('place-btn').disabled = thinking || game.over || ghost < 0;
+    $('place-btn').disabled = thinking || Boolean(offered) || suspended || game.over || ghost < 0;
+    $('undo-btn').disabled ||= Boolean(offered)||suspended;
+    $('home-btn').disabled=Boolean(offered);
+    points.forEach(b=>{b.disabled=thinking||Boolean(offered)||suspended||game.over;});
+    $('board').inert=Boolean(offered)||suspended;
+    $('outcome-notice').textContent=game.outcomeText||'';
     const status = $('game-status');
     status.classList.toggle('thinking', thinking);
     status.textContent = game.over
-      ? (game.winner === G.BLACK ? '다섯 개를 이었어요! 승리!' : game.winner === G.WHITE ? '컴퓨터가 다섯 개를 이었어요' : '판이 가득 찼어요. 무승부')
+      ? (game.reason==='resign'?(game.winner===G.BLACK?'컴퓨터가 기권했어요 · 흑 승리':'기권 · 백 승리'):game.winner === G.BLACK ? '다섯 개를 이었어요! 승리!' : game.winner === G.WHITE ? '컴퓨터가 다섯 개를 이었어요' : '서로 다섯을 만들 수 없어 무승부예요')
       : thinking ? '컴퓨터가 생각하는 중…' : ghost >= 0 ? '이 자리에 둘까요? 한 번 더 누르세요' : '내 차례(흑) — 둘 곳을 누르세요';
   }
 
@@ -105,7 +110,7 @@
 
   // ---------- 진행 ----------
   function start(state) {
-    clearTimeout(aiTimer);
+    cancelSearch();stopClock();offered=null;suspended=false;$('outcome-overlay').hidden=true;
     clearTimeout(finishTimer);
     game = state;
     finished = false;
@@ -119,7 +124,9 @@
     showScreen('game-screen');
     startClock();
     // 저장된 판이 컴퓨터 차례에서 멈췄으면 이어서 둔다
+    if(game.over){endGame();return;}
     if (game.moves.length % 2 === 1) aiTurn();
+    else if(game.moves.length||game.opening.length)aiTurn('assess');
     render();
   }
 
@@ -141,7 +148,7 @@
   function stopClock() { clearInterval(clock); }
 
   function tapPoint(i) {
-    if (!game || game.over || thinking || game.board[i] !== 0) {
+    if (!game || game.over || thinking || offered || suspended || game.board[i] !== 0) {
       if (game && !game.over && !thinking && game.board[i] !== 0) MaeilFx.play('error');
       return;
     }
@@ -153,7 +160,7 @@
   }
 
   function placeHere() {
-    if (ghost < 0 || !G.play(game, ghost)) return;
+    if (thinking||offered||suspended||ghost < 0 || !G.play(game, ghost)) return;
     const i = ghost;
     ghost = -1;
     MaeilFx.play('stone');
@@ -164,26 +171,54 @@
     aiTurn();
   }
 
-  function aiTurn() {
-    thinking = true;
-    render();
-    clearTimeout(aiTimer);
-    aiTimer = setTimeout(() => {
-      thinking = false;
-      const i = G.aiMove(game);
-      if (i >= 0) {
-        MaeilFx.play('stone', { ai: true });
-        cursor = i;
-      }
-      render();
-      if (i >= 0) drop(i);
-      saveGame();
-      if (game.over) endGame();
-    }, AI_DELAY);
+  function cancelSearch(){requestId++;clearTimeout(aiTimer);clearTimeout(watchdog);worker?.terminate();worker=null;thinking=false;}
+  function offer(report){
+    const d=G.decision(game,report);if(!d)return false;
+    game.outcomeText=d.text;saveGame();
+    if(d.winner===G.BLACK){G.resign(game,G.WHITE);endGame();return true;}
+    if(game.continueDecided){render();return false;}
+    offered=d;stopClock();$('outcome-title').textContent=d.text;$('outcome-overlay').hidden=false;render();$('outcome-continue').focus();return true;
+  }
+  function aiTurn(mode='ai') {
+    if(!game||game.over||offered||suspended)return;
+    cancelSearch();const id=requestId,copy=JSON.parse(JSON.stringify(game));thinking=true;render();
+    const options=mode==='assess'?{assessOnly:true,timeMs:350}:{};
+    function deliver(data){
+      if(id!==requestId||suspended||finished||$('game-screen').hidden)return;
+      clearTimeout(watchdog);worker?.terminate();worker=null;thinking=false;requestId++;
+      if(offer(data.report))return;
+      if(mode==='assess'){saveGame();render();return;}
+      let i=data.move;
+      if(!Number.isInteger(i)||i<0||i>=G.CELLS||game.board[i])i=G.chooseMove({...game,difficulty:'easy'});
+      if(Number.isInteger(data.rng))game.rng=data.rng;
+      i=G.commitAI(game,i);
+      if(i>=0){MaeilFx.play('stone',{ai:true});cursor=i;drop(i);}
+      render();saveGame();
+      if(game.over)endGame();else aiTurn('assess');
+    }
+    function fallback(){
+      if(id!==requestId)return;clearTimeout(watchdog);worker?.terminate();worker=null;
+      aiTimer=setTimeout(()=>{
+        if(id!==requestId||suspended)return;
+        const report=G.analyze(copy,{...options,depth:1,nodes:250,timeMs:60,proofDepth:4});
+        const move=copy.difficulty==='easy'?G.chooseMove(copy):report.move;
+        deliver({move,report,rng:copy.rng});
+      },0);
+    }
+    aiTimer=setTimeout(()=>{
+      if(id!==requestId||suspended)return;
+      try{
+        if(typeof Worker!=='function'){fallback();return;}
+        worker=new Worker('js/ai-worker.js');
+        worker.onmessage=({data})=>{if(data.id!==id||id!==requestId)return;data.error?fallback():deliver(data);};
+        worker.onerror=e=>{e.preventDefault();fallback();};
+        watchdog=setTimeout(fallback,2600);worker.postMessage({id,state:copy,options});
+      }catch{fallback();}
+    },mode==='assess'?0:AI_DELAY);
   }
 
   function endGame() {
-    clearGame();
+    cancelSearch();stopClock();clearGame();
     render();
     if (game.winner === G.BLACK) { MaeilFx.buzz(25); }
     else if (game.winner === G.WHITE) { MaeilFx.play('miss'); MaeilFx.buzz([30, 40, 30]); }
@@ -192,7 +227,7 @@
   }
 
   function undo() {
-    if (thinking || !G.undo(game)) return;
+    if (offered||suspended||thinking || !G.undo(game)) return;
     ghost = -1;
     MaeilFx.play('slide');
     saveGame();
@@ -214,6 +249,7 @@
     stats[key] = {
       played: (e.played || 0) + 1,
       wins: (e.wins || 0) + (won ? 1 : 0),
+      draws: (e.draws || 0) + Number(game.winner===0),
       bestMoves: isBest ? moves : prevBest,
     };
     if (stats[key].bestMoves === null) delete stats[key].bestMoves;
@@ -222,12 +258,12 @@
     updateSummary();
 
     $('result-title').textContent = won ? '승리했어요!' : game.winner === G.WHITE ? '아깝게 졌어요' : '무승부';
-    $('result-sub').textContent = label(game);
+    $('result-sub').textContent = `${label(game)}${game.reason==='resign'?(won?' · 컴퓨터 기권':' · 기권'):''}${game.outcomeText?' · '+game.outcomeText:''}`;
     $('result-score').textContent = won ? `${moves}수` : '-';
     $('result-detail').textContent = `내가 둔 수 ${moves} · ${M.formatTime(game.elapsed)}`;
     $('result-best').textContent = isBest
       ? (prevBest ? `새 최고 기록! 이전 ${prevBest}수` : '첫 승리 기록이 저장됐어요!')
-      : `${stats[key].wins}승 ${stats[key].played - stats[key].wins}패${prevBest ? ` · 최고 ${prevBest}수 만에 승리` : ''}`;
+      : `${stats[key].wins}승 ${stats[key].played - stats[key].wins - stats[key].draws}패${stats[key].draws?' '+stats[key].draws+'무':''}${prevBest ? ` · 최고 ${prevBest}수 만에 승리` : ''}`;
     $('result-best').classList.toggle('new', isBest);
     $('result-daily').textContent = game.daily
       ? (won ? '오늘의 도전 완료 ✓ 출석을 남겼어요' : '이기면 오늘의 도전 완료! 다시 도전해 보세요')
@@ -241,7 +277,7 @@
 
   // 키보드: 방향키로 칸 이동, Enter·스페이스로 미리보기/두기
   function onKey(event) {
-    if ($('game-screen').hidden || !game || game.over) return;
+    if ($('game-screen').hidden || !game || game.over ||offered||suspended) return;
     const step = { ArrowUp: -G.SIZE, ArrowDown: G.SIZE, ArrowLeft: -1, ArrowRight: 1 }[event.key];
     if (step !== undefined) {
       event.preventDefault();
@@ -274,6 +310,8 @@
       if (b) tapPoint(Number(b.dataset.i));
     });
     document.addEventListener('keydown', onKey);
+    $('outcome-continue').addEventListener('click',()=>{if(!offered)return;offered=null;game.continueDecided=true;$('outcome-overlay').hidden=true;saveGame();render();startClock();if(game.moves.length%2)aiTurn();});
+    $('outcome-new').addEventListener('click',()=>{if(!offered)return;offered=null;$('outcome-overlay').hidden=true;G.resign(game,G.BLACK);endGame();finish();start(G.create(game.difficulty,game.daily?{daily:game.daily}:{}));});
     $('place-btn').addEventListener('click', placeHere);
     $('undo-btn').addEventListener('click', undo);
     $('continue-btn').addEventListener('click', () => { const s = loadGame(); if (s) start(s); else renderStart(); });
@@ -292,7 +330,10 @@
         url: M.pageUrl('omok/'),
       });
     });
-    window.addEventListener('pagehide', () => { if (game?.over && !$('game-screen').hidden) finish(); saveGame(); });
+    function suspend(){if(!game||$('game-screen').hidden)return;if(game.over){finish();return;}suspended=true;cancelSearch();stopClock();saveGame();render();}
+    function wake(){if(!game||!suspended||$('game-screen').hidden||finished)return;suspended=false;render();if(!offered){startClock();aiTurn(game.moves.length%2?'ai':'assess');}}
+    document.addEventListener('visibilitychange',()=>document.hidden?suspend():wake());
+    window.addEventListener('pagehide',suspend);window.addEventListener('pageshow',wake);
     renderStart();
     updateSummary();
     MaeilStart.handleDailyLink(startDaily);

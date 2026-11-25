@@ -1,5 +1,5 @@
 importScripts('../../common/core.js','logic.js','ai.js');
 self.onmessage=({data})=>{
-  try{self.postMessage({id:data.id,move:JanggiAI.chooseMove(data.state,data.options||{})});}
+  try{const report=JanggiAI.analyze(data.state,data.options||{});self.postMessage({id:data.id,move:report.move,report});}
   catch{self.postMessage({id:data.id,error:true});}
 };

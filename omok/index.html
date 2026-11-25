@@ -84,11 +84,19 @@
     </header>
     <p id="game-label" class="game-label"></p>
     <p id="game-status" class="omok-status" role="status" aria-live="polite"></p>
+    <p id="outcome-notice" class="outcome-notice" role="status" aria-live="polite"></p>
     <div id="board-area" class="board-area">
       <div id="board" class="omok-board" role="grid" aria-label="오목 13×13 판"></div>
     </div>
     <button type="button" id="place-btn" class="primary-btn omok-place" disabled>여기에 두기</button>
-    <p class="note-text omok-help">칸을 누르면 흐린 돌이 보여요 · 한 번 더 누르거나 [여기에 두기]</p>
+    <p class="note-text omok-help">칸 선택 후 한 번 더 누르거나 [여기에 두기]. 승리 수순이 확정되면 컴퓨터는 기권하고, 내가 지는 쪽이면 계속 둘지 한 번 물어요.</p>
+    <div id="outcome-overlay" class="outcome-overlay" role="dialog" aria-modal="true" aria-labelledby="outcome-title" aria-describedby="outcome-detail" hidden>
+      <div class="outcome-card"><h2 id="outcome-title"></h2>
+        <p id="outcome-detail">계속 두기를 고르면 이번 판에서는 다시 묻지 않아요.</p>
+        <button type="button" id="outcome-new" class="primary-btn">기권하고 새 판</button>
+        <button type="button" id="outcome-continue" class="secondary-btn">계속 두기</button>
+      </div>
+    </div>
   </main>
 
   <main id="result-screen" class="screen result-screen" hidden>

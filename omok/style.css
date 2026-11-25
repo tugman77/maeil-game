@@ -73,3 +73,11 @@
   @keyframes omok-drop { from { transform: scale(1.35); opacity: .3; } to { transform: scale(1); opacity: 1; } }
   @keyframes omok-win { 50% { transform: scale(1.12); } }
 }
+
+.outcome-notice { margin: 0; color: var(--text); font-size: 1.05rem; font-weight: 700; text-align: center; }
+.outcome-notice:empty { display: none; }
+.outcome-overlay { position: fixed; inset: 0; z-index: 100; background: rgb(0 0 0 / .65); display: grid; place-items: center; padding: 16px; }
+.outcome-overlay[hidden] { display: none; }
+.outcome-card { width: min(100%, 440px); max-height: 90dvh; overflow: auto; padding: 24px; border-radius: 16px; background: var(--bg); color: var(--text); text-align: center; }
+.outcome-card h2 { font-size: 1.4rem; line-height: 1.5; }
+.outcome-card button { display: block; width: 100%; min-height: 54px; margin-top: 16px; font-size: 1.15rem; }

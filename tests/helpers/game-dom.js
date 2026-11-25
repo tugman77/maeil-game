@@ -34,6 +34,7 @@ module.exports = function gameDom(id, { saved = {}, blockedStorage = false, hash
     focus() { document.activeElement = this; }
     closest(selector) {
       for (let element = this; element; element = element.parentElement) {
+        if(selector[0]==='.'&&element.classList.contains(selector.slice(1)))return element;
         if (selector[0] === '#' && element.id === selector.slice(1)) return element;
         if (selector === 'button' && element.tagName === 'BUTTON') return element;
       }
