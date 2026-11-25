@@ -1,2 +1,5 @@
 .DS_Store
 node_modules/
+
+# 승인 전 로컬 화투 비교 화면
+.preview/

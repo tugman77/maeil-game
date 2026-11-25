@@ -3,6 +3,7 @@
   const G=Gostop,M=MaeilGame,ID='gostop',KEY='maeil-game.gostop.',$=id=>document.getElementById(id);
   const levels=[{key:'easy',label:'쉬움',detail:'패의 기본 가치를 살피는 컴퓨터 · 48장·7점 규칙은 같아요'},{key:'medium',label:'보통',detail:'족보 완성을 함께 살피는 컴퓨터 · 시간 제한 없음'},{key:'hard',label:'어려움',detail:'상대의 공개된 족보도 살피는 컴퓨터 · 숨은 패는 보지 않아요'}];
   let game=null,selected=null,hint=null,paused=false,finished=false,timer=0,epoch=0,picker,armed=false,armTimer=0,result=null;
+  let showHelp=M.read(KEY+'help.v1')!==false;
   const count=x=>Number.isSafeInteger(x)&&x>=0?x:0;
   const stats=()=>{const v=M.read(KEY+'stats.v1');return v&&typeof v==='object'&&!Array.isArray(v)?v:{};};
   function summary(){const s=stats();let wins=0,played=0;for(const k of ['easy','medium','hard','daily']){wins+=count(s[k]?.wins);played+=count(s[k]?.played);}if(played)M.setSummary(ID,`${wins}승 · ${played}판`);}
@@ -22,7 +23,7 @@
   const ready=()=>game&&!finished&&!paused&&!$('game-screen').hidden&&game.state.turn===0;
   function card(id,{click,doubleClick,chosen=false,matching=false,hinted=false}={}) {
     const b=document.createElement(click?'button':'span');b.className='hwatu';if(click)b.type='button';
-    b.innerHTML=GostopArt.svg(id);b.setAttribute('aria-label',G.cards[id].name);
+    b.innerHTML=GostopArt.face(id,showHelp);b.setAttribute('aria-label',G.cards[id].name);
     if(click){b.setAttribute('aria-pressed',String(chosen));b.addEventListener('click',click);if(doubleClick)b.addEventListener('dblclick',doubleClick);}
     if(chosen){const mark=document.createElement('span');mark.className='pick-label';mark.textContent='선택';b.append(mark);}
     b.classList.toggle('match',matching);b.classList.toggle('hinted',hinted);return b;
@@ -87,6 +88,9 @@
     $('result-record').textContent=`내 기록 ${count(st[k]?.wins)}승 · ${count(st[k]?.played)}판 · 최고 ${count(st[k]?.best)}점`;
     $('result-note').textContent=`무르기 ${game.undo}회 · 추천 ${game.hints}회${game.daily?' · '+game.daily+' 도전'+(r.reason==='기권'?' (기권은 출석 제외)':' 완료'):''}. 점수는 이 기기에만 기록됩니다.`;
   }
+  const helpButton=$('help-toggle');
+  helpButton.setAttribute('aria-pressed',String(showHelp));
+  helpButton.addEventListener('click',()=>{showHelp=!showHelp;M.write(KEY+'help.v1',showHelp);helpButton.setAttribute('aria-pressed',String(showHelp));if(game)render();});
   M.bindSettingButtons();picker=MaeilStart.setup({id:ID,difficulties:levels,bestText:key=>{const s=stats()[key];return s?`${count(s.wins)}승 · ${count(s.played)}판 · 최고 ${count(s.best)}점`:'';},onStart:key=>start(fresh(key)),onDaily:daily});
   $('continue-btn').addEventListener('click',()=>{const v=load();if(v)start(v);else startScreen();});
   $('play-btn').addEventListener('click',()=>{if(ready()&&selected!==null)act({type:'play',id:selected});});

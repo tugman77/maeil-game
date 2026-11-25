@@ -1,7 +1,8 @@
 // 게임 썸네일: 이모지 대신 게임의 특징(숫자판·타일·카드·지뢰판·블록)을 코드로 그린 SVG.
-// 이미지 파일이 없어 가볍고, 색은 hub.css의 .th-* 클래스가 정해 어두운 화면에서도 맞게 바뀐다.
+// 색은 hub.css의 .th-* 클래스가 정한다. 맞고는 실제 게임과 같은 공개 라이선스 SVG를 사용한다.
 // 새 게임을 추가하면 여기에 같은 크기(160×120)로 하나 그린다. 없으면 이름 첫 글자로 대신한다.
 const GameThumbs = (() => {
+  const hwatuRoot = new URL('../gostop/cards/', document.currentScript.src).href;
   const svg = (body) => `<svg viewBox="0 0 160 120" aria-hidden="true" focusable="false">${body}</svg>`;
 
   // 스도쿠: 3×3 판에 숫자 몇 개
@@ -214,8 +215,12 @@ const GameThumbs = (() => {
     return svg(b);
   }
   function gostop() {
-    return svg('<rect x="12" y="10" width="136" height="100" rx="16" fill="#275a43"/>'+[[28,25,1],[64,16,8],[100,27,3]].map(([x,y,m],i)=>`<g transform="translate(${x} ${y})"><rect width="33" height="63" rx="4" fill="#fffaf0" stroke="#243a30" stroke-width="2"/><text x="5" y="16" style="text-anchor:start" font-size="13" font-weight="800" fill="#243a30">${m}월</text>${i===1?'<circle cx="17" cy="31" r="10" fill="#e6b74c"/>':'<path d="M5 45 17 25 28 46" fill="none" stroke="#39714f" stroke-width="4"/>'}<rect x="3" y="48" width="27" height="12" rx="2" fill="#a13442"/><text x="16" y="58" text-anchor="middle" font-size="10" fill="white">광</text></g>`).join(''));
+    // 게임 목록과 시작 화면에서도 실제 한국식 화투 그림을 보여 준다.
+    return svg('<rect x="12" y="10" width="136" height="100" rx="16" fill="#275a43"/>'+[
+      [28,25,'Hwatu_January_gwang.svg'],[64,16,'Hwatu_August_gwang.svg'],[100,27,'Hwatu_March_gwang.svg']
+    ].map(([x,y,file])=>`<image x="${x}" y="${y}" width="33" height="54" href="${hwatuRoot}${file}"/>`).join(''));
   }
+
   const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, janggi, go, gostop };
 
   function render(game) {
