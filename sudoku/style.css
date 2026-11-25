@@ -31,7 +31,7 @@
   --note-font: 0.29;
 
   /* 판 크기: 화면 폭과 (화면 높이 - 위아래 버튼 영역) 중 작은 쪽에 맞춘다 */
-  --controls-height: 324px;
+  --controls-height: 294px; /* 2026-11-25 대표님 요청: 판을 키우고 아래 버튼을 약간 줄임 (324 → 294) */
   --board: min(calc(100vw - 16px), calc(100vh - var(--controls-height)), 520px);
   --controls-width: min(calc(100vw - 16px), 520px);
   color-scheme: light;
@@ -336,7 +336,7 @@ button:focus-visible {
   margin-top: 2px;
 }
 .tool-btn {
-  height: 58px;
+  height: 48px;
   font-size: 16px;
   background: var(--button);
   border: 1.5px solid var(--button-border);
@@ -362,8 +362,8 @@ button:focus-visible {
   gap: 6px;
 }
 .num-btn {
-  height: 56px;
-  font-size: 30px;
+  height: 46px;
+  font-size: 27px;
   font-weight: 600;
   color: var(--user);
   background: var(--button);
