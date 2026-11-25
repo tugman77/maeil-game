@@ -20,10 +20,10 @@
   function fresh(level='medium',daily=null){const rng=daily?M.dailyRandom(ID,daily):Math.random;return {v:1,id:`${Date.now()}-${Math.random().toString(36).slice(2)}`,difficulty:level,daily,undo:0,hints:0,state:G.create(rng)};}
   function daily(){const date=M.todayKey(),saved=load();start(saved?.daily===date?saved:fresh('medium',date));}
   const ready=()=>game&&!finished&&!paused&&!$('game-screen').hidden&&game.state.turn===0;
-  function card(id,{click,chosen=false,matching=false,hinted=false}={}) {
+  function card(id,{click,doubleClick,chosen=false,matching=false,hinted=false}={}) {
     const b=document.createElement(click?'button':'span');b.className='hwatu';if(click)b.type='button';
     b.innerHTML=GostopArt.svg(id);b.setAttribute('aria-label',G.cards[id].name);
-    if(click){b.setAttribute('aria-pressed',String(chosen));b.addEventListener('click',click);}
+    if(click){b.setAttribute('aria-pressed',String(chosen));b.addEventListener('click',click);if(doubleClick)b.addEventListener('dblclick',doubleClick);}
     if(chosen){const mark=document.createElement('span');mark.className='pick-label';mark.textContent='선택';b.append(mark);}
     b.classList.toggle('match',matching);b.classList.toggle('hinted',hinted);return b;
   }
@@ -40,9 +40,9 @@
     $('stock-count').textContent=s.stock.length+'장';$('first-label').textContent=s.initial.first===0?'내가 선':'컴퓨터 선';
     const matches=selected===null?[]:s.table.filter(id=>G.cards[id].month===G.cards[selected].month);
     $('table').replaceChildren(...[...s.table].sort((a,b)=>a-b).map(id=>card(id,{matching:matches.includes(id)})));
-    $('hand').replaceChildren(...[...s.hands[0]].sort((a,b)=>a-b).map(id=>card(id,{click:()=>{if(!play)return;selected=selected===id?null:id;hint=null;render();},chosen:selected===id,hinted:hint?.id===id})));
+    $('hand').replaceChildren(...[...s.hands[0]].sort((a,b)=>a-b).map(id=>card(id,{click:()=>{if(!play)return;if(selected===id){act({type:'play',id});return;}selected=id;hint=null;render();},doubleClick:()=>{if(play){selected=id;act({type:'play',id});}},chosen:selected===id,hinted:hint?.id===id})));
     $('last-draw').textContent=s.lastDraw===null?'':`직전 더미 ${G.cards[s.lastDraw].month}월 ${G.cards[s.lastDraw].type}`;
-    $('game-status').textContent=paused?'일시정지 중입니다.':s.turn===1?'컴퓨터 차례입니다.':s.phase==='choose'?(s.pending.kind==='hand'?'더미를 뒤집기 전에 가져올 바닥패를 고르세요.':'뒤집은 패와 함께 가져올 바닥패를 고르세요.'):s.phase==='decision'?`${G.score(s.captured[0]).total}점! 스톱으로 마치거나 고로 계속하세요.`:'내 차례입니다. 손패 한 장을 고른 뒤 내기를 누르세요.';
+    $('game-status').textContent=paused?'일시정지 중입니다.':s.turn===1?'컴퓨터 차례입니다.':s.phase==='choose'?(s.pending.kind==='hand'?'더미를 뒤집기 전에 가져올 바닥패를 고르세요.':'뒤집은 패와 함께 가져올 바닥패를 고르세요.'):s.phase==='decision'?`${G.score(s.captured[0]).total}점! 스톱으로 마치거나 고로 계속하세요.`:'내 차례입니다. 손패를 두 번 누르거나 선택 후 내기 버튼을 누르세요.';
     $('selected-info').textContent=selected===null?(hint&&hint.type!=='play'?`추천: ${actionName(hint)}`:'같은 달이 없으면 바닥에 놓습니다.'):G.cards[selected].name+` · ${matches.length===0?'바닥에 놓기':matches.length===2?'바닥 두 장 중 하나 선택':matches.length===3?'네 장 모두 가져오기':'같은 달 맞추기'}`;
     $('play-btn').disabled=!play||selected===null;$('play-btn').textContent=selected===null?'낼 패를 골라 주세요':`${G.cards[selected].month}월 패 내기`;
     $('skip-btn').hidden=!play||!legal.some(a=>a.type==='skip');$('skip-btn').textContent=`더미만 · ${s.skips[0]}회 남음`;
