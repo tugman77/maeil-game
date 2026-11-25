@@ -196,13 +196,13 @@ const Omok = (() => {
   function prove(board,attacker,turn,depth,context){
     context.visit();
     const defender=3-attacker,own=winningMoves(board,turn);
-    if(own.length)return turn===attacker?{move:own[0],plies:1}:null;
+    if(own.length)return turn===attacker?{move:own[0],plies:1,steps:[{idx:own[0],color:attacker}]}:null;
     const threats=winningMoves(board,3-turn);
     if(turn!==attacker){
-      if(threats.length>=2)return {plies:2};
+      if(threats.length>=2)return {plies:2,steps:[{idx:threats[0],color:defender},{idx:threats[1],color:attacker}]};
       if(threats.length!==1||depth<1)return null;
       const i=threats[0];board[i]=defender;
-      try{const r=prove(board,attacker,attacker,depth-1,context);return r?{plies:r.plies+1}:null;}finally{board[i]=0;}
+      try{const r=prove(board,attacker,attacker,depth-1,context);return r?{plies:r.plies+1,steps:[{idx:i,color:defender},...r.steps]}:null;}finally{board[i]=0;}
     }
     if(depth<1||threats.length>=2)return null;
     const forcing=new Set();
@@ -215,7 +215,7 @@ const Omok = (() => {
     for(const i of moves){board[i]=attacker;
       try{
         if(!winningMoves(board,attacker).length)continue;
-        const r=prove(board,attacker,defender,depth-1,context);if(r)return {move:i,plies:r.plies+1};
+        const r=prove(board,attacker,defender,depth-1,context);if(r)return {move:i,plies:r.plies+1,steps:[{idx:i,color:attacker},...r.steps]};
       }finally{board[i]=0;}
     }
     return null;
@@ -236,7 +236,7 @@ const Omok = (() => {
       const proofContext={visit(){context.visit();if(nodes>Math.min(2200,budget/3))throw STOP;}};
       for(const color of [turn,3-turn]){
         const proof=prove(board,color,turn,options.proofDepth??12,proofContext);
-        if(proof){report.forced={winner:color,plies:proof.plies};if(color===turn)report.move=proof.move;break;}
+        if(proof){report.forced={winner:color,plies:proof.plies};report.explanation=explainThreat(board,color,proof.steps);if(color===turn)report.move=proof.move;break;}
       }
     }catch(e){if(e!==STOP)throw e;}
     if(ownWins.length||foeWins.length||report.forced?.winner===turn)return {...report,nodes,elapsedMs:Date.now()-started};
@@ -289,7 +289,72 @@ const Omok = (() => {
   }
   function decision(state,report){
     if(state.over||!report?.forced)return null;
-    return {winner:report.forced.winner,text:`${report.forced.winner===BLACK?'흑':'백'} 승리가 확정됐어요`};
+    return {winner:report.forced.winner,text:`${report.forced.winner===BLACK?'흑':'백'} 승리가 확정됐어요`,explanation:report.explanation};
+  }
+
+  // Presentation data comes from the proven line; it does not affect move choice.
+  function threatMarks(board,color){
+    const blocks=winningMoves(board,color),stones=new Set();
+    for(const line of WINDOWS){
+      if(line.filter(i=>board[i]===color).length===4&&line.some(i=>blocks.includes(i)))
+        line.filter(i=>board[i]===color).forEach(i=>stones.add(i));
+    }
+    return {stones:[...stones],blocks};
+  }
+  function openFour(board,color){
+    for(let i=0;i<CELLS;i++)if(board[i]===color)for(const [dx,dy] of DIRS){
+      const r=runAt(board,i,color,dx,dy);
+      if(r.count===4&&r.open===2)return r.cells;
+    }
+    return null;
+  }
+  function explainThreat(board,color,steps=[]){
+    const marks=threatMarks(board,color),stones=new Set(marks.stones),next=[];
+    let type=marks.blocks.length>=2?(openFour(board,color)?'open-four':'double-four'):'vcf';
+    // A four-three has one immediate block and an existing three that can
+    // become an open four after that block. Check the actual proven reply.
+    const trial=board.slice();
+    if(marks.blocks.length===1&&steps[0]?.color===3-color){
+      trial[steps[0].idx]=3-color;
+      const reply=steps[1];
+      if(reply?.color===color){
+        trial[reply.idx]=color;
+        const four=openFour(trial,color);
+        if(four&&four.includes(reply.idx)&&four.filter(i=>board[i]===color).length===3){
+          type='four-three';next.push(reply.idx);four.filter(i=>board[i]===color).forEach(i=>stones.add(i));
+        }
+      }
+    }
+    // Include the existing stones used by later forcing fours, without
+    // presenting future stones as if they had already been played.
+    trial.splice(0,CELLS,...board);
+    for(const step of steps){
+      trial[step.idx]=step.color;
+      threatMarks(trial,color).stones.filter(i=>board[i]===color).forEach(i=>stones.add(i));
+    }
+    if(type==='vcf'&&steps[0]?.color===color)next.push(steps[0].idx);
+    if(steps.length===1)type='finish-five';
+    const descriptions={
+      'open-four':'열린 4: 양쪽 끝이 비어 있어 한쪽을 막아도 다른 쪽으로 다섯이 됩니다',
+      'double-four':'4-4: 서로 다른 두 곳을 막아야 해요. 한 곳을 막아도 다른 곳에서 다섯이 됩니다',
+      'four-three':'4-3: 4를 막으면 3이 열린 4가 됩니다',
+      'vcf':'연속 4: 4를 계속 만들며 이기는 수순이 있습니다 — 수순 보기',
+      'finish-five':'다섯 완성: 표시한 빈칸에 두면 다섯이 됩니다',
+    };
+    return {type,color,stones:[...stones],blocks:marks.blocks,next,steps,text:descriptions[type]};
+  }
+  function explainWin(state){
+    const line=state.line||winLine(state.board,lastMove(state));
+    if(!line?.length)return null;
+    const direction=line[0]%SIZE===line[1]%SIZE?'세로':Math.floor(line[0]/SIZE)===Math.floor(line[1]/SIZE)?'가로':'대각선';
+    const color=state.board[line[0]],who=color===BLACK?'흑':'백(컴퓨터)';
+    return {line,direction,text:`${who}이 ${direction}${direction==='대각선'?'으로':'로'} ${line.length===5?'다섯 개':line.length+'개'}를 이었어요 — ${color===BLACK?'내 승리':'내 패배'}`};
+  }
+  function replayBoard(state,count){
+    const board=new Array(CELLS).fill(0);
+    state.opening.forEach(([i,color])=>board[i]=color);
+    state.moves.slice(0,count).forEach((i,n)=>board[i]=n%2?WHITE:BLACK);
+    return board;
   }
   function restore(state){
     if(!isValid(state))return null;
@@ -351,7 +416,7 @@ const Omok = (() => {
     } catch { return false; }
   }
 
-  return { SIZE, CELLS, BLACK, WHITE, DIFFICULTIES, DAILY_DIFFICULTY, create, play, aiMove, commitAI, analyze, winningMoves, canMakeFive, prove, resign, decision, restore, chooseMove, winLine, canUndo, undo, lastMove, playerMoves, isValid, cellScore };
+  return { SIZE, CELLS, BLACK, WHITE, DIFFICULTIES, DAILY_DIFFICULTY, create, play, aiMove, commitAI, analyze, winningMoves, canMakeFive, prove, resign, decision, restore, chooseMove, winLine, canUndo, undo, lastMove, playerMoves, isValid, cellScore, threatMarks, explainWin, replayBoard };
 })();
 
 if (typeof module !== 'undefined') module.exports = Omok;

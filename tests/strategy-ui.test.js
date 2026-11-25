@@ -35,8 +35,8 @@ test('장기 옛 저장본의 누락 외통은 이어하기 직후 종료·오�
 });
 test('오목 실제 열린4 증명으로 컴퓨터가 기권·오늘 도전 출석·기록 한 번',()=>{
  const s=savedOmok(four);s.daily='2026-11-23';const b=dom('omok',{saved:{[OK]:s}});b.click('continue-btn');b.advance(140);
- const w=b.workers[0];respond(w,O.analyze(w.data.state));assert.match(b.element('outcome-notice').textContent,/흑 승리/);assert.equal(b.get(OK),null);
- b.advance(800);assert.equal(b.element('result-screen').hidden,false);assert.match(b.element('result-sub').textContent,/컴퓨터 기권/);assert.equal(b.get(OS).daily.wins,1);
+ const w=b.workers[0];respond(w,O.analyze(w.data.state));assert.match(b.element('outcome-notice').textContent,/열린 4.*내 승리/);assert.equal(b.get(OK),null);
+ b.advance(2000);assert.equal(b.element('result-screen').hidden,true);b.click('view-result');assert.equal(b.element('result-screen').hidden,false);assert.match(b.element('result-sub').textContent,/컴퓨터 기권/);assert.equal(b.get(OS).daily.wins,1);
  assert.ok(b.get('maeil-game.daily.v1').done['2026-11-23'].includes('omok'));respond(w,O.analyze(w.data.state));b.window.fire('pagehide');assert.equal(b.get(OS).daily.played,1);
 });
 test('오목 백의 강제 승리: 계속 선택 저장과 재질문 방지·기권 새 판',()=>{

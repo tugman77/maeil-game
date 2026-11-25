@@ -88,11 +88,20 @@
     <div id="board-area" class="board-area">
       <div id="board" class="omok-board" role="grid" aria-label="오목 13×13 판"></div>
     </div>
+    <p id="board-legend" class="board-legend" hidden>굵은 테두리: 승리·위협 돌 · 빨간 네모: 마지막 수<br>파란 ×: 지금 막을 곳 · 파란 ◇: 다음 공격 자리</p>
+    <button type="button" id="view-result" class="primary-btn omok-place" hidden>결과 보기</button>
+    <button type="button" id="view-proof" class="secondary-btn omok-place" hidden>수순 보기</button>
+    <section id="replay-controls" class="replay-controls" aria-label="수순 보기" hidden>
+      <p id="replay-status" role="status" aria-live="polite"></p>
+      <div class="button-pair"><button type="button" id="replay-prev" class="secondary-btn">← 이전</button><button type="button" id="replay-next" class="primary-btn">다음 →</button></div>
+      <button type="button" id="replay-close" class="secondary-btn">원래 판으로</button>
+    </section>
     <button type="button" id="place-btn" class="primary-btn omok-place" disabled>여기에 두기</button>
-    <p class="note-text omok-help">칸 선택 후 한 번 더 누르거나 [여기에 두기]. 승리 수순이 확정되면 컴퓨터는 기권하고, 내가 지는 쪽이면 계속 둘지 한 번 물어요.</p>
-    <div id="outcome-overlay" class="outcome-overlay" role="dialog" aria-modal="true" aria-labelledby="outcome-title" aria-describedby="outcome-detail" hidden>
+    <p id="play-help" class="note-text omok-help">칸 선택 후 한 번 더 누르거나 [여기에 두기]. 승리 수순이 확정되면 컴퓨터는 기권하고, 내가 지는 쪽이면 계속 둘지 한 번 물어요.</p>
+    <div id="outcome-overlay" class="outcome-overlay" role="region" aria-labelledby="outcome-title" aria-describedby="outcome-detail" hidden>
       <div class="outcome-card"><h2 id="outcome-title"></h2>
-        <p id="outcome-detail">계속 두기를 고르면 이번 판에서는 다시 묻지 않아요.</p>
+        <p id="outcome-detail"></p>
+        <p>계속 두기를 고르면 이번 판에서는 다시 묻지 않아요.</p>
         <button type="button" id="outcome-new" class="primary-btn">기권하고 새 판</button>
         <button type="button" id="outcome-continue" class="secondary-btn">계속 두기</button>
       </div>
@@ -110,6 +119,9 @@
       <p id="result-best" class="result-best"></p>
       <p id="result-daily" class="result-detail"></p>
     </div>
+    <p id="result-reason" class="result-reason"></p>
+    <button type="button" id="review-board" class="primary-btn">판 다시 보기</button>
+    <button type="button" id="review-game" class="secondary-btn">수순 다시 보기</button>
     <button type="button" id="share-btn" class="primary-btn">결과 공유하기</button>
     <div class="button-pair">
       <button type="button" id="again-btn" class="secondary-btn">새 게임</button>

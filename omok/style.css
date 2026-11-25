@@ -6,6 +6,8 @@
   --omok-black: #1c1c1c;
   --omok-white: #fbfaf6;
   --omok-mark: #d6334a;
+  --omok-highlight: #ffe34d;
+  --omok-block: #003e91;
 }
 :root[data-theme="dark"] {
   --omok-wood: #b48c52;
@@ -19,6 +21,7 @@
 .omok-status { margin: 0; min-height: 1.4em; font-weight: 700; text-align: center; }
 .omok-status.thinking { color: var(--muted); font-weight: 600; }
 .omok-board {
+  position: relative;
   --size: min(460px, calc(100vw - 24px), max(260px, calc(100dvh - 250px)));
   width: var(--size);
   height: var(--size);
@@ -61,23 +64,39 @@
 .omok-pt.white .stone { background: radial-gradient(circle at 35% 30%, #ffffff, var(--omok-white) 55%, #d9d6cc); box-shadow: 0 1px 2px rgb(0 0 0 / .4); }
 .omok-pt.ghost .stone { background: var(--omok-black); opacity: .38; }
 .omok-pt.ghost { outline: 2px dashed var(--omok-black); outline-offset: -2px; border-radius: 50%; }
-.omok-pt.last .stone::after { content: ''; position: absolute; inset: 34%; border-radius: 50%; background: var(--omok-mark); }
-.omok-pt.win .stone { box-shadow: 0 0 0 2px var(--omok-mark), 0 0 8px 2px var(--omok-mark); }
+.omok-pt.last .stone::after { content: ''; position: absolute; inset: 28%; border-radius: 2px; background: #bd1034; border: 2px solid white; z-index: 5; }
+.omok-pt.win .stone, .omok-pt.threat .stone { box-shadow: 0 0 0 3px var(--omok-highlight), 0 0 0 5px #342900; }
+.win-track { position: absolute; inset: calc(var(--size) / 60); pointer-events: none; z-index: 2; }
+.win-track::after { content: ''; position: absolute; left: var(--win-x); top: var(--win-y); width: var(--win-width, 0px); height: 6px; border-radius: 4px; background: var(--omok-highlight); box-shadow: 0 1px 0 #342900; transform-origin: 0 50%; transform: translateY(-50%) rotate(var(--win-angle)); opacity: .8; }
+.point-mark { position: absolute; inset: 8%; z-index: 4; display: grid; place-items: center; font: 800 18px/1 sans-serif; pointer-events: none; }
+.black .point-mark { color: white; text-shadow: 0 1px 2px black; }
+.white .point-mark { color: black; }
+.block-point .point-mark, .next-point .point-mark { color: var(--omok-block); background: #f1f8ff; border: 2px solid var(--omok-block); border-radius: 4px; }
+.next-point .point-mark { border-style: dashed; }
+.board-legend { max-width: 460px; text-align: center; margin: 0; font-size: 1rem; line-height: 1.6; }
+.replay-controls { width: min(100%, 460px); text-align: center; }
+.replay-controls p { margin: 0 0 10px; font-size: 1.1rem; font-weight: 700; }
+.replay-controls > button { width: 100%; margin-top: 10px; }
+.replay-controls button:disabled { opacity: .45; }
+.result-reason { font-size: 1.15rem; font-weight: 700; line-height: 1.7; text-align: center; }
 .omok-pt:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; border-radius: 4px; }
 .omok-place { width: min(100%, 360px); }
 .omok-place:disabled { opacity: .4; cursor: default; }
 .omok-help { max-width: 440px; }
 @media (prefers-reduced-motion: no-preference) {
   .omok-pt.drop .stone { animation: omok-drop 160ms ease-out; }
-  .omok-pt.win .stone { animation: omok-win 900ms ease-in-out 2; }
+  .omok-pt.win .stone, .omok-pt.threat .stone { animation: omok-win 1400ms ease-in-out infinite; }
   @keyframes omok-drop { from { transform: scale(1.35); opacity: .3; } to { transform: scale(1); opacity: 1; } }
-  @keyframes omok-win { 50% { transform: scale(1.12); } }
+  @keyframes omok-win { 50% { box-shadow: 0 0 0 3px var(--omok-highlight), 0 0 0 5px #342900, 0 0 12px 5px var(--omok-highlight); } }
 }
 
-.outcome-notice { margin: 0; color: var(--text); font-size: 1.05rem; font-weight: 700; text-align: center; }
+.outcome-notice { max-width: 480px; margin: 0; color: var(--text); font-size: 1.15rem; line-height: 1.6; font-weight: 700; text-align: center; }
 .outcome-notice:empty { display: none; }
-.outcome-overlay { position: fixed; inset: 0; z-index: 100; background: rgb(0 0 0 / .65); display: grid; place-items: center; padding: 16px; }
+.outcome-overlay { width: min(100%, 460px); }
 .outcome-overlay[hidden] { display: none; }
-.outcome-card { width: min(100%, 440px); max-height: 90dvh; overflow: auto; padding: 24px; border-radius: 16px; background: var(--bg); color: var(--text); text-align: center; }
+.outcome-card { padding: 16px; border: 2px solid var(--primary); border-radius: 16px; background: var(--surface); color: var(--text); text-align: center; line-height: 1.6; }
 .outcome-card h2 { font-size: 1.4rem; line-height: 1.5; }
 .outcome-card button { display: block; width: 100%; min-height: 54px; margin-top: 16px; font-size: 1.15rem; }
+
+/* Keep Korean words together when large text wraps on a narrow screen. */
+.outcome-notice, .outcome-card, .result-reason, .replay-controls { word-break: keep-all; overflow-wrap: break-word; }
