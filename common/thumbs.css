@@ -1,3 +1,7 @@
+/* SVG는 게임별 viewBox 안에서 비율을 유지해 최대 크기로 맞춘다.
+   시작 화면과 가로형 큰 글씨 카드에서도 그림·글자를 자르거나 늘리지 않는다. */
+.thumb svg, .today-thumb svg, .soon-thumb svg, .st-preview svg { object-fit: contain; }
+
 /* 게임 썸네일 색 (common/thumbs.js가 그리는 SVG). 게임 목록과 각 게임 시작 화면 미리보기가 함께 쓴다.
    게임마다 개성: 스도쿠 세이지 그린 · 2048 살구 · 카드 라벤더 · 지뢰 하늘 · 블록 산호 · 스네이크 연두 · 오목 나무 · 벽돌 남색 · 러너 노랑 */
 .thumb-sudoku { --tint: #dcebe2; }

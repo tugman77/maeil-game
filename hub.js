@@ -64,6 +64,7 @@
     link.classList.toggle('done', kind === 'all');
     const thumb = $('today-thumb');
     thumb.className = `today-thumb thumb-${game.id}`;
+    thumb.style.setProperty('--art-ratio', GameThumbs.ratio(game.id));
     thumb.innerHTML = GameThumbs.render(game); // 우리 코드가 만든 고정 SVG
     $('today-pick-label').textContent = { pick: '오늘의 추천', next: '다음 도전', all: '오늘의 추천 · 다시 해 보기' }[kind];
     $('today-pick-name').textContent = game.name;
@@ -79,14 +80,16 @@
     a.href = game.path;
 
     const thumb = el('span', `thumb thumb-${game.id}`);
+    thumb.style.setProperty('--art-ratio', GameThumbs.ratio(game.id));
     thumb.innerHTML = GameThumbs.render(game); // 우리 코드가 만든 고정 SVG
     const tags = el('span', 'thumb-tags');
     if (game.daily && M.dailyDone(game.id, today)) tags.append(el('span', 'tag tag-done', '✓ 오늘 완료'));
     if (game.id === recentId) tags.append(el('span', 'tag', '최근'));
     else if (isNew(game, today)) tags.append(el('span', 'tag tag-new', 'NEW'));
-    if (tags.childNodes.length) thumb.append(tags);
 
     const body = el('span', 'card-body');
+    // 커진 그림을 가리지 않도록 완료·최근·NEW 표시는 제목 위에 둔다.
+    if (tags.childNodes.length) body.append(tags);
     const record = recordText(game, summaries);
     body.append(
       el('strong', 'card-name', game.name),
@@ -109,6 +112,7 @@
   function soonCard(game) {
     const li = el('li', 'soon-card');
     const thumb = el('span', `soon-thumb thumb-${game.id}`);
+    thumb.style.setProperty('--art-ratio', GameThumbs.ratio(game.id));
     thumb.innerHTML = GameThumbs.render(game);
     const body = el('span', 'soon-body');
     body.append(el('strong', '', game.name), el('span', 'soon-desc', game.desc));

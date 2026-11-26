@@ -102,9 +102,10 @@ a.game-card:hover { border-color: var(--primary); transform: translateY(-2px); b
 a.game-card:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; border-color: var(--primary); }
 a.game-card:active { transform: scale(0.98); }
 
-.thumb { display: block; aspect-ratio: 4 / 3; background: var(--tint); position: relative; }
-.thumb svg { width: 100%; height: 100%; display: block; }
-.thumb-tags { position: absolute; top: 8px; left: 8px; right: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+.thumb { display: block; aspect-ratio: var(--art-ratio, 1); background: var(--tint); position: relative; }
+/* 큰 글씨 가로 카드의 높이는 본문이 정하고 SVG는 그 안에 비율대로 맞춘다. */
+.thumb svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.thumb-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
 .tag {
   padding: 2px 8px;
   border-radius: 999px;

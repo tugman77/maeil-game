@@ -4,18 +4,29 @@ const KEY='maeil-game.gostop.game.v1',STATS='maeil-game.gostop.stats.v1';
 function wrap(s,extras={}){return {v:1,id:'ui-'+s.initial.deck.slice(0,6).join('-'),difficulty:'medium',daily:null,undo:0,hints:0,state:s,...extras};}
 function state(seed,first=0){let s=G.create(M.createSeededRandom(seed));if(s.phase!=='ended'){s=G.initial(s.initial.deck,first);}return s;}
 function browser(s,options={}){return dom('gostop',{saved:{[KEY]:wrap(s)},...options});}
-function clickHand(b,id){const s=b.get(KEY).state,list=[...s.hands[0]].sort((a,b)=>a-b);b.element('hand').children[list.indexOf(id)].fire('click');}
+function handCard(b,id){const s=b.get(KEY).state,list=[...s.hands[0]].sort((a,b)=>a-b),card=b.element('hand').children[list.indexOf(id)];assert.ok(card,`손패에 ${id}번 패가 있어야 합니다`);return card;}
+function clickHand(b,id){handCard(b,id).fire('click');}
 function act(b,a){if(a.type==='play'){clickHand(b,a.id);b.click('play-btn');}else if(a.type==='choose'){const choices=b.get(KEY).state.pending.choices;b.element('choices').children[choices.indexOf(a.id)].fire('click');}else if(a.type==='stop'||a.type==='go')b.click(a.type+'-btn');else if(a.type==='skip')b.click('skip-btn');else {const actions=G.legal(b.get(KEY).state).filter(x=>['shake','bomb'].includes(x.type));b.element('special-actions').children[actions.findIndex(x=>JSON.stringify(x)===JSON.stringify(a))].fire('click');}}
 function human(b){act(b,AI.choose(G.view(b.get(KEY).state)));}
-function finish(b){for(let n=0;n<160&&b.element('result-screen').hidden;n++){const v=b.get(KEY);assert.ok(v);if(v.state.turn===1)b.advance(700);else human(b);}assert.equal(b.element('result-screen').hidden,false);}
+function finish(b){for(let n=0;n<160&&b.element('result-screen').hidden;n++){const v=b.get(KEY);assert.ok(v);if(b.element('game-screen').attributes['aria-busy']==='true'||v.state.turn===1)b.advance(700);else human(b);}assert.equal(b.element('result-screen').hidden,false);}
 
-test('손패 10장·명확한 선택/취소/다른 패·내기 전 저장 변화 없음',()=>{
- const s=state('selection'),b=browser(s);b.click('continue-btn');const before=b.get(KEY);const id=s.hands[0][0];clickHand(b,id);assert.equal(b.element('play-btn').disabled,false);assert.deepEqual(b.get(KEY),before);assert.equal(b.element('hand').children[[...s.hands[0]].sort((a,b)=>a-b).indexOf(id)].attributes['aria-pressed'],'true');
- clickHand(b,id);assert.equal(b.element('play-btn').disabled,true);clickHand(b,s.hands[0][1]);b.click('clear-btn');assert.equal(b.element('play-btn').disabled,true);
- clickHand(b,id);b.click('play-btn');assert.ok(b.get(KEY).state.log.length);assert.ok(G.restore(b.get(KEY).state));
+test('손패 10장·한 번 눌러 선택/다른 패로 변경/선택 취소 버튼·내기 전 저장 변화 없음',()=>{
+ const s=state('selection'),b=browser(s);b.click('continue-btn');const before=b.get(KEY),[id,other]=s.hands[0];
+ const selected=()=>b.element('hand').children.filter(card=>card.attributes['aria-pressed']==='true');
+ assert.equal(b.element('hand').children.length,10);assert.equal(b.element('play-btn').disabled,true);assert.equal(b.element('clear-btn').disabled,true);assert.equal(selected().length,0);
+ clickHand(b,id);assert.equal(b.element('play-btn').disabled,false);assert.equal(b.element('clear-btn').disabled,false);assert.deepEqual(selected(),[handCard(b,id)]);assert.deepEqual(b.get(KEY),before);
+ clickHand(b,other);assert.equal(handCard(b,id).attributes['aria-pressed'],'false');assert.deepEqual(selected(),[handCard(b,other)]);assert.equal(b.element('play-btn').disabled,false);assert.equal(b.element('clear-btn').disabled,false);assert.deepEqual(b.get(KEY),before);
+ b.click('clear-btn');assert.equal(selected().length,0);assert.equal(b.element('play-btn').disabled,true);assert.equal(b.element('clear-btn').disabled,true);assert.equal(b.element('hand').children.length,10);assert.deepEqual(b.get(KEY),before);
+ b.click('play-btn');assert.deepEqual(b.get(KEY),before);
+ clickHand(b,id);assert.deepEqual(selected(),[handCard(b,id)]);assert.deepEqual(b.get(KEY),before);b.click('play-btn');assert.deepEqual(b.get(KEY),{...before,state:G.apply(s,{type:'play',id})});assert.ok(G.restore(b.get(KEY).state));
+});
+for(const [name,event] of [['같은 손패를 두 번 눌러','click'],['손패를 더블클릭해','dblclick']])test(`${name} 정확히 한 장 내기`,()=>{
+ const s=state('selection'),b=browser(s);b.click('continue-btn');const before=b.get(KEY),id=s.hands[0][0];
+ if(event==='click'){clickHand(b,id);assert.deepEqual(b.get(KEY),before);assert.equal(b.element('hand').children.length,10);assert.equal(handCard(b,id).attributes['aria-pressed'],'true');}
+ handCard(b,id).fire(event);const after=b.get(KEY);assert.deepEqual(after,{...before,state:G.apply(s,{type:'play',id})});assert.equal(after.state.hands[0].length,9);assert.equal(after.state.hands[0].includes(id),false);assert.equal(b.element('hand').children.length,9);assert.equal(b.element('play-btn').disabled,true);assert.equal(b.element('clear-btn').disabled,true);assert.ok(G.restore(after.state));
 });
 test('컴퓨터 차례 취소·한 차례 무르기·늦은 타이머 무시와 더미 복원',()=>{
- const s=state('undo'),b=browser(s);b.click('continue-btn');human(b);b.click('undo-btn');const restored=b.get(KEY);assert.deepEqual(restored.state,s);assert.equal(restored.undo,1);b.advance(6000);assert.deepEqual(b.get(KEY),restored);
+ const s=state('undo'),b=browser(s);b.click('continue-btn');human(b);b.advance(650);b.click('undo-btn');const restored=b.get(KEY);assert.deepEqual(restored.state,s);assert.equal(restored.undo,1);b.advance(6000);assert.deepEqual(b.get(KEY),restored);
  human(b);b.advance(7000);if(b.element('result-screen').hidden){b.click('undo-btn');assert.deepEqual(b.get(KEY).state,s);}
 });
 test('처음·이어하기·선택 도중과 컴퓨터 차례 자동 재개',()=>{
