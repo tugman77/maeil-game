@@ -1,5 +1,5 @@
 {
-  "version": 21,
+  "version": 22,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -444,6 +444,14 @@
       "deployment_run": 46010544471,
       "deployment_verification": "GitHub Pages 실행 46010544471 success. 게임 페이지·논리 JS·스타일·도움말 HTTP 200 확인.",
       "verification_limit": "자동 테스트와 실제 브라우저 모바일 조작 검수는 실행하지 않음."
+    },
+    {
+      "game": "hanja",
+      "status": "in_progress",
+      "requested_on": "2026-11-27",
+      "trigger": "user_requested",
+      "base_commit": "a66e2457617695f673113dee3f98a5edf88cc5d7",
+      "note": "오늘의 한자 PRD에 따라 한국 한자·중국어·일본어 읽기·쓰기·듣기 연습과 날짜별 오늘의 도전을 구현한다."
     }
   ],
   "queue_changes": [

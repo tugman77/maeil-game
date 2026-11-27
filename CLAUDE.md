@@ -27,7 +27,7 @@ common/start.js · start.css     게임별 시작 화면 공통 틀(목록 링�
 sw.js                           사이트 전체 공용 오프라인 보관 (파일 추가 시 FILES에도 추가)
 sudoku/                         스도쿠 (자체 CLAUDE.md 규칙은 ../스도쿠게임/CLAUDE.md 참고)
 tests/                          node tests/common.test.js · node tests/games.test.js · node --test tests/snake*.test.js tests/phase2.test.js
-2048/ · memory/ · minesweeper/ · blocks/ · snake/ · omok/ · bricks/ · runner/ · reversi/ · sichuan/ · number-baseball/ · freecell/ · proverb-quiz/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
+2048/ · memory/ · minesweeper/ · blocks/ · snake/ · omok/ · bricks/ · runner/ · reversi/ · sichuan/ · number-baseball/ · freecell/ · proverb-quiz/ · hanja/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
 reversi/js/ai-worker.js         리버시 AI 계산 전용 Worker(중단·오래된 응답 무시), Worker 미지원 시 제한된 계산으로 대체
 ```
 
