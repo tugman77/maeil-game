@@ -1,0 +1,35 @@
+.game-header,.game-label,.play-area { width:min(100%,460px); }
+.game-header { gap:6px; }
+.header-stats { gap:5px; }
+.stat-box { min-width:58px;padding:3px 6px; }
+.stat-box small { font-size:14px; }
+.game-label { margin:0;text-align:center; }
+.play-area { display:flex;flex-direction:column;gap:12px; }
+.proverb-card { padding:18px 16px 16px;background:var(--surface);border:1px solid var(--line);border-radius:18px; }
+.category { margin:0;color:var(--primary);font-size:16px;font-weight:750;text-align:center; }
+.phrase { margin:22px 0 16px;font-size:clamp(24px,6vw,31px);font-weight:750;line-height:1.65;text-align:center;word-break:keep-all; }
+.phrase strong { display:inline-block;min-width:3.2em;padding:0 6px;color:var(--primary);background:var(--active);border-bottom:3px solid var(--primary);border-radius:7px 7px 2px 2px; }
+.game-status { min-height:1.5em;margin:0 0 10px;color:var(--muted);font-size:16px;text-align:center; }
+.choice-list { display:grid;grid-template-columns:1fr;gap:8px; }
+.choice-btn { min-height:56px;padding:10px 14px;border:2px solid var(--button-border);border-radius:12px;background:var(--button);font-size:20px;font-weight:700;line-height:1.3; }
+.choice-btn:active:not(:disabled) { background:var(--active);border-color:var(--primary); }
+.choice-btn:disabled { cursor:default;opacity:.55; }
+.choice-btn.wrong { border-color:#b84a43;background:#fae8e6;color:#7f2823;opacity:1; }
+:root[data-theme="dark"] .choice-btn.wrong { background:#482723;color:#ffe7e4; }
+.choice-btn.correct { border-color:var(--done);background:var(--active);color:var(--text);opacity:1; }
+.hint-text { min-height:1.5em;margin:8px 0 0;color:var(--muted);font-size:16px;text-align:center; }
+.helper-row { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px; }
+.helper-row .header-btn { min-height:48px; }
+.explanation { margin-top:14px;padding:14px;border:2px solid var(--primary);border-radius:14px;background:var(--active); }
+.explanation h2 { margin:0 0 5px;font-size:20px; }
+.explanation p { margin:0 0 12px;font-size:17px;line-height:1.55; }
+.explanation .primary-btn { width:100%; }
+.relax-note,.record-note { margin:0;color:var(--muted);font-size:14px;text-align:center; }
+.in-game-settings { display:flex;justify-content:center;flex-wrap:wrap;gap:8px; }
+.in-game-settings a { display:inline-flex;align-items:center;min-height:44px;padding:6px 12px;color:var(--primary);font-size:16px; }
+.pause-overlay { position:fixed;inset:0;z-index:20;border-radius:0;padding:24px; }
+.review-list { padding:14px 14px 14px 36px;background:var(--surface);border:1px solid var(--line);border-radius:14px;font-size:16px;list-style:none; }
+.review-list li { padding:6px 0; }
+:root.large-text .phrase { font-size:clamp(28px,7vw,36px); }
+:root.large-text .choice-btn { min-height:64px;font-size:24px; }
+:root.large-text .explanation p,:root.large-text .game-status,:root.large-text .hint-text { font-size:19px; }

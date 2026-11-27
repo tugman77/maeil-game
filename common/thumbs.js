@@ -21,6 +21,7 @@ const GameThumbs = (() => {
     'freecell': '11 4 138 112',
     'klondike': '9 4 142 113',
     'initial-quiz': '11 5 138 110',
+    'proverb-quiz': '10 5 140 110',
     'janggi': '31 2 98 116',
     'go': '24 4 112 112',
     'gostop': '8 6 144 108',
@@ -222,6 +223,9 @@ const GameThumbs = (() => {
   function initialQuiz() {
     return svg('initial-quiz', '<rect x="15" y="9" width="130" height="102" rx="14" class="th-iq-base"/>'+['ㄱ','ㅂ'].map((c,i)=>`<rect x="${34+i*48}" y="22" width="42" height="44" rx="9" class="th-iq-tile"/><text x="${55+i*48}" y="54" class="th-iq-text">${c}</text>`).join('')+['김','밥','꽃','산'].map((c,i)=>`<rect x="${24+i*29}" y="77" width="25" height="24" rx="5" class="th-iq-tile"/><text x="${36.5+i*29}" y="95" class="th-iq-small">${c}</text>`).join(''));
   }
+  function proverbQuiz() {
+    return svg('proverb-quiz', '<rect x="13" y="10" width="134" height="101" rx="16" class="th-pq-card"/><path d="M32 30h96a6 6 0 0 1 6 6v36a6 6 0 0 1-6 6H73L55 92V78H32a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6z" class="th-pq-bubble"/><text x="80" y="57" class="th-pq-text">속담</text><rect x="54" y="63" width="52" height="10" rx="4" class="th-pq-blank"/><circle cx="118" cy="91" r="14" class="th-pq-mark"/><text x="118" y="98" class="th-pq-question">?</text>');
+  }
   function janggi() {
     let body='<rect x="35" y="6" width="90" height="108" rx="8" class="th-jg-board"/>';
     for(let i=0;i<9;i++)body+=`<line x1="${44+i*9}" y1="15" x2="${44+i*9}" y2="105" class="th-jg-line"/>`;
@@ -243,7 +247,7 @@ const GameThumbs = (() => {
     ].map(([x,y,file])=>`<image x="${x}" y="${y}" width="42" height="69" href="${hwatuRoot}${file}"/>`).join(''));
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, janggi, go, gostop };
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, 'proverb-quiz': proverbQuiz, janggi, go, gostop };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();
