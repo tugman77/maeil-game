@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="한국 한자, 중국어 한자, 일본어 한자를 읽고 쓰고 들으며 익히는 짧은 학습 게임입니다.">
+  <meta name="description" content="한국어문회 한자능력검정시험 8급 배정한자부터 훈음·독음·한자 쓰기를 차근히 연습합니다.">
   <meta name="theme-color" content="#f5f3ee">
   <meta property="og:title" content="오늘의 한자 — 매일게임">
-  <meta property="og:description" content="한자를 읽고, 획순을 따라 쓰고, 소리를 들으며 익혀 보세요.">
+  <meta property="og:description" content="한국어문회 8급 한자부터 훈음과 독음을 차근히 익혀 보세요.">
   <meta property="og:type" content="website">
   <title>오늘의 한자 — 매일게임</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e6b48'/%3E%3Ctext x='32' y='46' text-anchor='middle' fill='white' font-size='42' font-weight='700'%3E漢%3C/text%3E%3C/svg%3E">
@@ -27,7 +27,7 @@
 <body>
   <main id="start-screen" class="st">
     <a href="../" class="st-back">← 게임 목록</a>
-    <header><h1 class="st-title">오늘의 한자</h1><p class="st-desc">읽고, 획순을 따라 쓰고, 소리를 들으며 한자를 익혀 보세요.</p></header>
+    <header><h1 class="st-title">오늘의 한자</h1><p class="st-desc">한국어문회 한자능력검정시험, 8급부터 차근히 준비해요.</p></header>
     <div class="st-hero thumb-hanja" id="hero">
       <div class="st-preview" id="preview" aria-hidden="true"></div>
       <button type="button" id="daily-btn" class="st-daily"><span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span><span class="st-daily-go" id="daily-go">도전하기 →</span></button>
@@ -35,8 +35,8 @@
     <div class="st-ask" id="sound-ask" hidden><span>효과음을 켤까요?</span><button type="button" id="sound-yes" class="st-ask-yes">켜기</button><button type="button" id="sound-no" class="st-ask-no">괜찮아요</button></div>
     <div id="continue-wrap" hidden><button type="button" id="continue-btn" class="st-continue">▶ 이어하기<small id="continue-info"></small></button><p class="st-note">진행은 이 기기에 저장돼요</p></div>
     <section class="st-pick" aria-labelledby="language-label">
-      <h2 class="st-label" id="language-label">학습 언어</h2>
-      <div class="choice-chips" id="language-list" role="radiogroup" aria-label="학습 언어"></div>
+      <h2 class="st-label" id="language-label">학습 기준</h2>
+      <p class="st-detail" id="language-list">한국어문회 전국한자능력검정시험 기준</p>
       <h2 class="st-label mode-label">연습 방법</h2>
       <div class="choice-chips" id="mode-list" role="radiogroup" aria-label="연습 방법"></div>
       <h2 class="st-label mode-label" id="pick-label">난이도</h2>

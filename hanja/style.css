@@ -7,6 +7,7 @@
 .lesson-card { width:min(100%,480px); display:flex; flex-direction:column; align-items:center; gap:10px; padding:18px 16px; border:1px solid var(--line); border-radius:22px; background:var(--surface); box-shadow:0 4px 18px #2028200b; }
 .prompt-label { margin:0; color:var(--muted); font-size:1.02em; font-weight:700; text-align:center; }
 .lesson-hanzi { margin:0; font-size:clamp(3.3rem,18vw,6rem); line-height:1.12; font-weight:800; letter-spacing:.03em; }
+.lesson-hanzi.answer-text { font-size:clamp(1.7rem,8vw,2.5rem); letter-spacing:0; }
 .lesson-word { min-height:1.35em; margin:0; color:var(--muted); font-size:1.02em; font-weight:600; text-align:center; }
 .speak-btn { min-height:50px; padding:8px 20px; border:1px solid var(--primary); border-radius:14px; color:var(--primary); background:var(--active); font-size:1em; font-weight:750; }
 .audio-note { min-height:1.2em; margin:0; color:var(--muted); font-size:.82em; text-align:center; }
