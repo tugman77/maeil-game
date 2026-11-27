@@ -29,7 +29,7 @@
   }
   function start(state){
     game=state;paused=false;finished=false;M.markPlayed(ID);$('pause-overlay').hidden=true;screen('game-screen');
-    $('game-status').textContent='알맞은 말을 골라 속담을 완성해 주세요.';render();save();
+    $('game-status').textContent='빈칸에 들어갈 말을 아래 보기에서 골라 누르세요.';render();save();
   }
   function startDaily(){const day=M.todayKey(),saved=loadGame();start(saved?.daily===day?saved:G.create(G.DAILY_DIFFICULTY,{daily:day}));}
   function render(){
@@ -72,7 +72,7 @@
   function next(){
     if(!game||paused||finished||!G.next(game))return;
     if(G.isDone(game)){finish();return;}
-    $('game-status').textContent='알맞은 말을 골라 속담을 완성해 주세요.';render();save();
+    $('game-status').textContent='빈칸에 들어갈 말을 아래 보기에서 골라 누르세요.';render();save();
     [...$('choice-list').children].find(b=>!b.disabled)?.focus({preventScroll:true});
   }
   function pause(){if(!game||paused||finished||$('game-screen').hidden)return;paused=true;$('pause-overlay').hidden=false;render();save();$('resume-btn').focus();}
