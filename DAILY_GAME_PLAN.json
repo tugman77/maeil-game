@@ -1,5 +1,5 @@
 {
-  "version": 22,
+  "version": 23,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -110,6 +110,15 @@
       "commit": "9cfd90fe8a3e2203751a5e3d18bc053c5d4d93c9",
       "url": "https://tugman77.github.io/maeil-game/proverb-quiz/",
       "deployment_run": 46010544471
+    },
+    {
+      "id": "hanja",
+      "name": "오늘의 한자",
+      "completed_on": "2026-11-28",
+      "status": "published",
+      "commit": "469cbccc878ea5a2d225d103502736edfc4dd0d4",
+      "url": "https://tugman77.github.io/maeil-game/hanja/",
+      "deployment_run": 46021051416
     }
   ],
   "backlog": [
@@ -447,11 +456,18 @@
     },
     {
       "game": "hanja",
-      "status": "in_progress",
+      "status": "published",
       "requested_on": "2026-11-27",
       "trigger": "user_requested",
       "base_commit": "a66e2457617695f673113dee3f98a5edf88cc5d7",
-      "note": "오늘의 한자 PRD에 따라 한국 한자·중국어·일본어 읽기·쓰기·듣기 연습과 날짜별 오늘의 도전을 구현한다."
+      "note": "오늘의 한자 PRD에 따라 한국 한자·중국어·일본어 읽기·쓰기·듣기 연습과 날짜별 오늘의 도전을 구현한다.",
+      "verified_on": "2026-11-28",
+      "completed_on": "2026-11-28",
+      "tests": "자동 테스트는 실행하지 않음.",
+      "verification_limit": "실제 브라우저 조작·모바일 화면 검수는 수행하지 않음. 공개된 게임·로직·가이드·목록·서비스워커 파일 응답을 확인함.",
+      "commit": "469cbccc878ea5a2d225d103502736edfc4dd0d4",
+      "deployment_run": 46021051416,
+      "url": "https://tugman77.github.io/maeil-game/hanja/"
     }
   ],
   "queue_changes": [
