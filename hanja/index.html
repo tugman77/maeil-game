@@ -1,84 +1,66 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="한국어문회 한자능력검정시험 8급 배정한자부터 훈음·독음·한자 쓰기를 차근히 연습합니다.">
-  <meta name="theme-color" content="#f5f3ee">
-  <meta property="og:title" content="오늘의 한자 — 매일게임">
-  <meta property="og:description" content="한국어문회 8급 한자부터 훈음과 독음을 차근히 익혀 보세요.">
-  <meta property="og:type" content="website">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="한국어문회 한자능력검정시험 8급 50자를 4차시로 익히고 읽기·쓰기·듣기를 연습해 보세요.">
+  <meta name="theme-color" content="#f5f3ee"><meta property="og:title" content="오늘의 한자 — 매일게임"><meta property="og:description" content="한국어문회 8급 한자 50자를 차근히 배우고 시험 유형을 연습해요."><meta property="og:type" content="website">
   <title>오늘의 한자 — 매일게임</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e6b48'/%3E%3Ctext x='32' y='46' text-anchor='middle' fill='white' font-size='42' font-weight='700'%3E漢%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../common/base.css">
-  <link rel="stylesheet" href="../common/game.css">
-  <link rel="stylesheet" href="../common/thumbs.css">
-  <link rel="stylesheet" href="../common/start.css">
-  <link rel="stylesheet" href="style.css">
-  <script>
-    try {
-      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || localStorage.getItem('maeil-sudoku.settings.v1') || '{}');
-      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-      if (s.largeText) document.documentElement.classList.add('large-text');
-    } catch (e) {}
-  </script>
+  <link rel="stylesheet" href="../common/base.css"><link rel="stylesheet" href="../common/game.css"><link rel="stylesheet" href="../common/thumbs.css"><link rel="stylesheet" href="../common/start.css"><link rel="stylesheet" href="style.css">
+  <script>try{var s=JSON.parse(localStorage.getItem('maeil-game.settings.v1')||'{}');document.documentElement.dataset.theme=(typeof s.dark==='boolean'?s.dark:matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';if(s.largeText)document.documentElement.classList.add('large-text');}catch(e){}</script>
 </head>
 <body>
-  <main id="start-screen" class="st">
+  <main id="start-screen" class="st hanja-start">
     <a href="../" class="st-back">← 게임 목록</a>
-    <header><h1 class="st-title">오늘의 한자</h1><p class="st-desc">한국어문회 한자능력검정시험, 8급부터 차근히 준비해요.</p></header>
-    <div class="st-hero thumb-hanja" id="hero">
-      <div class="st-preview" id="preview" aria-hidden="true"></div>
-      <button type="button" id="daily-btn" class="st-daily"><span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info"></small></span><span class="st-daily-go" id="daily-go">도전하기 →</span></button>
-    </div>
+    <header><h1 class="st-title">오늘의 한자</h1><p class="st-desc">한국어문회 한자능력검정시험 · 8급 50자부터</p></header>
+    <div class="st-hero thumb-hanja" id="hero"><div class="st-preview" id="preview" aria-hidden="true"></div><button type="button" id="daily-btn" class="st-daily"><span class="st-daily-text"><b>오늘의 도전</b><small id="daily-info">8급 50자 전체에서 같은 한자 5개</small></span><span class="st-daily-go" id="daily-go">도전하기 →</span></button></div>
     <div class="st-ask" id="sound-ask" hidden><span>효과음을 켤까요?</span><button type="button" id="sound-yes" class="st-ask-yes">켜기</button><button type="button" id="sound-no" class="st-ask-no">괜찮아요</button></div>
     <div id="continue-wrap" hidden><button type="button" id="continue-btn" class="st-continue">▶ 이어하기<small id="continue-info"></small></button><p class="st-note">진행은 이 기기에 저장돼요</p></div>
-    <section class="st-pick" aria-labelledby="language-label">
-      <h2 class="st-label" id="language-label">학습 기준</h2>
-      <p class="st-detail" id="language-list">한국어문회 전국한자능력검정시험 기준</p>
-      <h2 class="st-label mode-label">연습 방법</h2>
-      <div class="choice-chips" id="mode-list" role="radiogroup" aria-label="연습 방법"></div>
-      <h2 class="st-label mode-label" id="pick-label">학습 범위</h2>
-      <div class="st-choices" id="difficulty-list" role="radiogroup" aria-labelledby="pick-label"></div>
-      <p class="st-detail" id="pick-detail"></p>
-      <button type="button" id="start-btn" class="st-start">게임 시작</button>
-      <p class="st-best"><span id="pick-best"></span></p>
+    <section class="hanja-course" aria-labelledby="course-title">
+      <div class="course-heading"><div><p class="eyebrow">1차 학습 범위</p><h2 id="course-title">한국어문회 8급</h2></div><b class="course-count"><span id="learned-count">0</span><small> / 50자</small></b></div>
+      <p class="course-caption">50자를 4차시로 배워요. 4~5자씩 읽기와 훈음 회상을 하고, 원하면 소리 듣기도 연습할 수 있어요.</p>
+      <div class="course-progress" role="progressbar" aria-label="8급 학습 진도" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0"><span id="course-progress-fill"></span></div>
+      <div class="lesson-grid" id="lesson-grid" aria-label="8급 학습 진행도"></div>
+      <p id="lesson-status" class="course-footnote"></p>
+      <button type="button" id="start-course-btn" class="primary-btn course-start-btn">학습 시작</button>
     </section>
+    <section class="hanja-actions" aria-label="한자 연습">
+      <button type="button" id="review-btn" class="study-action"><span>↻</span><b>오답·복습</b><small id="review-count">복습할 글자가 없어요</small></button>
+      <button type="button" id="all-review-btn" class="study-action"><span>50</span><b>50자 전체 복습</b><small>읽기·훈음·독음 연습</small></button>
+      <button type="button" id="mock-btn" class="study-action exam-action"><span>시험</span><b>8급 모의시험</b><small>50문항 · 50분 · 35문항 합격</small></button>
+    </section>
+    <section class="grade-roadmap" aria-label="장기 목표"><p class="eyebrow">확장 목표</p><div><b>8급</b><span>현재 학습</span><i>→</i><b>7급Ⅱ~3급</b><span>검수 후 차례로 추가</span></div></section>
+    <p class="data-note">자체 제작 연습 문제 · 공식 기출문제가 아닙니다. 한자별 공식 자료와 한국 필순은 최종 대조 중입니다.</p>
     <div id="daily-done-slot"></div>
-    <div class="st-tools">
-      <button type="button" class="st-tool large-text-toggle" aria-pressed="false">큰 글씨</button>
-      <button type="button" class="st-tool dark-toggle" aria-pressed="false">어두운 화면</button>
-      <button type="button" class="st-tool sound-toggle" aria-pressed="false">소리</button>
-      <a class="st-tool" href="../guide/hanja.html">도움말</a>
-    </div>
+    <div class="st-tools"><button type="button" class="st-tool large-text-toggle" aria-pressed="false">큰 글씨</button><button type="button" class="st-tool dark-toggle" aria-pressed="false">어두운 화면</button><button type="button" class="st-tool sound-toggle" aria-pressed="false">소리</button><a class="st-tool" href="../guide/hanja.html">도움말</a></div>
     <aside class="ad-slot" aria-label="광고"></aside>
   </main>
 
   <main id="game-screen" class="screen game-screen hanja-screen" hidden>
-    <header class="game-header"><button type="button" id="home-btn" class="header-btn">처음</button><div class="header-stats"><div class="stat-box"><small>문제</small><b id="question-number">1/5</b></div><div class="stat-box"><small>맞힘</small><b id="correct-count">0</b></div></div><button type="button" id="pause-btn" class="header-btn">잠시 쉬기</button></header>
-    <p id="game-label" class="game-label"></p>
+    <header class="game-header"><button type="button" id="home-btn" class="header-btn">처음</button><div class="header-stats"><div class="stat-box"><small id="progress-label">차시</small><b id="question-number">1/6</b></div><div class="stat-box"><small>맞힘</small><b id="correct-count">0</b></div></div><button type="button" id="pause-btn" class="header-btn">잠시 쉬기</button></header>
+    <p id="game-label" class="game-label"></p><p id="exam-timer" class="exam-timer" hidden></p>
     <section class="lesson-card" aria-labelledby="prompt-label">
       <p id="prompt-label" class="prompt-label"></p>
-      <p id="lesson-hanzi" class="lesson-hanzi" lang="ko"></p>
-      <p id="lesson-word" class="lesson-word"></p>
-      <button type="button" id="speak-btn" class="speak-btn" aria-label="발음 듣기">🔊 <span>발음 듣기</span></button>
-      <p id="audio-note" class="audio-note" role="status"></p>
-      <div id="answer-list" class="answer-list" role="group" aria-label="답안 보기"></div>
-      <div id="writing-area" class="writing-area" hidden>
-        <p id="writing-instruction" class="writing-instruction">연한 선을 손가락으로 따라 쓰세요.</p>
-        <svg id="writing-board" class="writing-board" viewBox="0 0 120 140" aria-label="한자 획순 따라 쓰기"><defs><marker id="write-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" class="write-arrow-head"/></marker></defs><rect x="4" y="4" width="112" height="132" rx="12" class="write-paper"/><path d="M60 8V132M8 70H112" class="write-guide"/><text id="write-target" x="60" y="103" class="write-target" text-anchor="middle"></text><g id="stroke-paths"></g><circle id="stroke-start" r="3.5" class="stroke-start"/><path id="active-stroke" class="active-stroke" d=""/><path id="user-stroke" class="user-stroke" d=""/></svg>
-        <div class="writing-actions"><button type="button" id="clear-stroke-btn" class="secondary-btn">다시 쓰기</button><button type="button" id="show-stroke-btn" class="secondary-btn">획순 보기</button></div>
-      </div>
-      <p id="answer-feedback" class="answer-feedback" role="status" aria-live="polite"></p>
-      <section id="answer-note" class="answer-note" hidden><h2 id="answer-title"></h2><p id="answer-detail"></p><button type="button" id="next-btn" class="primary-btn">다음 문제</button></section>
+      <section id="card-area" class="card-area" hidden>
+        <button type="button" id="hanja-card" class="hanja-flashcard" aria-expanded="false"><span id="card-character" class="card-character" lang="ko"></span><span id="card-reveal" class="card-reveal" hidden><b id="card-hunum"></b><span id="card-meta"></span><span id="card-word"></span><span id="card-radical"></span></span><small id="card-tap-hint">눌러서 훈음 보기</small></button><button type="button" id="card-speak-btn" class="speak-btn">🔊 훈음 듣기</button>
+        <div id="card-strokes" class="card-strokes" hidden><p>필순 보기</p><div id="card-stroke-visual"></div><small id="stroke-caption"></small></div>
+        <div class="card-actions"><button type="button" id="advance-card-btn" class="primary-btn" disabled>한자와 훈음을 확인해 주세요</button></div>
+      </section>
+      <section id="quiz-area" class="quiz-area" hidden>
+        <p id="question-display" class="question-display"></p>
+        <div id="stroke-question-visual" class="stroke-question-visual" hidden></div>
+        <button type="button" id="speak-btn" class="speak-btn" hidden>🔊 발음 듣기</button>
+        <p id="audio-note" class="audio-note" role="status"></p>
+        <div id="answer-list" class="answer-list" role="group" aria-label="답안 보기"></div>
+        <form id="answer-form" class="answer-form" hidden><label for="answer-input" id="answer-label">답을 입력하세요</label><input id="answer-input" type="text" autocomplete="off" autocapitalize="off" enterkeyhint="done"><button type="submit" class="primary-btn">답 확인</button></form>
+        <p id="answer-feedback" class="answer-feedback" role="status" aria-live="polite"></p>
+        <button type="button" id="skip-listen-btn" class="secondary-btn skip-listen-btn" hidden>듣기 연습 건너뛰기</button>
+        <section id="answer-note" class="answer-note" hidden><h2 id="answer-title"></h2><p id="answer-detail"></p><button type="button" id="next-btn" class="primary-btn">다음 문제</button></section>
+      </section>
     </section>
-    <p class="game-reminder">시간 제한 없음 · 발음은 다시 들을 수 있어요</p>
+    <p class="game-reminder">시간 제한 없는 학습 · 모의시험은 50분</p>
   </main>
-
-  <main id="pause-screen" class="screen pause-screen" hidden><h1>잠깐 쉬어 가세요</h1><p>진행은 자동으로 저장됩니다.</p><button type="button" id="resume-btn" class="primary-btn">계속하기</button><button type="button" id="pause-home-btn" class="secondary-btn">처음으로</button></main>
-
-  <main id="result-screen" class="screen result-screen" hidden><p class="result-emoji" aria-hidden="true">漢</p><h1 id="result-title" class="result-title">오늘의 한자</h1><p id="result-sub" class="result-sub"></p><section class="result-card"><p class="result-label">맞힌 문제</p><p id="result-score" class="result-big"></p><p id="result-detail" class="result-detail"></p><p id="result-best" class="result-best"></p></section><ol id="review-list" class="review-list" aria-label="오늘 익힌 글자"></ol><button type="button" id="again-btn" class="primary-btn">다시 연습하기</button><div class="button-pair"><button type="button" id="share-btn" class="secondary-btn">결과 공유</button><button type="button" id="result-home-btn" class="secondary-btn">처음으로</button></div><p class="record-note">연습 기록은 이 기기의 브라우저에 저장됩니다.</p><aside class="ad-slot" aria-label="광고"></aside></main>
+  <main id="pause-screen" class="screen pause-screen" hidden><h1>잠깐 쉬어 가세요</h1><p>진행과 남은 시간은 자동으로 저장됩니다.</p><button type="button" id="resume-btn" class="primary-btn">계속하기</button><button type="button" id="pause-home-btn" class="secondary-btn">처음으로</button></main>
+  <main id="result-screen" class="screen result-screen hanja-result" hidden><p class="result-emoji" aria-hidden="true">漢</p><h1 id="result-title" class="result-title">오늘의 한자</h1><p id="result-sub" class="result-sub"></p><section class="result-card"><p class="result-label">정답</p><p id="result-score" class="result-big"></p><p id="result-detail" class="result-detail"></p><p id="result-best" class="result-best"></p></section><section id="exam-result-panel" class="exam-result-panel" hidden><h2 id="exam-pass-label"></h2><p id="type-results"></p></section><ul id="review-list" class="review-list" aria-label="다시 볼 한자"></ul><button type="button" id="next-lesson-btn" class="primary-btn" hidden>다음 차시로 이어가기</button><button type="button" id="again-btn" class="secondary-btn">다시 연습하기</button><div class="button-pair"><button type="button" id="share-btn" class="secondary-btn">결과 공유</button><button type="button" id="result-home-btn" class="secondary-btn">처음으로</button></div><p class="record-note">기록은 이 기기의 브라우저에 저장됩니다.</p><aside class="ad-slot" aria-label="광고"></aside></main>
   <script src="../common/core.js"></script><script src="../common/thumbs.js"></script><script src="../common/start.js"></script><script src="../common/fx.js"></script><script src="js/bank.js"></script><script src="js/logic.js"></script><script src="js/ui.js"></script>
-</body>
-</html>
+</body></html>
