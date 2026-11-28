@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="한글 글자판에서 단어를 찾는 방법과 난이도, 힌트·되돌리기·이어하기·오늘의 도전을 설명합니다.">
+  <meta name="theme-color" content="#f5f3ee">
+  <meta property="og:title" content="한글 단어 찾기 하는 법과 요령 — 매일게임">
+  <meta property="og:description" content="한글 글자판에서 단어를 찾는 방법과 난이도, 힌트·되돌리기·이어하기·오늘의 도전을 설명합니다.">
+  <meta property="og:type" content="article">
+  <title>한글 단어 찾기 하는 법과 요령 — 매일게임</title>
+  <link rel="stylesheet" href="../common/base.css">
+  <link rel="stylesheet" href="guide.css">
+  <script>
+    try {
+      var s = JSON.parse(localStorage.getItem('maeil-game.settings.v1') || '{}');
+      var dark = typeof s.dark === 'boolean' ? s.dark : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      if (s.largeText) document.documentElement.classList.add('large-text');
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <article class="article">
+    <p class="crumbs"><a href="../">매일게임</a> › <a href="./">게임 방법·요령</a></p>
+
+    <h1>한글 단어 찾기 하는 법과 요령</h1>
+    <p class="lead">밥상, 숲속 산책, 우리 동네처럼 친숙한 주제의 단어를 글자판에서 찾아보세요. 시간 제한 없이 천천히 즐기는 한 판입니다.</p>
+    <a class="play-cta" href="../word-search/">한글 단어 찾기 시작하기</a>
+    <h2>첫 글자와 끝 글자를 누르세요</h2>
+    <ol><li>찾을 단어 목록을 읽고 글자판에서 첫 글자를 찾습니다.</li><li>첫 글자를 누르면 노란색으로 선택됩니다. 같은 글자를 다시 누르거나 선택 취소를 누르면 취소됩니다.</li><li>가로·세로·대각선의 곧은 줄을 따라 끝 글자를 누릅니다. 끝에서 처음 순서로 눌러도 인정합니다.</li><li>맞으면 글자 아래에 밑줄이 생기고 목록에 체크 표시가 붙습니다. 모든 단어를 찾으면 완료입니다.</li></ol>
+    <p>글자를 하나씩 모두 누르거나 손가락으로 끌 필요가 없습니다. 단어가 꺾여 있지는 않습니다. 찾은 단어의 글자가 다른 단어에도 쓰일 수 있습니다.</p>
+    <h2>세 가지 난이도</h2>
+    <table><tr><th>난이도</th><th>글자판과 단어</th><th>읽는 방향</th></tr><tr><td>쉬움</td><td>5×5 · 4단어</td><td>오른쪽·아래쪽</td></tr><tr><td>보통</td><td>6×6 · 6단어</td><td>오른쪽·아래쪽·오른쪽 아래 대각선</td></tr><tr><td>어려움</td><td>7×7 · 8단어</td><td>가로·세로·대각선의 여덟 방향</td></tr></table>
+    <h2>힌트와 되돌리기</h2>
+    <p>힌트는 아직 못 찾은 단어 하나의 첫 글자를 점선으로 표시합니다. 단어마다 한 번씩 사용할 수 있고 사용 횟수는 결과에 남습니다. 이미 찾은 단어를 되돌려도 힌트 사용 기록은 유지됩니다. 되돌리기는 완료 전에 마지막으로 찾은 단어를 취소합니다.</p>
+    <h2>오늘의 도전과 기록</h2>
+    <p>오늘의 도전은 보통 난이도입니다. 한국 시간으로 같은 날에는 누구나 같은 주제·단어·글자판을 받습니다. 여섯 단어를 모두 찾으면 출석이며 힌트를 사용해도 완료할 수 있습니다. 힌트를 적게 사용한 기록이 내 최고입니다. 시간이나 틀린 선택으로 순위를 가르지 않습니다.</p>
+    <h2>쉬었다 이어하기</h2>
+    <p>찾은 단어와 힌트 기록은 지금 기기의 브라우저에 자동 저장됩니다. 처음으로 돌아갔다가 이어하기를 누르거나 창을 다시 열어도 계속할 수 있습니다. 새 판을 시작하면 하던 판이 교체됩니다. 지난 날짜의 오늘의 도전은 그 날짜 기록으로 완료됩니다. 브라우저 데이터를 지우면 기록도 사라집니다.</p>
+    <h2>큰 글씨와 키보드</h2>
+    <p>게임 도중에도 큰 글씨와 어두운 화면을 바꿀 수 있습니다. 키보드는 Tab으로 글자판에 들어간 뒤 방향키로 이동하고 Enter나 Space로 글자를 선택합니다. Escape는 선택 취소, 선택이 없으면 잠깐 쉬기입니다. 화면을 벗어나면 자동으로 쉽니다.</p>
+    <a class="play-cta" href="../word-search/">단어 찾기 한 판 즐기기</a>
+
+    <nav class="more-guides" aria-label="다른 게임 설명">
+      <h2>다른 게임 방법</h2>
+      <ul class="guide-list">
+        <li><a href="sudoku.html"><strong>스도쿠</strong><span>1~9 숫자를 겹치지 않게 채우는 숫자 퍼즐</span></a></li>
+        <li><a href="2048.html"><strong>2048</strong><span>같은 숫자를 밀어 합쳐 2048 만들기</span></a></li>
+        <li><a href="memory.html"><strong>카드 짝맞추기</strong><span>뒤집힌 카드의 위치를 기억해 짝 찾기</span></a></li>
+        <li><a href="minesweeper.html"><strong>지뢰찾기</strong><span>숫자 힌트로 지뢰를 피해 모든 칸 열기</span></a></li>
+        <li><a href="blocks.html"><strong>블록 쌓기</strong><span>떨어지는 블록으로 가로줄을 채워 없애기</span></a></li>
+        <li><a href="snake.html"><strong>스네이크</strong><span>먹이를 먹으며 길어지는 뱀을 움직이는 꼬리물기</span></a></li>
+        <li><a href="omok.html"><strong>오목</strong><span>컴퓨터와 번갈아 돌을 놓아 다섯 알 먼저 잇기</span></a></li>
+        <li><a href="bricks.html"><strong>벽돌깨기</strong><span>받침대로 공을 튕겨 벽돌을 모두 깨기</span></a></li>
+        <li><a href="runner.html"><strong>점프 러너</strong><span>화면을 눌러 장애물을 뛰어넘으며 멀리 달리기</span></a></li>
+        <li><a href="reversi.html"><strong>리버시</strong><span>컴퓨터와 돌을 뒤집어 더 많이 남기는 전략 게임</span></a></li>
+        <li><a href="sichuan.html"><strong>사천성</strong><span>같은 그림을 두 번 이하로 꺾어 연결하는 패 퍼즐</span></a></li>
+        <li><a href="number-baseball.html"><strong>숫자야구</strong><span>스트라이크·볼로 숨은 숫자를 맞히는 추리 퍼즐</span></a></li>
+        <li><a href="freecell.html"><strong>프리셀</strong><span>프리셀과 빈 줄을 활용해 52장을 정리하는 카드 게임</span></a></li>
+        <li><a href="klondike.html"><strong>클론다이크 솔리테어</strong><span>한 장씩 뽑아 같은 무늬를 A부터 K까지 정리하기</span></a></li>
+        <li><a href="initial-quiz.html"><strong>초성 퀴즈</strong><span>초성과 뜻을 보고 글자 버튼으로 생활 낱말 맞히기</span></a></li>
+        <li><a href="proverb-quiz.html"><strong>속담 완성</strong><span>보기에서 말을 골라 친숙한 속담 완성하기</span></a></li>
+        <li><a href="go.html"><strong>바둑</strong><span>9줄 컴퓨터 대전과 매일 한 수 돌 잡기</span></a></li>
+        <li><a href="janggi.html"><strong>장기</strong><span>컴퓨터 대전과 매일 같은 한 수 외통수 풀이</span></a></li>
+        <li><a href="gostop.html"><strong>맞고</strong><span>전통 화투 48장 · 컴퓨터와 점수로 즐기는 한 판</span></a></li>
+      </ul>
+    </nav>
+    <footer class="site-footer">
+      <p><a href="../">매일게임</a> · <a href="../about.html">소개</a> · <a href="../privacy.html">개인정보처리방침</a> · 기록은 이 기기의 브라우저에만 저장돼요</p>
+    </footer>
+  </article>
+</body>
+</html>
