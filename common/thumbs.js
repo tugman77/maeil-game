@@ -22,6 +22,7 @@ const GameThumbs = (() => {
     'klondike': '9 4 142 113',
     'initial-quiz': '11 5 138 110',
     'proverb-quiz': '10 5 140 110',
+    'word-search': '18 6 124 108',
     'janggi': '31 2 98 116',
     'go': '24 4 112 112',
     'gostop': '8 6 144 108',
@@ -225,7 +226,18 @@ const GameThumbs = (() => {
   }
   function proverbQuiz() {
     return svg('proverb-quiz', '<rect x="13" y="10" width="134" height="101" rx="16" class="th-pq-card"/><path d="M32 30h96a6 6 0 0 1 6 6v36a6 6 0 0 1-6 6H73L55 92V78H32a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6z" class="th-pq-bubble"/><text x="80" y="57" class="th-pq-text">속담</text><rect x="54" y="63" width="52" height="10" rx="4" class="th-pq-blank"/><circle cx="118" cy="91" r="14" class="th-pq-mark"/><text x="118" y="98" class="th-pq-question">?</text>');
-  }  function janggi() {
+  }  function wordSearch() {
+    const letters = ['사','과','포','도','바','람','나','무','밥'];
+    let body = '<rect x="24" y="12" width="112" height="96" rx="12" class="th-ws-board"/>';
+    letters.forEach((ch,i) => {
+      const x=34+(i%3)*31, y=22+Math.floor(i/3)*25;
+      body += `<rect x="${x}" y="${y}" width="27" height="21" rx="5" class="th-ws-cell"/><text x="${x+13.5}" y="${y+15}" class="th-ws-letter">${ch}</text>`;
+    });
+    body += '<path d="M45 32 76 32 107 57" class="th-ws-path"/><circle cx="45" cy="32" r="4" class="th-ws-dot"/><circle cx="107" cy="57" r="4" class="th-ws-dot"/>';
+    return svg('word-search', body);
+  }
+
+  function janggi() {
     let body='<rect x="35" y="6" width="90" height="108" rx="8" class="th-jg-board"/>';
     for(let i=0;i<9;i++)body+=`<line x1="${44+i*9}" y1="15" x2="${44+i*9}" y2="105" class="th-jg-line"/>`;
     for(let i=0;i<10;i++)body+=`<line x1="44" y1="${15+i*10}" x2="116" y2="${15+i*10}" class="th-jg-line"/>`;
@@ -246,7 +258,7 @@ const GameThumbs = (() => {
     ].map(([x,y,file])=>`<image x="${x}" y="${y}" width="42" height="69" href="${hwatuRoot}${file}"/>`).join(''));
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, 'proverb-quiz': proverbQuiz, janggi, go, gostop };
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, 'proverb-quiz': proverbQuiz, 'word-search': wordSearch, janggi, go, gostop };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();
