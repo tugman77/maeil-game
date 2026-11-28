@@ -1,5 +1,5 @@
 {
-  "version": 28,
+  "version": 29,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -122,14 +122,18 @@
       "availability": "archived_for_learning_games",
       "archived_on": "2026-11-28",
       "archive_path": "_learning/hanja/"
-    }
-  ],
-  "backlog": [
+    },
     {
       "id": "word-search",
       "name": "한글 단어 찾기",
-      "status": "in_progress"
-    },
+      "completed_on": "2026-11-29",
+      "status": "published",
+      "commit": "bb46c37a022890c39d165bfee7fe7297576c4eeb",
+      "url": "https://tugman77.github.io/maeil-game/word-search/",
+      "deployment_run": 46161483364
+    }
+  ],
+  "backlog": [
     {
       "id": "nonogram",
       "name": "노노그램",
@@ -474,15 +478,20 @@
     },
     {
       "game": "word-search",
-      "status": "verified",
+      "status": "published",
       "requested_on": "2026-11-29",
       "trigger": "user_requested_resume",
       "base_commit": "11abb909722221b09d0ce71e7f302a2e940337df",
       "note": "12개 친숙한 주제에서 난이도별 4·6·8개 낱말. 5×5/6×6/7×7 판, 첫 글자·끝 글자 선택, 정답 유일성, 힌트·되돌리기·이어하기·오늘의 같은 판.",
-      "resume": "검증 완료. GitHub Pages 배포 성공을 확인한 후 공개 기록을 갱신한다.",
+      "resume": "공개 완료. 다음 신규 게임은 노노그램이며 사용자의 제작 지시가 있을 때만 진행한다.",
       "verification_limit": "Chrome PC와 360px 모바일 화면 큰 글씨·밝음/어둠·선택·찾음·힌트·새로고침 이어하기 확인. 실제 휴대폰·다른 브라우저 미검수.",
       "verified_on": "2026-11-29",
-      "tests": "전용 12개 포함 전체 Node 347개 통과. 공통·기존 게임·스도쿠 별도 검사 통과. 1,095판 단어 유일성과 허용 방향 독립 검증."
+      "tests": "전용 12개 포함 전체 Node 347개 통과. 공통·기존 게임·스도쿠 별도 검사 통과. 1,095판 단어 유일성과 허용 방향 독립 검증.",
+      "completed_on": "2026-11-29",
+      "commit": "bb46c37a022890c39d165bfee7fe7297576c4eeb",
+      "url": "https://tugman77.github.io/maeil-game/word-search/",
+      "deployment_run": 46161483364,
+      "deployment_verification": "GitHub Pages build/deploy success. 공개 게임·로직·UI·스타일·도움말·목록·서비스워커·썸네일 8개 파일 HTTP 성공 및 검증 소스와 바이트 일치."
     }
   ],
   "queue_changes": [
