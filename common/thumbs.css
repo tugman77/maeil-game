@@ -191,3 +191,16 @@
 
 .thumb-gostop { background: #dcebe1; }
 [data-theme="dark"] .thumb-gostop { background: #233f32; }
+
+
+/* 한글 단어 찾기 */
+.thumb-word-search { background:#e4ead8; }
+.th-ws-board { fill:#f8f6ed; stroke:#9cad8a; stroke-width:2; }
+.th-ws-cell { fill:#fff; stroke:#d5ddce; stroke-width:1.5; }
+.th-ws-letter { fill:#344737; font-size:12px; font-weight:800; text-anchor:middle; }
+.th-ws-path { fill:none; stroke:#58aa7b; stroke-width:7; stroke-linecap:round; stroke-linejoin:round; opacity:.55; }
+.th-ws-dot { fill:#248c58; stroke:#fff; stroke-width:2; }
+:root[data-theme="dark"] .thumb-word-search { background:#253b30; }
+:root[data-theme="dark"] .th-ws-board { fill:#17241d; stroke:#63816b; }
+:root[data-theme="dark"] .th-ws-cell { fill:#2c3d33; stroke:#516655; }
+:root[data-theme="dark"] .th-ws-letter { fill:#e8f1e8; }
