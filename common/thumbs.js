@@ -233,7 +233,7 @@ const GameThumbs = (() => {
     letters.forEach((c,i)=>{const x=28+(i%4)*27,y=16+Math.floor(i/4)*29;body+=`<rect x="${x}" y="${y}" width="24" height="25" rx="4" fill="${i<2?'#ffdb6a':'#fffef6'}"/><text x="${x+12}" y="${y+18}" text-anchor="middle" font-size="16" font-weight="700" fill="#204435">${c}</text>`;});
     return svg('word-search',body);
   }
-  
+
   function janggi() {
     let body='<rect x="35" y="6" width="90" height="108" rx="8" class="th-jg-board"/>';
     for(let i=0;i<9;i++)body+=`<line x1="${44+i*9}" y1="15" x2="${44+i*9}" y2="105" class="th-jg-line"/>`;
