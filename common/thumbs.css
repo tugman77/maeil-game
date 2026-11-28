@@ -169,7 +169,28 @@
 .th-iq-small { font-size:18px; }
 :root[data-theme="dark"] .thumb-initial-quiz { background:#22354a; }
 .thumb-proverb-quiz { background:#f0dfb8; }
+.thumb-word-search { --tint:#e0ecdc; }
+:root[data-theme="dark"] .thumb-word-search { --tint:#263b2d; }
+.th-ws-board { fill:#f7fbf5; stroke:#6c806e; stroke-width:2; }
+.th-ws-cell { fill:#e8f0e6; stroke:#c3d0c0; stroke-width:1; }
+.th-ws-letter { fill:#283c2d; text-anchor:middle; font-size:16px; font-weight:800; font-family:inherit; }
+.th-ws-found { fill:#bce7ce; stroke:#29945d; stroke-width:1.5; }
+.th-ws-path { fill:none; stroke:#29945d; stroke-width:5; stroke-linecap:round; opacity:.5; }
+:root[data-theme="dark"] .th-ws-board { fill:#253329; stroke:#829784; }
+:root[data-theme="dark"] .th-ws-cell { fill:#314233; stroke:#526653; }
+:root[data-theme="dark"] .th-ws-letter { fill:#edf4ec; }
+:root[data-theme="dark"] .th-ws-found { fill:#a9e8cb; stroke:#5ed193; }
 :root[data-theme="dark"] .thumb-proverb-quiz { background:#493b27; }
+.th-pq-card { fill:#fffaf0;stroke:#d9c398;stroke-width:2; }
+.th-pq-bubble { fill:#fff;stroke:#a97d35;stroke-width:2; }
+.th-pq-text { font-size:19px;font-weight:800;text-anchor:middle;fill:#694d22; }
+.th-pq-blank { fill:#f5d982; }
+.th-pq-mark { fill:#347a56; }
+.th-pq-question { font-size:20px;font-weight:800;text-anchor:middle;fill:#fff; }
+:root[data-theme="dark"] .th-pq-card { fill:#29271f;stroke:#7b6236; }
+:root[data-theme="dark"] .th-pq-bubble { fill:#343127;stroke:#d0a75e; }
+:root[data-theme="dark"] .th-pq-text { fill:#f1d68e; }
+:root[data-theme="dark"] .th-pq-blank { fill:#9c7a32; }
 :root[data-theme="dark"] .th-iq-base { fill:#406e95; }
 
 /* 장기 */
@@ -193,14 +214,5 @@
 [data-theme="dark"] .thumb-gostop { background: #233f32; }
 
 
-/* 한글 단어 찾기 */
-.thumb-word-search { background:#e4ead8; }
-.th-ws-board { fill:#f8f6ed; stroke:#9cad8a; stroke-width:2; }
-.th-ws-cell { fill:#fff; stroke:#d5ddce; stroke-width:1.5; }
-.th-ws-letter { fill:#344737; font-size:12px; font-weight:800; text-anchor:middle; }
-.th-ws-path { fill:none; stroke:#58aa7b; stroke-width:7; stroke-linecap:round; stroke-linejoin:round; opacity:.55; }
-.th-ws-dot { fill:#248c58; stroke:#fff; stroke-width:2; }
-:root[data-theme="dark"] .thumb-word-search { background:#253b30; }
-:root[data-theme="dark"] .th-ws-board { fill:#17241d; stroke:#63816b; }
-:root[data-theme="dark"] .th-ws-cell { fill:#2c3d33; stroke:#516655; }
-:root[data-theme="dark"] .th-ws-letter { fill:#e8f1e8; }
+.thumb-word-search{background:#daebe1}
+:root[data-theme="dark"] .thumb-word-search{background:#244334}

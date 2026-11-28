@@ -33,7 +33,7 @@
         if(delta!==undefined){e.preventDefault();$('board').children[i+delta].focus();}
       });return b;
     }));
-    $('word-list').replaceChildren(...game.words.map((word,i)=>{const li=document.createElement('li'),done=game.found.includes(i);li.textContent=`${done?'✓ ':''}${word}`;li.className=done?'done':'';li.setAttribute('aria-label',`${word}, ${done?'찾음':'찾을 단어'}`);return li;}));
+    $('word-list').replaceChildren(...game.words.map((word,i)=>{const li=document.createElement('li'),done=game.found.includes(i);li.textContent=word;li.className=done?'done':'';li.setAttribute('aria-label',`${word}, ${done?'찾음':'찾을 단어'}`);return li;}));
     $('cancel-btn').disabled=paused||first===null;$('undo-btn').disabled=paused||!game.found.length;$('hint-btn').disabled=paused||game.words.every((_,i)=>game.found.includes(i)||game.hinted.includes(i));
     $('hint-info').textContent=`힌트 ${game.hints}회 · 점선 칸은 아직 못 찾은 단어의 첫 글자예요.`;
   }

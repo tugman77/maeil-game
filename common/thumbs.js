@@ -22,7 +22,7 @@ const GameThumbs = (() => {
     'klondike': '9 4 142 113',
     'initial-quiz': '11 5 138 110',
     'proverb-quiz': '10 5 140 110',
-    'word-search': '18 6 124 108',
+    'word-search': '16 4 128 112',
     'janggi': '31 2 98 116',
     'go': '24 4 112 112',
     'gostop': '8 6 144 108',
@@ -226,17 +226,14 @@ const GameThumbs = (() => {
   }
   function proverbQuiz() {
     return svg('proverb-quiz', '<rect x="13" y="10" width="134" height="101" rx="16" class="th-pq-card"/><path d="M32 30h96a6 6 0 0 1 6 6v36a6 6 0 0 1-6 6H73L55 92V78H32a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6z" class="th-pq-bubble"/><text x="80" y="57" class="th-pq-text">속담</text><rect x="54" y="63" width="52" height="10" rx="4" class="th-pq-blank"/><circle cx="118" cy="91" r="14" class="th-pq-mark"/><text x="118" y="98" class="th-pq-question">?</text>');
-  }  function wordSearch() {
-    const letters = ['사','과','포','도','바','람','나','무','밥'];
-    let body = '<rect x="24" y="12" width="112" height="96" rx="12" class="th-ws-board"/>';
-    letters.forEach((ch,i) => {
-      const x=34+(i%3)*31, y=22+Math.floor(i/3)*25;
-      body += `<rect x="${x}" y="${y}" width="27" height="21" rx="5" class="th-ws-cell"/><text x="${x+13.5}" y="${y+15}" class="th-ws-letter">${ch}</text>`;
-    });
-    body += '<path d="M45 32 76 32 107 57" class="th-ws-path"/><circle cx="45" cy="32" r="4" class="th-ws-dot"/><circle cx="107" cy="57" r="4" class="th-ws-dot"/>';
-    return svg('word-search', body);
   }
-
+  function wordSearch() {
+    let body='<rect x="20" y="8" width="120" height="104" rx="12" fill="#2b6b53"/>';
+    const letters=['나','무','숲','길','하','늘','산','새','바','람','구','름'];
+    letters.forEach((c,i)=>{const x=28+(i%4)*27,y=16+Math.floor(i/4)*29;body+=`<rect x="${x}" y="${y}" width="24" height="25" rx="4" fill="${i<2?'#ffdb6a':'#fffef6'}"/><text x="${x+12}" y="${y+18}" text-anchor="middle" font-size="16" font-weight="700" fill="#204435">${c}</text>`;});
+    return svg('word-search',body);
+  }
+  
   function janggi() {
     let body='<rect x="35" y="6" width="90" height="108" rx="8" class="th-jg-board"/>';
     for(let i=0;i<9;i++)body+=`<line x1="${44+i*9}" y1="15" x2="${44+i*9}" y2="105" class="th-jg-line"/>`;
@@ -257,6 +254,7 @@ const GameThumbs = (() => {
       [17,24,'Hwatu_January_gwang.svg'],[59,16,'Hwatu_August_gwang.svg'],[101,26,'Hwatu_March_gwang.svg']
     ].map(([x,y,file])=>`<image x="${x}" y="${y}" width="42" height="69" href="${hwatuRoot}${file}"/>`).join(''));
   }
+
 
   const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, 'proverb-quiz': proverbQuiz, 'word-search': wordSearch, janggi, go, gostop };
 
