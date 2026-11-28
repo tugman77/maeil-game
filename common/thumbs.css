@@ -170,26 +170,6 @@
 :root[data-theme="dark"] .thumb-initial-quiz { background:#22354a; }
 .thumb-proverb-quiz { background:#f0dfb8; }
 :root[data-theme="dark"] .thumb-proverb-quiz { background:#493b27; }
-.thumb-hanja { background:#eee4cf; }
-:root[data-theme="dark"] .thumb-hanja { background:#382f20; }
-.th-pq-card { fill:#fffaf0;stroke:#d9c398;stroke-width:2; }
-.th-pq-bubble { fill:#fff;stroke:#a97d35;stroke-width:2; }
-.th-pq-text { font-size:19px;font-weight:800;text-anchor:middle;fill:#694d22; }
-.th-pq-blank { fill:#f5d982; }
-.th-pq-mark { fill:#347a56; }
-.th-pq-question { font-size:20px;font-weight:800;text-anchor:middle;fill:#fff; }
-:root[data-theme="dark"] .th-pq-card { fill:#29271f;stroke:#7b6236; }
-:root[data-theme="dark"] .th-pq-bubble { fill:#343127;stroke:#d0a75e; }
-:root[data-theme="dark"] .th-pq-text { fill:#f1d68e; }
-:root[data-theme="dark"] .th-pq-blank { fill:#9c7a32; }
-.th-hanja-card { fill:#fffdf7; stroke:#b88b42; stroke-width:2; }
-.th-hanja-char { fill:#3b3021; font:800 68px serif; text-anchor:middle; }
-.th-hanja-chip { fill:#e8d5ad; }
-.th-hanja-label { fill:#594627; font-size:7px; font-weight:700; text-anchor:middle; }
-:root[data-theme="dark"] .th-hanja-card { fill:#28251f; stroke:#d1aa62; }
-:root[data-theme="dark"] .th-hanja-char { fill:#f2dfb7; }
-:root[data-theme="dark"] .th-hanja-chip { fill:#54452b; }
-:root[data-theme="dark"] .th-hanja-label { fill:#f4e4c4; }
 :root[data-theme="dark"] .th-iq-base { fill:#406e95; }
 
 /* 장기 */

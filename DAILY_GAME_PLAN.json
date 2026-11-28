@@ -1,5 +1,5 @@
 {
-  "version": 23,
+  "version": 24,
   "site": "https://tugman77.github.io/maeil-game/",
   "repository": "tugman77/maeil-game",
   "policy": {
@@ -118,7 +118,10 @@
       "status": "published",
       "commit": "469cbccc878ea5a2d225d103502736edfc4dd0d4",
       "url": "https://tugman77.github.io/maeil-game/hanja/",
-      "deployment_run": 46021051416
+      "deployment_run": 46021051416,
+      "availability": "archived_for_learning_games",
+      "archived_on": "2026-11-28",
+      "archive_path": "_learning/hanja/"
     }
   ],
   "backlog": [
@@ -480,6 +483,16 @@
         "gostop"
       ],
       "note": "사용자가 장기·바둑·맞고에 관심을 보여 이 순서로 맨 앞으로 이동. 나머지 상대 순서와 기존 기능 계획·40대 이상·간단한 조작 원칙은 유지."
+    }
+  ],
+  "archive_events": [
+    {
+      "game": "hanja",
+      "action": "removed_from_daily_games",
+      "archived_on": "2026-11-28",
+      "archive_path": "_learning/hanja/",
+      "next_daily_game": "word-search",
+      "note": "매일게임 대기열 이후 학습게임 영역에서 재개하고 3급까지 확장."
     }
   ]
 }

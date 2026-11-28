@@ -22,7 +22,6 @@ const GameThumbs = (() => {
     'klondike': '9 4 142 113',
     'initial-quiz': '11 5 138 110',
     'proverb-quiz': '10 5 140 110',
-    'hanja': '16 3 128 114',
     'janggi': '31 2 98 116',
     'go': '24 4 112 112',
     'gostop': '8 6 144 108',
@@ -226,11 +225,7 @@ const GameThumbs = (() => {
   }
   function proverbQuiz() {
     return svg('proverb-quiz', '<rect x="13" y="10" width="134" height="101" rx="16" class="th-pq-card"/><path d="M32 30h96a6 6 0 0 1 6 6v36a6 6 0 0 1-6 6H73L55 92V78H32a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6z" class="th-pq-bubble"/><text x="80" y="57" class="th-pq-text">속담</text><rect x="54" y="63" width="52" height="10" rx="4" class="th-pq-blank"/><circle cx="118" cy="91" r="14" class="th-pq-mark"/><text x="118" y="98" class="th-pq-question">?</text>');
-  }
-  function hanja() {
-    return svg('hanja', '<rect x="26" y="8" width="108" height="104" rx="16" class="th-hanja-card"/><text x="80" y="82" class="th-hanja-char">漢</text><rect x="38" y="91" width="30" height="13" rx="6" class="th-hanja-chip"/><rect x="72" y="91" width="48" height="13" rx="6" class="th-hanja-chip"/><text x="53" y="100" class="th-hanja-label">읽기</text><text x="96" y="100" class="th-hanja-label">오늘의 한자</text>');
-  }
-  function janggi() {
+  }  function janggi() {
     let body='<rect x="35" y="6" width="90" height="108" rx="8" class="th-jg-board"/>';
     for(let i=0;i<9;i++)body+=`<line x1="${44+i*9}" y1="15" x2="${44+i*9}" y2="105" class="th-jg-line"/>`;
     for(let i=0;i<10;i++)body+=`<line x1="44" y1="${15+i*10}" x2="116" y2="${15+i*10}" class="th-jg-line"/>`;
@@ -251,7 +246,7 @@ const GameThumbs = (() => {
     ].map(([x,y,file])=>`<image x="${x}" y="${y}" width="42" height="69" href="${hwatuRoot}${file}"/>`).join(''));
   }
 
-  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, 'proverb-quiz': proverbQuiz, hanja, janggi, go, gostop };
+  const DRAW = { sudoku, 2048: game2048, memory, minesweeper, blocks, snake, omok, bricks, runner, reversi, sichuan, 'number-baseball': numberBaseball, freecell, klondike, 'initial-quiz': initialQuiz, 'proverb-quiz': proverbQuiz, janggi, go, gostop };
 
   function render(game) {
     if (DRAW[game.id]) return DRAW[game.id]();

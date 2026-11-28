@@ -27,7 +27,7 @@ common/start.js · start.css     게임별 시작 화면 공통 틀(목록 링�
 sw.js                           사이트 전체 공용 오프라인 보관 (파일 추가 시 FILES에도 추가)
 sudoku/                         스도쿠 (자체 CLAUDE.md 규칙은 ../스도쿠게임/CLAUDE.md 참고)
 tests/                          node tests/common.test.js · node tests/games.test.js · node --test tests/snake*.test.js tests/phase2.test.js
-2048/ · memory/ · minesweeper/ · blocks/ · snake/ · omok/ · bricks/ · runner/ · reversi/ · sichuan/ · number-baseball/ · freecell/ · proverb-quiz/ · hanja/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
+2048/ · memory/ · minesweeper/ · blocks/ · snake/ · omok/ · bricks/ · runner/ · reversi/ · sichuan/ · number-baseball/ · freecell/ · proverb-quiz/   각 js/logic.js(규칙, node 검사 가능) + js/ui.js(화면)
 reversi/js/ai-worker.js         리버시 AI 계산 전용 Worker(중단·오래된 응답 무시), Worker 미지원 시 제한된 계산으로 대체
 ```
 
@@ -120,3 +120,8 @@ reversi/js/ai-worker.js         리버시 AI 계산 전용 Worker(중단·오래
 - 최신 main 통합 재검증: 맞고 포함 전체 `node --test tests/*.test.js` 292개, 공통·기존 게임·스도쿠 game/generator/storage 별도 검사 모두 통과. sw 캐시는 원격 v31 다음인 v32 사용.
 
 - 속담 완성(2026-11-27 배포 완료): 보기에서 빈칸을 고르는 한국 속담 퀴즈. 쉬움·보통·어려움 각각 12문제 중 5문제, 오늘의 도전은 같은 보통 속담 5문제. 터치 선택·두 단계 힌트·뜻풀이·정답 확인·되돌아갈 수 있는 오답 재선택·이어하기·기록·공유·큰 글씨·어두운 화면. 게임·도움말·썸네일·오프라인 목록 연결. 커밋 `9cfd90fe8a3e2203751a5e3d18bc053c5d4d93c9`, Pages 실행 `46010544471` 성공, 핵심 페이지·JS·CSS·도움말 HTTP 200. 자동 테스트와 실제 모바일 화면 검수는 실행하지 않음. 다음 신규 게임은 한글 단어 찾기. 바둑 묘수풀이 중심 재구성은 별도 승인된 후속 항목으로 `DAILY_GAME_PLAN.json`에 등록.
+
+
+## 학습게임 분리 (2026-11-28)
+- 오늘의 한자는 매일게임 목록·오늘의 도전·게임 안내에서 분리했다. 원본 앱과 설명 자료는 `_learning/hanja/`에 보관한다.
+- 매일게임 대기열을 마친 뒤 별도 학습게임 영역을 만들 때 이 자료를 바탕으로 재개한다. 1차 확장 목표는 한국어문회 3급까지이며, 학습 진도·복습은 매일게임 출석과 분리한다.
