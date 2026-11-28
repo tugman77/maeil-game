@@ -1,7 +1,7 @@
 // 오프라인 동작(사이트 전체 공용): 게임 파일을 기기에 보관해 두고, 인터넷이 끊기면 보관본으로 연다.
 // 인터넷이 될 때는 항상 서버의 최신 파일을 먼저 받아 오므로, 수정한 내용이 바로 반영된다.
 // ⚠️ 게임이나 파일을 추가하면 FILES 목록에도 넣는다(tests/common.test.js가 빠진 파일을 잡는다).
-const CACHE = 'maeil-game-v43';
+const CACHE = 'maeil-game-v44';
 const FILES = [
   './',
   'index.html',
@@ -120,6 +120,12 @@ const FILES = [
   'proverb-quiz/js/logic.js',
   'proverb-quiz/js/ui.js',
   'guide/proverb-quiz.html',
+  'word-search/',
+  'word-search/index.html',
+  'word-search/style.css',
+  'word-search/js/logic.js',
+  'word-search/js/ui.js',
+  'guide/word-search.html',
   'janggi/',
   'janggi/index.html',
   'janggi/style.css',
